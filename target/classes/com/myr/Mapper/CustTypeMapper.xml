@@ -1,0 +1,49 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.CustTypeMapper">
+
+    <!--1.添加客戶-->
+    <insert id="addCustomerType">
+        INSERT INTO t_cust_type(`fid`, `name`, `type`, `other_remark`, `create_datetime`, `update_datetime`, `fdisable`)
+        VALUES
+        (NULL, #{name}, #{type}, #{other_remark}, now(), #{update_datetime}, 0);
+
+    </insert>
+
+    <select id="custType_all" resultType="com.myr.Bean.CustType">
+        SELECT * from t_cust_type where fdisable = 0 and type = #{type}
+    </select>
+
+    <select id="custType_page" resultType="com.myr.Bean.CustType">
+        SELECT * from t_cust_type where fdisable = 0 and type = 1 and
+        (name like '%${name}%' or other_remark like '%${name}%')
+    </select>
+
+    <select id="SuppType_page" resultType="com.myr.Bean.CustType">
+        SELECT * from t_cust_type where fdisable = 0 and type = 2 and
+        (name like '%${name}%' or other_remark like '%${name}%')
+    </select>
+
+    <delete id="delCustType">
+        delete from t_cust_type where fid = #{fid}
+    </delete>
+
+    <select id="getCustTypeById" resultType="com.myr.Bean.CustType">
+        select * from t_cust_type where fid = #{fid}
+    </select>
+
+    <update id="updateCustType">
+        UPDATE `t_cust_type` SET `name` = #{name}, `other_remark` = #{other_remark}, `update_datetime` = now()
+        WHERE `fid` = #{fid};
+     </update>
+
+    <select id="isexits" resultType="integer">
+        select case when count(*) >=1 then 1 else 0 end from t_cust_type where name = #{name} and type = #{type}
+        <if test="fid != null and fid !=''">
+            and fid not in (#{fid})
+        </if>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,167 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.IcstockbillMapper">
+
+    <!--1.添加-->
+    <insert id="addIcStockBill" useGeneratedKeys="true" keyProperty="fid">
+        INSERT INTO `icstockbill`(`fid`, `billNo`, `billDate`, `suppId`, `billType`, `type`, `settId`, `currName`,
+         `rate`, `address`, `contact`, `phone`, `remark`, `depaId`, `saleStaf`, `billStaf`, `editStaf`,
+          `checkStaf`, `createDate`, `checkDate`, `state`)
+          VALUES
+          (null, #{billNo}, #{billDate}, #{suppId}, #{billType}, #{type}, #{settId}, #{currName},
+          #{rate}, #{address}, #{contact}, #{phone}, #{remark}, #{depaId}, #{saleStaf}, #{billStaf}, #{editStaf},
+           #{checkStaf}, now(), #{checkDate}, #{state});
+    </insert>
+
+    <!--1 是规则表中的 销售订单规则-->
+    <select id="getICBillNo" resultType="String">
+        SELECT GetBillNo(3,#{dates});
+    </select>
+
+    <select id="IcStockBill_page" resultMap="IcStockBillMap">
+        select
+        a.*,b.fid as 'ffid',
+        b.mid,b.itemId,b.itemCode,b.itemName,b.itemModel,b.custItemCode,b.custItemModel,b.unitName,b.custOrderNum,b.qty,b.batchNumber,
+        b.taxPrice,b.taxPriceNo,b.taxAmt,b.taxAmtNo,fcessAmt,b.rowRemark,b.sourFid,b.sourBillNo,b.sourEntryId,b.sourType,
+        c.`name` as 'suppIdName' ,d.`name` as 'settIdName',e.name as 'depaIdName'
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_supplier c on a.suppId = c.fid
+        LEFT JOIN t_settlement_method d on a.settId = d.fid
+        LEFT JOIN t_department e on a.depaId = e.fid
+        where a.billtype = '采购入库'
+        <if test="str != null or str != ''">
+            and (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
+        </if>
+    </select>
+
+    <select id="IcStockBill_saleout_page" resultMap="IcStockBillMap">
+        select
+        a.*,b.fid as 'ffid',
+        b.mid,b.itemId,b.itemCode,b.itemName,b.itemModel,b.custItemCode,b.custItemModel,b.unitName,b.custOrderNum,b.qty,b.batchNumber,
+        b.taxPrice,b.taxPriceNo,b.taxAmt,b.taxAmtNo,fcessAmt,b.rowRemark,b.sourFid,b.sourBillNo,b.sourEntryId,b.sourType,
+        c.`name` as 'suppIdName' ,d.`name` as 'settIdName',e.name as 'depaIdName'
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_customer c on a.suppId = c.fid
+        LEFT JOIN t_settlement_method d on a.settId = d.fid
+        LEFT JOIN t_department e on a.depaId = e.fid
+        where a.billtype = '销售出库'
+        <if test="str != null or str != ''">
+            and (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
+        </if>
+    </select>
+
+    <select id="IcStockBill_pageGj" resultMap="IcStockBillMap">
+        select
+        a.*,b.fid as 'ffid',
+        b.mid,b.itemId,b.itemCode,b.itemName,b.itemModel,b.custItemCode,b.custItemModel,b.unitName,b.custOrderNum,b.qty,b.batchNumber,
+        b.taxPrice,b.taxPriceNo,b.taxAmt,b.taxAmtNo,fcessAmt,b.rowRemark,b.sourFid,b.sourBillNo,b.sourEntryId,b.sourType,
+        c.`name` as 'suppIdName' ,d.`name` as 'settIdName',e.name as 'depaIdName'
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_supplier c on a.suppId = c.fid
+        LEFT JOIN t_settlement_method d on a.settId = d.fid
+        LEFT JOIN t_department e on a.depaId = e.fid
+        where a.billtype = #{data.billType}
+        and a.billNo like '%${data.billNo}%'
+        and b.custItemCode like '%${data.mid.custItemCode}%'
+        and b.custItemModel like '%${data.mid.custItemModel}%'
+        and b.itemCode like '%${data.mid.itemCode}%'
+        and b.itemModel like '%${data.mid.itemModel}%'
+        <if test="data.suppId != null and data.suppId >0">
+            and a.suppId = #{data.suppId}
+        </if>
+        <if test="data.depaId != null and data.depaId >0">
+            and a.depaId = #{data.depaId}
+        </if>
+        <if test="data.billStaf != null and data.billStaf >0">
+            and a.billStaf = #{data.billStaf}
+        </if>
+        <if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+            and a.billDate between #{date_start} and #{date_end}
+        </if>
+    </select>
+
+    <resultMap id="IcStockBillMap" type="com.myr.Bean.Icstockbill">
+        <id column="ffid" property="fid"/>
+        <result column="billNo" property="billNo"/>
+        <result column="billDate" property="billDate"/>
+        <result column="suppId" property="suppId"/>
+        <result column="type" property="type"/>
+        <result column="settId" property="settId"/>
+        <result column="currName" property="currName"/>
+        <result column="rate" property="rate"/>
+        <result column="address" property="address"/>
+        <result column="contact" property="contact"/>
+        <result column="phone" property="phone"/>
+        <result column="remark" property="remark"/>
+        <result column="depaId" property="depaId"/>
+        <result column="saleStaf" property="saleStaf"/>
+        <result column="billStaf" property="billStaf"/>
+        <result column="editStaf" property="editStaf"/>
+        <result column="checkStaf" property="checkStaf"/>
+        <result column="createDate" property="createDate"/>
+        <result column="editDate" property="editDate"/>
+
+        <!--订单体-->
+        <collection property="mid" javaType="com.myr.Bean.Icstockbillentry">
+            <id column="mid" property="fid"/>
+            <result column="itemId" property="itemId"/>
+            <result column="itemCode" property="itemCode"/>
+            <result column="itemName" property="itemName"/>
+            <result column="itemModel" property="itemModel"/>
+            <result column="custItemCode" property="custItemCode"/>
+            <result column="custItemModel" property="custItemModel"/>
+            <result column="unitName" property="unitName"/>
+            <result column="custOrderNum" property="custOrderNum"/>
+            <result column="qty" property="qty"/>
+            <result column="batchNumber" property="batchNumber"/>
+            <result column="taxPrice" property="taxPrice"/>
+            <result column="taxPriceNo" property="taxPriceNo"/>
+            <result column="fcess" property="fcess"/>
+            <result column="taxAmt" property="taxAmt"/>
+            <result column="taxAmtNo" property="taxAmtNo"/>
+            <result column="fcessAmt" property="fcessAmt"/>
+            <result column="rowRemark" property="rowRemark"/>
+            <result property="sourFid" column="sourFid"/>
+            <result property="sourBillNo" column="sourBillNo"/>
+            <result property="sourEntryId" column="sourEntryId"/>
+            <result property="sourType" column="sourType"/>
+
+        </collection>
+
+        <!--供应商-->
+        <collection property="suppIdFid" javaType="com.myr.Bean.Supplier">
+            <id column="fid" property="fid"/>
+            <result column="suppIdName" property="name"/>
+        </collection>
+
+        <!--结算方式-->
+        <collection property="settIdFid" javaType="com.myr.Bean.SettlementMethod">
+            <id column="fid" property="fid"/>
+            <result column="settIdName" property="name"/>
+        </collection>
+
+        <!--部门-->
+        <collection property="depaIdFid" javaType="com.myr.Bean.Department">
+            <id column="fid" property="fid"/>
+            <result column="depaIdName" property="name"/>
+        </collection>
+
+    </resultMap>
+
+    <delete id="IcStockBill_del">
+        delete a,b from icstockbill a inner JOIN icstockbillentry b on a.fid = b.mid
+        where a.fid = #{fid}
+    </delete>
+
+    <select id="getIcStockBillById" resultType="com.myr.Bean.Icstockbill">
+        select * from icstockbill where fid = #{fid}
+    </select>
+
+    <update id="IcStockBill_update">
+        UPDATE `icstockbill` SET `billDate` = #{billDate}, `suppId` = #{suppId}, `type` = #{type}, `settId` = #{settId}, `currName` = #{currName}, `rate` = #{rate}, `address` = #{address}, `contact` = #{contact}, `phone` = #{phone}, `remark` = #{remark}, `depaId` = #{depaId}, `saleStaf` = #{saleStaf}, `billStaf` = #{billStaf}, `editStaf` = #{editStaf}, `checkStaf` = #{checkStaf}, `editDate` = now(), `state` = #{state}
+        WHERE `fid` = #{fid};
+    </update>
+
+
+</mapper>

@@ -1,0 +1,119 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.Mrp_DemandMapper">
+
+    <!--按需求计算 按材料-->
+    <select id="demand_calc_bom" resultType="com.myr.Bean.Mrp_Demand">
+        select a.fid as 'sosfid',a.itemId,g.code as 'mainItemCode',a.cuid,d.`code`,d.`name`,d.model,e.`name` as 'unitName',a.demand_qty,IFNULL(b.way_qty,0) as 'way_qty', IFNULL(f.wait_pro_qty,0) as 'wait_pro_qty', IFNULL(c.stock_qty,0) as 'stock_qty' from
+
+		(
+
+		/*需求数量*/
+		SELECT
+		a.mid,a.fid,
+		`a`.`itemId` AS `itemId`,
+		case when `b`.`topid` > 0 then `b`.`cuid` else `a`.`itemId` end AS `cuid`,
+		case when `b`.`topid` > 0 then `a`.`qty` * `b`.`qty` else `a`.`qty` end AS `demand_qty`
+		FROM	`t_saleorderentry` `a` LEFT JOIN `v_bom_all_cuid` `b` ON `a`.`itemId` = `b`.`topid`
+		WHERE `a`.`fid` in
+		<foreach collection="sos" open="(" separator="," close=")" item="so">
+			#{so}
+		</foreach>
+		order by a.fid
+
+		) a left join (
+
+		/*在途数量*/
+		select itemId,sum(qty-finish_qty) as 'way_qty' from t_poorderentry where finish_static = 0
+		GROUP BY itemId
+
+		) b on a.cuid = b.itemId
+		LEFT JOIN
+		(
+
+		/*仓库数量*/
+		select itemId,sum(qty) as 'stock_qty' from v_itemstock_bystock where stockId in
+		<foreach collection="stocks" open="(" separator="," close=")" item="stock">
+			#{stock}
+		</foreach>
+		 GROUP BY itemId
+
+		) c on a.cuid = c.itemId
+		LEFT JOIN
+		(
+			/*待产数量*/
+			select itemId,sum(qty-finish_qty) as 'wait_pro_qty' from mrp_backmater where finish_static = 0 GROUP BY itemId
+		) f on a.cuid = f.itemId
+		left join t_item d on a.cuid = d.fid
+		left join t_item g on a.itemId = g.fid
+		left join t_unit e on d.purUnitId = e.fid
+		order by a.mid,a.fid
+    </select>
+
+	<!--按需求计算 按成品-->
+    <select id="demand_calc_pro" resultType="com.myr.Bean.Mrp_Demand">
+        select a.fid as 'sosfid',a.itemId,d.code as 'mainItemCode',a.cuid,d.`code`,d.`name`,d.model,e.`name` as 'unitName',a.demand_qty,IFNULL(b.way_qty,0) as 'way_qty', IFNULL(f.wait_pro_qty,0) as 'wait_pro_qty', IFNULL(c.stock_qty,0) as 'stock_qty' from
+
+	(
+
+	/*需求数量*/
+		select mid,fid,itemId,itemId as 'cuid',qty as 'demand_qty' from t_saleorderentry where fid in
+		<foreach collection="sos" open="(" separator="," close=")" item="so">
+			#{so}
+		</foreach>
+		order by fid
+
+		) a left join (
+
+		/*在途数量*/
+		select itemId,sum(qty-finish_qty) as 'way_qty' from t_poorderentry where finish_static = 0
+	GROUP BY itemId
+
+		) b on a.cuid = b.itemId
+		LEFT JOIN
+		(
+
+		/*仓库数量*/
+	select itemId,sum(qty) as 'stock_qty' from v_itemstock_bystock where stockId in
+		<foreach collection="stocks" open="(" separator="," close=")" item="stock">
+			#{stock}
+		</foreach>
+	 GROUP BY itemId
+
+		) c on a.cuid = c.itemId
+		LEFT JOIN
+		(
+		select itemId,sum(qty-finish_qty) as 'wait_pro_qty' from mrp_backmater where finish_static = 0 GROUP BY itemId
+		) f on a.cuid = f.itemId
+		left join t_item d on a.cuid = d.fid
+		left join t_unit e on d.purUnitId = e.fid
+		order by a.mid,a.fid
+    </select>
+
+	<insert id="MrpCalcTemp_add">
+		INSERT INTO `mrp_calc_temp`
+		(`mrp_id`, `sos_fid`, `main_item_id`, `child_item_id`, `demand_qty`, `demand_zh_qty`, create_date)
+		VALUES
+		(#{mrp_id}, #{sos_fid}, #{main_item_id}, #{child_item_id}, #{demand_qty}, #{demand_zh_qty}, now());
+	</insert>
+
+	<select id="GenerateMrp" resultType="com.myr.Bean.Mrp_Demand">
+		call GetMrp(#{mrp_ids},#{demand_qty_type},#{isoneplane});
+	</select>
+
+
+	<!--<parameterMap id="param" type="java.util.HashMap" >
+		<parameter property="mrp_ids" jdbcType="VARCHAR"  javaType="java.lang.String"  mode="IN"/>
+		<parameter property="demand_qty_type" jdbcType="INTEGER"  javaType="java.lang.Integer"  mode="IN"/>
+		<parameter property="isoneplane" jdbcType="INTEGER"  javaType="java.lang.Integer"  mode="IN"/>
+		<parameter property="itemId" jdbcType="INTEGER"  javaType="java.lang.Integer"  mode="OUT"/>
+		<parameter property="mainItemCode" jdbcType="VARCHAR"  javaType="java.lang.String"  mode="OUT"/>
+	</parameterMap>
+
+	<select id="GenerateMrp" parameterMap="param" statementType="CALLABLE" resultType="java.lang.String">
+		{call GetMrp(?,?,?,?,?)}
+    </select>-->
+
+
+</mapper>
