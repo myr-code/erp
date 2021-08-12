@@ -1,0 +1,49 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.StaffMapper">
+
+    <!--1.添加职员-->
+    <insert id="addStaff">
+        INSERT INTO t_staff(`fid`, `code`, `name`, `departmentId`, `postId`, `staffTypeId`, `gender`, `phone`,
+        `chinaId`, `entryDate`, `departureDate`, `educationId`, `remark`, `createDatetime`, `updateDatetime`, `fdisable`)
+        VALUES
+        (NULL, #{code}, #{name}, #{departmentId}, #{postId}, #{staffTypeId}, #{gender}, #{phone},
+        #{chinaId}, #{entryDate}, #{departureDate}, #{educationId}, #{remark}, now(), #{updateDatetime}, 0);
+    </insert>
+
+    <select id="staff_all" resultType="com.myr.Bean.Staff">
+        SELECT * from t_staff where fdisable = 0
+    </select>
+
+    <select id="Staff_page" resultType="com.myr.Bean.Staff">
+        SELECT a.*,
+        b.`name` as 'departmentIdName'
+        from t_staff a LEFT JOIN t_department b on a.departmentId = b.fid
+        where a.fdisable = 0 and
+        (a.name like '%${str}%' or a.phone like '%${str}%' or b.name like '%${str}%')
+    </select>
+
+    <delete id="delStaff">
+        delete from t_staff where fid = #{fid}
+    </delete>
+
+    <select id="getStaffById" resultType="com.myr.Bean.Staff">
+        select * from t_staff where fid = #{fid}
+    </select>
+
+    <update id="updateStaff">
+        UPDATE `t_staff` SET `code` = #{code}, `name` = #{name}, `departmentId` = #{departmentId}, `postId` = #{postId}, `staffTypeId` = #{staffTypeId}, `gender` = #{gender}, `phone` = #{phone}, `chinaId` = #{chinaId}, `entryDate` = #{entryDate}, `departureDate` = #{departureDate}, `educationId` = #{educationId}, `remark` = #{remark}, `updateDatetime` = now()
+        WHERE `fid` = #{fid};
+
+    </update>
+
+    <select id="isexits" resultType="integer">
+        select case when count(*) >=1 then 1 else 0 end from t_staff where name = #{name}
+        <if test="fid != null and fid !=''">
+            and fid not in (#{fid})
+        </if>
+    </select>
+
+
+</mapper>

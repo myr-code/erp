@@ -1,0 +1,136 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.CustomerMapper">
+
+    <!--1.添加客戶-->
+    <insert id="addCustomer">
+        INSERT INTO t_customer
+        (`fid`, `code`, `name`, `cust_type_id`, `abb`, `address`, `contact`, `phone`, `fax`, `postcode`, `postcode_address`,
+        `bank_account`, `open_account_bank`, `tax_rate_number`, `vat_rate`, `department_id`, `staff_id`, `other_remark`,
+        `settlement_method_id`, `create_datetime`, `update_datetime`, `fdisable`)
+        VALUES
+        (null, #{code}, #{name}, #{cust_type_id}, #{abb}, #{address}, #{contact}, #{phone}, #{fax}, #{postcode}, #{postcode_address},
+        #{bank_account}, #{open_account_bank}, #{tax_rate_number}, #{vat_rate}, #{department_id}, #{staff_id}, #{other_remark},
+        #{settlement_method_id},  now(), #{update_datetime}, 0);
+
+    </insert>
+
+    <select id="Customer_pageGj" resultMap="customermap">
+        SELECT a.*,b.name as 'cust_type_id_name',c.`name` as 'department_id_name',
+        d.`name` as 'staff_id_name',e.`name` as 'settlement_method_id_name'
+        from t_customer a
+        left join t_cust_type b on a.cust_type_id=b.fid
+        left JOIN t_department c on a.department_id = c.fid
+        LEFT JOIN t_staff d on a.staff_id = d.fid
+        LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0
+        <if test="name != null and name !=''">
+            and a.name like '%${name}%'
+        </if>
+        <if test="abb != null and abb !=''">
+            and a.abb like '%${abb}%'
+        </if>
+        <if test="address != null and address !=''">
+            and a.address like '%${address}%'
+        </if>
+        <if test="contact != null and contact !=''">
+            and a.contact like '%${contact}%'
+        </if>
+        <if test="cust_type_id != null and cust_type_id !=-1">
+            and a.cust_type_id = #{cust_type_id}
+        </if>
+        <if test="department_id != null and department_id !=-1">
+            and a.department_id = #{department_id}
+        </if>
+        <if test="staff_id != null and staff_id !=-1">
+            and a.staff_id = #{staff_id}
+        </if>
+        <if test="settlement_method_id != null and settlement_method_id !=-1">
+            and a.settlement_method_id = #{settlement_method_id}
+        </if>
+    </select>
+
+    <select id="Customer_page" resultMap="customermap">
+        SELECT a.*,b.name as 'cust_type_id_name',c.`name` as 'department_id_name',
+        d.`name` as 'staff_id_name',e.`name` as 'settlement_method_id_name'
+        from t_customer a
+        left join t_cust_type b on a.cust_type_id=b.fid
+        left JOIN t_department c on a.department_id = c.fid
+        LEFT JOIN t_staff d on a.staff_id = d.fid
+        LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0 and
+        (a.`name` like '%${str}%' or a.abb like '%${str}%' or a.`code` like '%${str}%'
+        or a.`address` like '%${str}%' or a.`contact` like '%${str}%' or a.`phone` like '%${str}%')
+
+    </select>
+
+    <resultMap id="customermap" type="com.myr.Bean.Customer">
+        <id column="fid" property="fid"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="cust_type_id" property="cust_type_id"/>
+        <result column="abb" property="abb"/>
+        <result column="address" property="address"/>
+        <result column="contact" property="contact"/>
+        <result column="phone" property="phone"/>
+        <result column="fax" property="fax"/>
+        <result column="postcode" property="postcode"/>
+        <result column="postcode_address" property="postcode_address"/>
+        <result column="bank_account" property="bank_account"/>
+        <result column="open_account_bank" property="open_account_bank"/>
+        <result column="tax_rate_number" property="tax_rate_number"/>
+        <result column="vat_rate" property="vat_rate"/>
+        <result column="department_id" property="department_id"/>
+        <result column="staff_id" property="staff_id"/>
+        <result column="other_remark" property="other_remark"/>
+        <result column="settlement_method_id" property="settlement_method_id"/>
+        <result column="fdisable" property="fdisable"/>
+
+        <!--类型-->
+        <association property="cust_type_idFid" javaType="com.myr.Bean.CustType">
+            <id column="fid" property="fid"/>
+            <result column="cust_type_id_name" property="name"/>
+        </association>
+        <!--部门-->
+        <association property="department_idFid" javaType="com.myr.Bean.Department">
+            <id column="fid" property="fid"/>
+            <result column="department_id_name" property="name"/>
+        </association>
+        <!--职员-->
+        <association property="staff_idFid" javaType="com.myr.Bean.Staff">
+            <id column="fid" property="fid"/>
+            <result column="staff_id_name" property="name"/>
+        </association>
+        <!--结算方式-->
+        <association property="settlement_method_idFid" javaType="com.myr.Bean.SettlementMethod">
+            <id column="fid" property="fid"/>
+            <result column="settlement_method_id_name" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="Customer_all" resultType="com.myr.Bean.Customer">
+        SELECT * from t_customer WHERE fdisable = 0
+    </select>
+
+    <select id="getCustById" resultMap="customermap">
+        select * from t_customer where fid = #{fid}
+    </select>
+
+    <update id="updateCust">
+        UPDATE t_customer SET `code` = #{code}, `name` = #{name}, `cust_type_id` = #{cust_type_id}, `abb` = #{abb}, `address` = #{address}, `contact` = #{contact}, `phone` = #{phone}, `fax` = #{fax}, `postcode` = #{postcode}, `postcode_address` = #{postcode_address}, `bank_account` = #{bank_account}, `open_account_bank` = #{open_account_bank}, `tax_rate_number` = #{tax_rate_number}, `vat_rate` = #{vat_rate}, `department_id` = #{department_id}, `staff_id` = #{staff_id}, `other_remark` = #{other_remark}, `settlement_method_id` = #{settlement_method_id}, `update_datetime` = now() WHERE `fid` = #{fid};
+    </update>
+
+    <select id="isexits" resultType="integer">
+        select case when count(*) >=1 then 1 else 0 end from t_customer where name = #{name}
+        <if test="fid != null and fid !=''">
+            and fid not in (#{fid})
+        </if>
+    </select>
+
+    <delete id="delCust">
+        delete from t_customer where fid = #{fid}
+    </delete>
+
+
+</mapper>

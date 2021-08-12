@@ -1,0 +1,74 @@
+package com.myr.Service.Impl;
+
+import com.myr.Bean.Icstockbill;
+import com.myr.Bean.Icstockbillentry;
+import com.myr.Bean.Poorderentry;
+import com.myr.Mapper.ICStockBillEntryMapper;
+import com.myr.Mapper.IcstockbillMapper;
+import com.myr.Service.IcStockBillService;
+import com.myr.utils.DateOption;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+public class IcStockBillServiceImpl implements IcStockBillService {
+    @Resource
+    IcstockbillMapper icstockbillMapper;
+
+    @Resource
+    ICStockBillEntryMapper icStockBillEntryMapper;
+
+    @Override
+    public Integer addIcStockBill(Icstockbill icstockbill) {
+        return icstockbillMapper.addIcStockBill(icstockbill);
+    }
+
+    @Override
+    public String getICBillNo(String dates) {
+        return icstockbillMapper.getICBillNo(dates);
+    }
+
+    @Override
+    public List<Icstockbill> IcStockBill_page(String str) {
+        return icstockbillMapper.IcStockBill_page(str);
+    }
+
+    @Override
+    public List<Icstockbill> IcStockBill_saleout_page(String str) {
+        return icstockbillMapper.IcStockBill_saleout_page(str);
+    }
+
+    @Override
+    public List<Icstockbill> IcStockBill_pageGj(DateOption dateOption) {
+        return icstockbillMapper.IcStockBill_pageGj(dateOption);
+    }
+
+    @Override
+    public Integer IcStockBill_del(int fid) {
+        return icstockbillMapper.IcStockBill_del(fid);
+    }
+
+    @Override
+    public Icstockbill getIcStockBillById(int fid) {
+        return icstockbillMapper.getIcStockBillById(fid);
+    }
+
+    @Override
+    @Transactional
+    public Integer IcStockBill_update(Icstockbill icstockbill, List<Icstockbillentry> icstockbillentryList) {
+        Integer count = icstockbillMapper.IcStockBill_update(icstockbill);
+        if(count>0){
+            icStockBillEntryMapper.ICStockBillEntry_del(icstockbill.getFid());//2、删除原本行
+            for (Icstockbillentry icstockbillentry : icstockbillentryList) {//3、新增新行
+                icstockbillentry.setMid(icstockbill.getFid());//sql 已设置返回fid主键
+                icStockBillEntryMapper.addICStockBillEntry(icstockbillentry);//新增体
+            }
+        }else{
+            return 0;
+        }
+        return 1;
+    }
+}

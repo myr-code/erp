@@ -1,0 +1,98 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.SupplierMapper">
+
+    <!--1.添加客戶-->
+    <insert id="addSupplier">
+        INSERT INTO t_supplier
+        (`fid`, `code`, `name`, `cust_type_id`, `abb`, `address`, `contact`, `phone`, `fax`, `postcode`,
+         `postcode_address`, `bank_account`, `open_account_bank`, `tax_rate_number`, `vat_rate`, `department_id`,
+          `staff_id`, `other_remark`, `settlement_method_id`, `create_datetime`, `update_datetime`, `fdisable`)
+        VALUES
+        (NULL, #{code}, #{name}, #{cust_type_id}, #{abb}, #{address}, #{contact}, #{phone}, #{fax}, #{postcode},
+         #{postcode_address}, #{bank_account}, #{open_account_bank}, #{tax_rate_number}, #{vat_rate}, #{department_id},
+          #{staff_id}, #{other_remark}, #{settlement_method_id}, now(), #{update_datetime}, 0);
+    </insert>
+
+    <select id="Supplier_all" resultType="com.myr.Bean.Supplier">
+        SELECT a.*,
+        b.`name` as 'cust_type_idName',
+        c.`name` as 'department_idName',
+        d.`name` as 'staff_idName',
+        e.`name` as 'settlement_method_idName'
+        from t_supplier a
+        LEFT JOIN t_cust_type b on a.cust_type_id = b.fid
+        LEFT JOIN t_department c on a.department_id = c.fid
+        LEFT JOIN t_staff d on a.staff_id = d.fid
+        LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0 and
+        (a.`name` like '%${str}%' or a.abb like '%${str}%' or a.`code` like '%${str}%'
+        or a.`address` like '%${str}%' or a.`contact` like '%${str}%' or a.`phone` like '%${str}%')
+    </select>
+
+    <select id="Supplier_pageGj" resultType="com.myr.Bean.Supplier">
+        SELECT a.*,
+        b.`name` as 'cust_type_idName',
+        c.`name` as 'department_idName',
+        d.`name` as 'staff_idName',
+        e.`name` as 'settlement_method_idName'
+        from t_supplier a
+        LEFT JOIN t_cust_type b on a.cust_type_id = b.fid
+        LEFT JOIN t_department c on a.department_id = c.fid
+        LEFT JOIN t_staff d on a.staff_id = d.fid
+        LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0
+        <if test="name != null and name !=''">
+            and a.name like '%${name}%'
+        </if>
+        <if test="abb != null and abb !=''">
+            and a.abb like '%${abb}%'
+        </if>
+        <if test="address != null and address !=''">
+            and a.address like '%${address}%'
+        </if>
+        <if test="contact != null and contact !=''">
+            and a.contact like '%${contact}%'
+        </if>
+        <if test="cust_type_id != null and cust_type_id !=-1">
+            and a.cust_type_id = #{cust_type_id}
+        </if>
+        <if test="department_id != null and department_id !=-1">
+            and a.department_id = #{department_id}
+        </if>
+        <if test="staff_id != null and staff_id !=-1">
+            and a.staff_id = #{staff_id}
+        </if>
+        <if test="settlement_method_id != null and settlement_method_id !=-1">
+            and a.settlement_method_id = #{settlement_method_id}
+        </if>
+    </select>
+
+    <delete id="delSupp">
+        delete from t_supplier where fid = #{fid}
+    </delete>
+
+    <select id="getSuppById" resultType="com.myr.Bean.Supplier">
+        select * from t_supplier where fid = #{fid}
+    </select>
+
+    <update id="updateSupp">
+            UPDATE t_supplier SET `code` = #{code}, `name` = #{name}, `cust_type_id` = #{cust_type_id},
+             `abb` = #{abb}, `address` = #{address}, `contact` = #{contact}, `phone` = #{phone},
+             `fax` = #{fax}, `postcode` = #{postcode}, `postcode_address` = #{postcode_address},
+              `bank_account` = #{bank_account}, `open_account_bank` = #{open_account_bank},
+              `tax_rate_number` = #{tax_rate_number}, `vat_rate` = #{vat_rate}, `department_id` = #{department_id},
+              `staff_id` = #{staff_id}, `other_remark` = #{other_remark}, `settlement_method_id` = #{settlement_method_id},
+              `update_datetime` = now() WHERE `fid` = #{fid};
+    </update>
+
+    <select id="isexits" resultType="integer">
+        select case when count(*) >=1 then 1 else 0 end from t_supplier where name = #{name}
+        <if test="fid != null and fid !=''">
+            and fid not in (#{fid})
+        </if>
+    </select>
+
+
+</mapper>

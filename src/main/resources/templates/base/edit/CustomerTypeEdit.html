@@ -1,0 +1,156 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script th:src="|${session.contextPath}/style/js/jquery.min.js|"></script>
+<script th:src="|${session.contextPath}/style/js/bootstrap.min.js|"></script>
+<link th:href="|${session.contextPath}/style/css/bootstrap.min.css|" rel="stylesheet" type="text/css" />
+<style type="text/css">
+
+	body{
+		background-color:#FCFCFC;
+	}
+	
+	.panel-body{
+		padding-top:0px;
+	}
+	
+	.input-group{
+		margin-right:50px;
+		margin-top:25px;
+		width:300px;
+		float:left;
+	}
+	
+	.list-group-item{
+		padding:5px 10px;
+	}
+	
+	.list-group{
+		float:left;
+		margin-right:100px;
+	}
+	
+	
+</style>
+
+	<script type="text/javascript">
+		//主页的项目名
+		var path = $(window.parent.document.body).find("#path").val();
+
+		function navcut(obj,infoid){
+			//1.移除活动 隐藏模块
+			$(".nav-tabs li").removeClass('active');
+			$(".panel-infos").hide();
+			//2.显示对象 显示模块
+			$(obj).addClass('active');
+			$("#"+infoid).show();
+		}
+
+		function isexits(){
+			var name = $("input[name='name']").val();
+			var fid = $("input[name='fid']").val();
+			var f = {name:name,fid:fid};
+
+			$.ajax({
+				url:path+"/CustType_isexits/1",
+				data:f,
+				type:"post",
+				async: false,//同步请求
+				dataType:"json",
+				success:function(result){
+					if(result.code==-3){
+						alert("已存在该名称!");
+						$("input[name='name']").val("");
+					}
+					//alert(JSON.stringify(result));
+				}
+			});
+		}
+
+		//表单效验
+		function fromcheck(){
+
+			var nameval = $("input[name='name']").val();
+			if(nameval==""||nameval==null){
+				alert("请输入正确的名称！(必填项)");
+				return false;
+			}
+
+			//提交表单
+			var f = $("#f1").serialize();
+			$.ajax({
+				url:path+"/CustType_update",
+				data:f,
+				type:"post",
+				dataType:"json",
+				success:function(result){
+					if(result.code==200){
+						alert("更新成功！");
+						window.parent.closemodel('1050103');
+					}else if(result.code==-3){
+						alert("已存在，请确定后再添加!");
+						window.parent.closemodel('1050103');
+					}else if(result.code==500){
+						alert("更新失败!");
+						window.parent.closemodel('1050103');
+					}
+					//alert(JSON.stringify(result));
+				}
+			});
+
+		}
+	</script>
+
+<title>客户类型-新增</title>
+</head>
+<body>
+
+
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<b>客户类型-新增</b>
+		<div class="btn-group btn-group-sm p" role="group" style="float:right;">
+			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
+			<div class="btn-group btn-group-sm" role="group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Other
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#">提交并审核</a></li>
+					<li><a href="#">提交并新建</a></li>
+				</ul>
+			</div>
+		</div>
+		
+	</div>
+
+	<form method="post" action="" id="f1">
+		<input type="hidden" name="fid" th:value="${data.fid}">
+		<div class="panel-body">
+
+			<input hidden="hidden" name="type" value="1">
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:red;"></span>名称</button>
+				 </span>
+				 <input type="text" name="name" th:value="${data.name}" onchange="isexits()" class="form-control" placeholder="NAME" aria-describedby="basic-addon1">
+			</div>
+
+			<div class="input-group input-group-sm" style="width:1000px;">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">摘要</button>
+				 </span>
+				<textarea class="form-control" name="other_remark" th:text="${data.other_remark}" placeholder="INFO..." id="conditioned" rows="20"></textarea>
+			</div>
+
+		</div>
+	</form>
+
+</div>
+
+
+
+
+</body>
+</html>
