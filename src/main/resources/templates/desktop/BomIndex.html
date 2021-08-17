@@ -226,7 +226,7 @@
 	$('#AllQuery').bind('keyup', function(event) {
 		if (event.keyCode == "13") {
 			//回车执行查询
-			querys();//提交
+			getItemByPage('nowpage');
 		}
 	});
 
@@ -427,6 +427,11 @@
 			data.pagesize = pagesize;
 			data.AllQuery = AllQuery;
 		}
+		if(page == 'nowpage'){
+			data.startpage = startpage;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
 		//alert(data);
 		window.location.href="BomIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
 	}
@@ -437,6 +442,8 @@
 </head>
 
 <body>
+<!--当前是普通查询还是高级查询的结果-->
+<!--<input id="isgj" th:value="${isgj}">-->
 
 <!-- 模态框声明 -->
 	<div class="modal fade" id="myModal">
@@ -546,7 +553,6 @@
 				</div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-success btn-sm" onclick="cleantext()">清除</button>
 					<button class="btn btn-success btn-sm" onclick="gjquery()">查询</button>
 					<button class="btn btn-success btn-sm" onclick="closemodal()">返回</button>
 				</div>
@@ -619,11 +625,11 @@
 			<a href="#" onclick="getItemByPage('last')">尾页</a>
 			[<span id="startpage" th:text="${datas.startpage}"></span>/<span id="pagecount" th:text="${datas.pagecount}"></span>]
 			共<span id="countTatol" th:text="${datas.countTatol}"></span>条
-			<select id="pagesize" onchange="getItemByPage('first')" class="selectpicker" data-live-search="true" data-actions-box="true">
-				<option value="10">10</option>
-				<option value="20">20</option>
-				<option value="50">50</option>
-				<option value="80">80</option>
+			<select id="pagesize" onchange="getItemByPage('nowpage')" class="selectpicker" data-live-search="true" data-actions-box="true">
+				<option th:selected="${datas.pagesize==10}? 'selected'" value="10">10</option>
+				<option th:selected="${datas.pagesize==20}? 'selected'" value="20">20</option>
+				<option th:selected="${datas.pagesize==50}? 'selected'" value="50">50</option>
+				<option th:selected="${datas.pagesize==80}? 'selected'" value="80">80</option>
 			</select>
 		</center>
 	</center>

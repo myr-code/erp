@@ -120,6 +120,7 @@ public class BomController {
         PageUtils<Bom> pageUtils = new PageUtils<Bom>(startpage, pagesize, countTatol, boms);
 
         model.addAttribute("datas",pageUtils);
+        /*model.addAttribute("isgj","普通查询");*/
         return "desktop/BomIndex";
     }
 
@@ -129,6 +130,7 @@ public class BomController {
         dateOption.setData(bom);
         List<Bom> boms = bomService.Bom_pageGj(dateOption);
         model.addAttribute("datas",boms);
+        /*model.addAttribute("isgj","高级查询");*/
         return "desktop/BomIndex";
     }
 
