@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BomServiceImpl implements BomService {
@@ -43,8 +44,13 @@ public class BomServiceImpl implements BomService {
     }
 
     @Override
-    public List<Bom> Bom_page(String str) {
-        return bomMapper.Bom_page(str);
+    public int getCounts(Map<String, Object> map) {
+        return bomMapper.getCounts(map);
+    }
+
+    @Override
+    public List<Bom> Bom_page(Map<String,Object> map) {
+        return bomMapper.Bom_page(map);
     }
 
     @Override

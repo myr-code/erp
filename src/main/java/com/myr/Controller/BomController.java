@@ -106,14 +106,20 @@ public class BomController {
 
     //序时簿
     @RequestMapping("/BomIndex")
-    public String BomIndex(Model model,HttpServletRequest request){
-        String AllQuery = request.getParameter("AllQuery");
+    public String BomIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                           @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize,
+                           @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
 
-        List<Bom> boms = bomService.Bom_page(AllQuery);
-        for (Bom bom : boms) {
-            System.out.println(bom);
-        }
-        model.addAttribute("datas",boms);
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("startpage",(startpage - 1) * pagesize);
+        map.put("pagesize",pagesize);
+        map.put("str",AllQuery);
+        int countTatol = bomService.getCounts(map);
+        List<Bom> boms = bomService.Bom_page(map);
+
+        PageUtils<Bom> pageUtils = new PageUtils<Bom>(startpage, pagesize, countTatol, boms);
+
+        model.addAttribute("datas",pageUtils);
         return "desktop/BomIndex";
     }
 

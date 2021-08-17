@@ -6,13 +6,16 @@ import com.myr.utils.DateOption;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BomService {
     Integer addBom(Bom bom, List<Bomentry> bomentries);
 
     String getBillNo(String dates);
 
-    List<Bom> Bom_page(@Param("str") String str);
+    int getCounts(Map<String,Object> map);
+
+    List<Bom> Bom_page(Map<String,Object> map);
 
     List<Bom> Bom_pageGj(DateOption dateOption);
 

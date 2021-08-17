@@ -21,6 +21,19 @@
         SELECT GetBillNo(4,#{date});
     </select>
 
+    <select id="getCounts" resultType="int">
+        select count(*)
+        from t_bom a INNER JOIN t_bomentry b on a.fid = b.mid
+        left join t_customer c on a.DefCustId = c.fid
+        left join t_supplier d on b.DefSuppId = d.fid
+        where 1=1
+        <if test="str != null or str != ''">
+            and c.`name` like '%${str}%'  or d.`name` like '%${str}%' or a.billNo like '%${str}%'
+            or a.`itemcode` like '%${str}%' or a.`itemname` like '%${str}%' or a.itemmodel like '%${str}%' or a.custItemCode like '%${str}%' or a.custItemModel like '%${str}%'
+            or b.`itemcode` like '%${str}%' or b.`itemname` like '%${str}%' or b.itemmodel like '%${str}%' or b.custItemCode like '%${str}%' or b.custItemModel like '%${str}%'
+        </if>
+    </select>
+
     <select id="Bom_page" resultMap="BomMap">
         select a.fid,a.billNo,a.muid,a.billDate,a.itemCode,a.itemName,a.itemModel,a.custItemCode,a.custItemModel,a.unitName,a.qty,a.DefCustId,c.`name` as 'DefCustIdName',allCost,
         b.fid as 'ffid',b.entryId,b.cuid,b.itemCode as 'miditemCode',b.itemName as 'miditemName',b.itemModel as 'miditemModel',b.custItemCode as 'midcustItemCode',b.custItemModel as 'midcustItemModel',b.unitName,
@@ -35,6 +48,7 @@
         or b.`itemcode` like '%${str}%' or b.`itemname` like '%${str}%' or b.itemmodel like '%${str}%' or b.custItemCode like '%${str}%' or b.custItemModel like '%${str}%'
         </if>
         ORDER BY a.billNo,a.muid,b.entryId
+        limit #{startpage},#{pagesize}
     </select>
 
     <select id="Bom_pageGj" resultMap="BomMap">

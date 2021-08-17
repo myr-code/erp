@@ -918,7 +918,7 @@
 	<a href="#" onclick="getitem('last')">尾页</a>
 	[<span id="startpage"></span>/<span id="pagecount"></span>]
 	共<span id="countTatol"></span>条
-	<select id="pagesize" onclick="getitem('first')" class="selectpicker" data-live-search="true" data-actions-box="true">
+	<select id="pagesize" onchange="getitem('first')" class="selectpicker" data-live-search="true" data-actions-box="true">
 		<option value="10">10</option>
 		<option value="20">20</option>
 		<option value="50">50</option>
@@ -974,9 +974,9 @@
 </div>
 
 
-<link th:href="|${session.contextPath}/style/DatePicker2/css/bootstrap-datetimepicker.min.css|" rel="stylesheet" type="text/css" />
-<script th:src="|${session.contextPath}/style/DatePicker2/js/bootstrap-datetimepicker.min.js|"></script>
-<script th:src="|${session.contextPath}/style/DatePicker2/js/bootstrap-datetimepicker.zh-CN.js|"></script>
+<link href="/erp/style/DatePicker2/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.zh-CN.js"></script>
 <script type="text/javascript">
 	$('.form_datetime').datetimepicker({
 		language : 'zh-CN',
