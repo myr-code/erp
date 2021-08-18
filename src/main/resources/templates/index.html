@@ -91,156 +91,156 @@
 		float:left;
 	}
     </style>
-	<script type="text/javascript">
-		var path = "";
-		$(function (){
-			//主页的项目名
-			/*var a = "[[${session.contextPath}]]";
-			alert(a);*/
-			path = $("#path").val();
+<script type="text/javascript">
+	var path = "";
+	$(function (){
+		//主页的项目名
+		/*var a = "[[${session.contextPath}]]";
+		alert(a);*/
+		path = $("#path").val();
+	});
+
+
+	// 显示或隐藏二级菜单
+	function menuClick( menuDiv ){
+		// 当前显示的li个数
+		var num = $("#s"+menuDiv+	" li:visible").length;
+
+		if(num>1){
+			$("#s"+menuDiv+" .list2").hide();
+		}else{
+			$("#s"+menuDiv+" .list2").show();
+		}
+	}
+
+	$(function(){
+		// 默认只显示第1个二级菜单
+		$(".list2").hide();
+		$(".list1").show();
+
+		//点击选中菜单
+		$(".list2").click(function(){
+			//将全部改为背景色
+			$(".list2").css("background-color","#5bc0de");
+			//将选中对象改为光标浮动颜色
+			$(this).css("background-color","#337ab7");
 		});
+	});
 
+	//缩小
+	function less(){
+		$("#leftmainbody").css("width","45px");//左边宽度
+		$("#Head_1").css("height","64px");//顶部高度
+		$(".Head2_FunctionList").css("padding-top","30px");//菜单列
+		$("#Head_1_Logo").hide();//隐藏logo字体
+		$(".ifra").css("left","0");//主体
 
-		// 显示或隐藏二级菜单 
-		function menuClick( menuDiv ){
-			// 当前显示的li个数
-			var num = $("#s"+menuDiv+	" li:visible").length;
-			
-			if(num>1){
-				$("#s"+menuDiv+" .list2").hide();
-			}else{
-				$("#s"+menuDiv+" .list2").show();
-			}
-		}
-		
-		$(function(){
-			// 默认只显示第1个二级菜单
-			$(".list2").hide();
-			$(".list1").show();
-			
-			//点击选中菜单
-			$(".list2").click(function(){
-				//将全部改为背景色
-				$(".list2").css("background-color","#5bc0de");
-				//将选中对象改为光标浮动颜色
-				$(this).css("background-color","#337ab7");
-			});
-		});
-		
-		//缩小
-		function less(){
-			$("#leftmainbody").css("width","45px");//左边宽度
-			$("#Head_1").css("height","64px");//顶部高度
-			$(".Head2_FunctionList").css("padding-top","30px");//菜单列
-			$("#Head_1_Logo").hide();//隐藏logo字体
-			$(".ifra").css("left","0");//主体
+		$("#less").hide();//扩大隐藏
+		$("#big").show();
+	}
 
-			$("#less").hide();//扩大隐藏
-			$("#big").show();
-		}
-		
-		//扩大
-		function big(){
-			$("#leftmainbody").css("width","150px");
-			$("#Head_1").css("height","84px");
-			$(".Head2_FunctionList").css("padding-top","50px");
-			$("#Head_1_Logo").show();//显示logo字体
-			$(".ifra").css("left","150px");
+	//扩大
+	function big(){
+		$("#leftmainbody").css("width","150px");
+		$("#Head_1").css("height","84px");
+		$(".Head2_FunctionList").css("padding-top","50px");
+		$("#Head_1_Logo").show();//显示logo字体
+		$(".ifra").css("left","150px");
 
-			$("#big").hide();//缩小隐藏
-			$("#less").show();
+		$("#big").hide();//缩小隐藏
+		$("#less").show();
+	}
+
+	//点击做列表显示 1.头模块 2.右下方主窗体
+	function topage(leftid,modelname,url){
+		var modellen = $("iframe[id^='main']").length;
+		if(modellen>10){
+			alert("已开10个模块，为了心情请关闭一些不必要的模块！");
+			return false;
 		}
 
-		//点击做列表显示 1.头模块 2.右下方主窗体
-		function topage(leftid,modelname,url){
-			var modellen = $("iframe[id^='main']").length;
-			if(modellen>10){
-				alert("已开10个模块，为了心情请关闭一些不必要的模块！");
-				return false;
-			}
+		//截取含第五位后全部内容
+		var numid = leftid.slice(4);
+		//alert(numid);
+		var id = $("#top"+numid+"").attr('id');
 
-			//截取含第五位后全部内容
-			var numid = leftid.slice(4);
-			//alert(numid);
-			var id = $("#top"+numid+"").attr('id');
-
-			//是否存在该模块 根据自定义id判断
-			if(id=="top"+numid){
-				changemodel(numid);
-				//alert("已存在该模块");
-				return false;
-			}
-			
-			addmodel(numid,modelname,url);
+		//是否存在该模块 根据自定义id判断
+		if(id=="top"+numid){
+			changemodel(numid);
+			//alert("已存在该模块");
+			return false;
 		}
-		
+
+		addmodel(numid,modelname,url);
+	}
+
+	//添加主窗体
+	function addmodel(numid,modelname,url){
+		//添加头部模块
+		var appendhtml = "<div class='menuchild'>"+
+			"<button id='top"+numid+"' class='btn btn-info' onclick='changemodel("+numid+");'>"+modelname+"</button>"+
+			"<button id='close"+numid+"' class='glyphicon glyphicon-remove' onclick='closemodel("+numid+");'></button>"+
+		"</div>";
+		$(".Head2_FunctionList").append(appendhtml);
 		//添加主窗体
-		function addmodel(numid,modelname,url){
-			//添加头部模块
-			var appendhtml = "<div class='menuchild'>"+
-				"<button id='top"+numid+"' class='btn btn-info' onclick='changemodel("+numid+");'>"+modelname+"</button>"+
-				"<button id='close"+numid+"' class='glyphicon glyphicon-remove' onclick='closemodel("+numid+");'></button>"+
-			"</div>";
-			$(".Head2_FunctionList").append(appendhtml);
-			//添加主窗体
-			$(".ifra").append("<iframe id='main"+numid+"' src='"+url+"' scrolling='no'  width='100%' height='1500' name='right"+numid+"' border='none'></iframe>");
-			
-			//隐藏其他主窗体
-			$("iframe[id!='main"+numid+"']").hide();
-			
-			changecolor(numid);
-		}
+		$(".ifra").append("<iframe id='main"+numid+"' src='"+url+"' scrolling='no'  width='100%' height='1500' name='right"+numid+"' border='none'></iframe>");
 
-		//关闭top菜单并选中最后一个菜单
-		function closemodel(numid){
+		//隐藏其他主窗体
+		$("iframe[id!='main"+numid+"']").hide();
 
-			//删除模块
-			$("#top"+numid+"").remove();
-			$("#main"+numid+"").remove();
-			$("#close"+numid+"").remove();
-			//最后一个模块选中
-			var lastid = $("iframe[id^='main']").last().attr('id').slice(4);
-			//alert(lastid);
-			changemodel(lastid);
+		changecolor(numid);
+	}
 
-		}
-		
-		//头部按钮点击显示该模块
-		function changemodel(numid){
-			changecolor(numid);
-			//模块显示与隐藏
-			$("iframe").hide();
-			$("iframe[id='main"+numid+"']").show();
-		}
-		
-		//颜色选中
-		function changecolor(numid){
-			//按钮颜色
-			$("button[id!='top"+numid+"']").css("background-color","");
-			$("#top"+numid+"").css("background-color","#337ab7");
-		}
-		
-		 function showfirst(){
-			//模块显示与隐藏
-			$("iframe").hide();
-			$("iframe[id='main0']").show();
-			//按钮颜色
-			$("button[id!='top0']").css("background-color","");
-			$("#top0").css("background-color","#337ab7");
-		 }
+	//关闭top菜单并选中最后一个菜单
+	function closemodel(numid){
 
-		 //退出系统
-		 function logout(){
-			if(confirm("确定要退出嘛？")){
-				location.href=path+"/logout";
-			}
-		 }
+		//删除模块
+		$("#top"+numid+"").remove();
+		$("#main"+numid+"").remove();
+		$("#close"+numid+"").remove();
+		//最后一个模块选中
+		var lastid = $("iframe[id^='main']").last().attr('id').slice(4);
+		//alert(lastid);
+		changemodel(lastid);
 
-		function test(obj){
-			alert(obj);
+	}
+
+	//头部按钮点击显示该模块
+	function changemodel(numid){
+		changecolor(numid);
+		//模块显示与隐藏
+		$("iframe").hide();
+		$("iframe[id='main"+numid+"']").show();
+	}
+
+	//颜色选中
+	function changecolor(numid){
+		//按钮颜色
+		$("button[id!='top"+numid+"']").css("background-color","");
+		$("#top"+numid+"").css("background-color","#337ab7");
+	}
+
+	 function showfirst(){
+		//模块显示与隐藏
+		$("iframe").hide();
+		$("iframe[id='main0']").show();
+		//按钮颜色
+		$("button[id!='top0']").css("background-color","");
+		$("#top0").css("background-color","#337ab7");
+	 }
+
+	 //退出系统
+	 function logout(){
+		if(confirm("确定要退出嘛？")){
+			location.href=path+"/logout";
 		}
-		 
-	</script>
+	 }
+
+	function test(obj){
+		alert(obj);
+	}
+
+</script>
 <title>ERP</title>
 </head>
 <body>
@@ -311,66 +311,72 @@
 			&nbsp;&nbsp;&nbsp; BOM
 		</li>
 	</ul>
-	<ul class="list-group" id="s2">
-		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(2);">用户管理</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left201','用户','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 用户
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left202','角色','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 角色
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left203','权限分配','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 权限分配
-		</li>
-	</ul>
-	<ul class="list-group" id="s3">
-		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(3);">销售与出库</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left302','销售订单','SaleOrderIndex');">
-			&nbsp;&nbsp;&nbsp; 销售订单
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left303','销售出库','SaleOutIndex');">
-			&nbsp;&nbsp;&nbsp; 销售出库
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left304','其他出库','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 其他出库
-		</li>
-	</ul>
-	<ul class="list-group" id="s4">
-		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(4);">MRP统筹</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left401','计划统筹','desktop/page_MRPIndex');">
-			&nbsp;&nbsp;&nbsp; 计划统筹
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left402','生产计划','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 生产计划
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left403','生产备料','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 生产备料
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left404','生产领料','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 生产领料
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left405','产品入库','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 成品入库
-		</li>
-	</ul>
-	<ul class="list-group" id="s5">
-		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(5);">采购与入库</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left501','采购申请单','other/page_NullHtml');">
-			&nbsp;&nbsp;&nbsp; 采购申请单
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left502','采购订单','PurOrderIndex');">
-			&nbsp;&nbsp;&nbsp; 采购订单
-		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left503','采购入库','ICStockBillIndex');">
-			&nbsp;&nbsp;&nbsp; 采购入库
-		</li>
-	</ul>
-	<ul class="list-group" id="s6">
-		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(6);">库存管理</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left601','产品库存','ItemStockIndex');">
-			&nbsp;&nbsp;&nbsp; 产品库存
-		</li>
-	</ul>
+		<ul class="list-group" id="s2">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(2);">用户管理</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left201','用户','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 用户
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left202','角色','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 角色
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left203','权限分配','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 权限分配
+			</li>
+		</ul>
+		<ul class="list-group" id="s3">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(3);">销售与出库</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left302','销售订单','SaleOrderIndex');">
+				&nbsp;&nbsp;&nbsp; 销售订单
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left303','销售出库','SaleOutIndex');">
+				&nbsp;&nbsp;&nbsp; 销售出库
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left304','其他出库','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 其他出库
+			</li>
+		</ul>
+		<ul class="list-group" id="s4">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(4);">MRP统筹</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left401','计划统筹','desktop/page_MRPIndex');">
+				&nbsp;&nbsp;&nbsp; 计划统筹
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left402','生产计划','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 生产计划
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left403','生产备料','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 生产备料
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left404','生产领料','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 生产领料
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left405','产品入库','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 成品入库
+			</li>
+		</ul>
+		<ul class="list-group" id="s5">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(5);">采购与入库</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left501','采购申请单','other/page_NullHtml');">
+				&nbsp;&nbsp;&nbsp; 采购申请单
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left502','采购订单','PurOrderIndex');">
+				&nbsp;&nbsp;&nbsp; 采购订单
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left503','采购入库','ICStockBillIndex');">
+				&nbsp;&nbsp;&nbsp; 采购入库
+			</li>
+		</ul>
+		<ul class="list-group" id="s6">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(6);">库存管理</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left601','产品库存','ItemStockIndex');">
+				&nbsp;&nbsp;&nbsp; 产品库存
+			</li>
+		</ul>
+		<ul class="list-group" id="s12">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(12);">特殊模块</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1201','响应地址','OtherModelIndex');">
+				&nbsp;&nbsp;&nbsp; 响应地址
+			</li>
+		</ul>
 	</div>
 	
 	<div class="ifra" style="position: absolute; left: 150px; right: 10px; ">
