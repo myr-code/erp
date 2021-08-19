@@ -99,9 +99,29 @@ public class OtherModelController {
         return msg;
     }*/
 
-    //序时簿
+    //序时簿 从首页跳转访问
     @RequestMapping("/OtherModelIndex")
     public String BomIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                           @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize,
+                           @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("startpage",(startpage - 1) * pagesize);
+        map.put("pagesize",pagesize);
+        map.put("AllQuery",AllQuery);
+        int countTatol = otherModelService.getCounts(map);
+        List<OtherModel> otherModels = otherModelService.OTHER_MODEL_Index(map);
+
+        PageUtils<OtherModel> pageUtils = new PageUtils<OtherModel>(startpage, pagesize, countTatol, otherModels);
+
+        model.addAttribute("static","jump");
+        model.addAttribute("datas",pageUtils);
+        return "desktop/OtherModelIndex";
+    }
+
+    //序时簿 从链接访问
+    @RequestMapping("/requrl")
+    public String BomIndexurl(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                            @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize,
                            @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
 
