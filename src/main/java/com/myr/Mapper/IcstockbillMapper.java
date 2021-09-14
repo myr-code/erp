@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface IcstockbillMapper {
@@ -16,8 +17,11 @@ public interface IcstockbillMapper {
     //获取系统单号  1销售订单
     String getICBillNo(String dates);
 
+    //获取总条数
+    int getCounts(Map<String,Object> map);
+
     //销售订单序时簿
-    List<Icstockbill> IcStockBill_page(@Param("str") String str);
+    List<Icstockbill> IcStockBill_page(Map<String,Object> map);
 
     //销售订单序时簿
     List<Icstockbill> IcStockBill_saleout_page(@Param("str") String str);

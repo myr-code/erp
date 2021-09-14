@@ -15,7 +15,10 @@ public interface ItemMapper {
     Integer addItem(Item item);
 
     //02-序时簿
-    List<Item> Item_page(@Param("str") String str);
+    List<Item> Item_page(Map<String,Object> map);
+
+    //获取总条数
+    int getCounts(Map<String,Object> map);
 
     //产品库存
     List<Item> ItemStock(Map<String,Object> map);
@@ -23,8 +26,8 @@ public interface ItemMapper {
     //高级查询
     List<Item> Item_pageGj(Item item);
 
-    //获取总条数
-    int getCounts(@Param("cnm") String cnm);
+   /* //获取总条数
+    int getCounts(@Param("cnm") String cnm);*/
 
     //03-根据code name model查询item
     List<Item> Item_queryByCNM(Map<String,Object> map);

@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.ItemTypeMapper">
+
+    <!--1.添加客戶-->
+    <insert id="addItemType">
+        INSERT INTO t_item_type(`fid`, `name`, `remark`, `createDate`, `updateDate`, `fdisable`)
+        VALUES
+        (NULL, #{name}, #{remark}, now(), #{updateDate}, 0);
+    </insert>
+
+    <select id="ItemType_all" resultType="com.myr.Bean.ItemType">
+        select * from t_item_type where fdisable = 0
+    </select>
+
+    <delete id="delItemType">
+        delete from t_item_type where fid = #{fid}
+    </delete>
+
+    <select id="getItemTypeById" resultType="com.myr.Bean.ItemType">
+        select * from t_item_type where fid = #{fid}
+    </select>
+
+    <update id="updateItemType">
+        UPDATE `t_item_type` SET `name` = #{name}, `remark` = #{remark}, `updateDate` = now()
+        WHERE `fid` = #{fid};
+     </update>
+
+    <select id="isexits" resultType="integer">
+        select case when count(*) >=1 then 1 else 0 end from t_item_type where name = #{name}
+        <if test="fid != null and fid !=''">
+            and fid not in (#{fid})
+        </if>
+    </select>
+
+</mapper>

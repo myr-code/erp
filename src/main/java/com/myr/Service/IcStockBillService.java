@@ -8,13 +8,16 @@ import com.myr.utils.DateOption;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IcStockBillService {
     Integer addIcStockBill(Icstockbill icstockbill);
 
     String getICBillNo(String dates);
 
-    List<Icstockbill> IcStockBill_page(@Param("str") String str);
+    int getCounts(Map<String,Object> map);
+
+    List<Icstockbill> IcStockBill_page(Map<String,Object> map);
 
     List<Icstockbill> IcStockBill_saleout_page(@Param("str") String str);
 

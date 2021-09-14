@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class IcStockBillServiceImpl implements IcStockBillService {
@@ -32,8 +33,13 @@ public class IcStockBillServiceImpl implements IcStockBillService {
     }
 
     @Override
-    public List<Icstockbill> IcStockBill_page(String str) {
-        return icstockbillMapper.IcStockBill_page(str);
+    public int getCounts(Map<String, Object> map) {
+        return icstockbillMapper.getCounts(map);
+    }
+
+    @Override
+    public List<Icstockbill> IcStockBill_page(Map<String,Object> map) {
+        return icstockbillMapper.IcStockBill_page(map);
     }
 
     @Override

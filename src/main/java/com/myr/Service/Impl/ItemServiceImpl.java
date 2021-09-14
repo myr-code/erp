@@ -29,8 +29,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> Item_page(String str) {
-        return itemMapper.Item_page(str);
+    public int getCounts(Map<String, Object> map) {
+        return itemMapper.getCounts(map);
+    }
+
+    @Override
+    public List<Item> Item_page(Map<String,Object> map) {
+        return itemMapper.Item_page(map);
     }
 
     @Override
@@ -41,11 +46,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> ItemStock(Map<String, Object> map) {
         return itemMapper.ItemStock(map);
-    }
-
-    @Override
-    public int getCounts(String cnm) {
-        return itemMapper.getCounts(cnm);
     }
 
     @Override

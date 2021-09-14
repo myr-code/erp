@@ -1,9 +1,6 @@
 package com.myr.Controller;
 
-import com.myr.Bean.CustType;
-import com.myr.Bean.Customer;
-import com.myr.Bean.Icstockbill;
-import com.myr.Bean.Item;
+import com.myr.Bean.*;
 import com.myr.Service.ItemService;
 import com.myr.utils.MessageRequest;
 import com.myr.utils.PageUtils;
@@ -56,11 +53,24 @@ public class ItemController {
 
     //分页
     @RequestMapping("/Item_index")
-    public String page_product(Model model,HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
+    public String page_product(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
+                               Model model,HttpServletRequest request) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
 
-        List<Item> items = itemService.Item_page(AllQuery);
-        model.addAttribute("items",items);
+        //获取总条数
+        int countTatol = itemService.getCounts(map);
+        //主数据
+        List<Item> items = itemService.Item_page(map);
+        //封装数据
+        PageUtils<Item> pageUtils = new PageUtils<Item>(startpage, pagesize, countTatol, items);
+        model.addAttribute("datas",pageUtils);
+
+        /*List<Item> items = itemService.Item_page(map);
+        model.addAttribute("items",items);*/
         return "/desktop/ItemIndex";
     }
 
@@ -85,11 +95,11 @@ public class ItemController {
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
-        map.put("cnm",cnm);
+        map.put("str",cnm);
         List<Item> items = itemService.Item_queryByCNM(map);
 
         //获取总条数
-        int countTatol = itemService.getCounts(cnm);
+        int countTatol = itemService.getCounts(map);
 
         PageUtils<Item> pageUtils = new PageUtils<Item>(startpage, pagesize, countTatol, items);
         /*model.addAttribute("pageUtils",pageUtils);*/

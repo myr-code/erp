@@ -77,7 +77,7 @@
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
 			var fid = chks.val();
-			window.parent.topage('left20203','销售订单-编辑','SaleOrderEdit/'+fid);
+			window.parent.topage('left120203','生产计划-编辑','SaleOrderEdit/'+fid);
 		});
 
 		//除了表头（第一行）以外所有的行添加click事件.
@@ -162,7 +162,7 @@
 			//alert(datas);
 			//提交表单
 			$.ajax({
-				url:path+"/SaleOrder_del",
+				url:"/erp/SaleOrder_del",
 				data: {"datas":datas},//转换为json数据格式  JSON.stringify(datas)
 				type:"post",
 				dataType:"json",
@@ -189,7 +189,7 @@
 		}else{
 			var fid = $("input[type='checkbox']:checked").val();
 			/*location.href="CustomerEdit/"+fid;*/
-			window.parent.topage('left20203','销售订单-编辑','SaleOrderEdit/'+fid);
+			window.parent.topage('left120203','生产计划-编辑','SaleOrderEdit/'+fid);
 		}
 	}
 
@@ -201,7 +201,7 @@
 
 			//客户
 			$.ajax({
-				url:path+"/Customer_all",
+				url:"/erp/Customer_all",
 				type:"post",
 				dataType:"json",
 				success:function (result) {
@@ -214,7 +214,7 @@
 
 			//部门
 			$.ajax({
-				url:path+"/Depart_all",
+				url:"/erp/Depart_all",
 				type:"post",
 				dataType:"json",
 				success:function (result) {
@@ -228,7 +228,7 @@
 
 			//职员
 			$.ajax({
-				url:path+"/Staff_all",
+				url:"/erp/Staff_all",
 				type:"post",
 				dataType:"json",
 				success:function (result) {
@@ -273,6 +273,7 @@
 		}
 	}
 
+	//翻页
 	function getItemByPage(page){
 		var startpage = parseFloat($("#nowpage").text());//当前页数
 		var pagesize = parseFloat($("#pagesize").val());//每页条数
@@ -420,9 +421,9 @@
 <p style="margin:0">
 	
 	<center>
-		<h4 style="float:left;color: #5bc0de;"><b>销售订单</b></h4>
+		<h4 style="float:left;color: #5bc0de;"><b>计划单</b></h4>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left40201','生产计划-new','sale/page_SaleOrderAdd');">新增</button>
+			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left120201','生产计划-new','mrp/page_ProductPlanAdd');">新增</button>
 
 			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

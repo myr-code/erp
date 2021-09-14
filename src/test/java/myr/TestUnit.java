@@ -24,10 +24,7 @@ public class TestUnit {
 
     @Test
     public void testitem(){
-        List<Item> items = itemService.Item_page("");
-        for (Item item : items) {
-            System.out.println(item);
-        }
+
 
     }
 

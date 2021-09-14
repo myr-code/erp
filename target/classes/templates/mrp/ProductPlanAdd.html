@@ -1,0 +1,875 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="/erp/style/js/jquery.min.js"></script>
+<script src="/erp/style/js/bootstrap.min.js"></script>
+<link href="/erp/style/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+	//主页的项目名
+	var path = $(window.parent.document.body).find("#path").val();
+
+	//查询表格选择复选框监听
+	$(function () {
+		//已选择item页面  除了表头（第一行）以外所有的行添加click事件.
+		$(document).on("click",".panel-infos tr",function(){
+			var chks = $("input[type='checkbox']",this);
+			var tag = $(this).attr("tag");
+			if(tag=="selected"){
+				// 之前已选中，设置为未选中
+				$(this).attr("tag","");
+				chks.prop("checked",false);
+				$(this).css("backgroundColor", "#fff");
+			}else{
+				// 之前未选中，设置为选中
+				$(this).attr("tag","selected");
+				chks.prop("checked",true);
+				$(this).css("backgroundColor", "#d0e9c6");
+			}
+		});
+
+		//选择item页面 行绑定复选框
+		$(document).on("click",".modal-body tr",function(){
+			var chks = $("input[type='checkbox']",this);
+			var tag = $(this).attr("tag");
+			if(tag=="selected"){
+				// 之前已选中，设置为未选中
+				$(this).attr("tag","");
+				chks.prop("checked",false);
+				$(this).css("backgroundColor", "#fff");
+			}else{
+				// 之前未选中，设置为选中
+				$(this).attr("tag","selected");
+				chks.prop("checked",true);
+				$(this).css("backgroundColor", "#d0e9c6");
+			}
+		});
+
+	});
+
+	//日期获取
+	var end = "";
+	var start = "";
+	window.onload = function(){
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth()+1;
+		var day = date.getDate();
+		if(month<10){
+			month = "0"+month+""
+		}
+		if(day<10){
+			day = "0"+day
+		}
+		end = year+"-"+month+"-"+day;
+		start = year+"-"+month+"-01";
+		//$(".form_date").val(start);
+		$("input[name='billDate']").val(end);
+		//document.getElementById('date_end').value = end;
+		//document.getElementById('date_start').value = start;
+	}
+
+	//页签切换
+	function navcut(obj,infoid){
+		//1.移除活动 隐藏模块
+		$(".nav-tabs li").removeClass('active');
+		$(".panel-infos").hide();
+		//2.显示对象 显示模块
+		$(obj).addClass('active');
+		$("#"+infoid).show();
+		
+		if(infoid=="contact"){
+			$("#btn-row").show();
+		}else{
+			$("#btn-row").hide();
+		}
+	}
+
+	//删除行
+	function del_row(obj){
+		$(obj).parent().parent().remove();
+		total();
+	}
+	
+	//关闭拟态框
+	function closemodal(){
+		$("#myModal").modal('hide');
+	}
+
+	//表单效验
+	function fromcheck(){
+		//检测名称
+		if($("select[name='custId']").val() == -1){
+			alert("请选择客户！");
+			return false;
+		}
+		//是否有选择行检测
+		if($(".num").size() == 0){
+			alert("请选择产品！");
+			return false;
+		}
+		//数量检测
+		var trlens = gettrfid();
+		for (id in trlens){
+			if($("#qty_"+trlens[id]).val()<=0){
+				alert("请输入数量！");
+				$("#qty_"+trlens[id]).focus();
+				return false;
+			}
+		}
+
+		//提交表单
+		var f = $("#f1").serialize();
+		//items.push(f);
+		//alert(f);
+		$.ajax({
+			url:"/erp/SaleOrder_add",
+			data:f,
+			type:"post",
+			dataType:"json",
+			success:function(result){
+				if(result.code==200){
+					alert("添加成功！");
+					location.href="/erp/sale/page_SaleOrderAdd";
+				}else if(result.code==500){
+					alert("添加失败!");
+					location.href="/erp/sale/page_SaleOrderAdd";
+				}
+				//alert(JSON.stringify(result));
+			}
+		});
+
+	}
+
+	//启动加载
+	var custJOSN = null;
+	$(function (){
+		//select name="" custId settleId depId depStaffId
+		//客户
+		$.ajax({
+			url:"/erp/Customer_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='custId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+				custJOSN = result;//预存 选择后填写地址
+
+			}
+		});
+
+		//部门
+		$.ajax({
+			url:"/erp/Depart_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='depId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
+
+		//职员
+		$.ajax({
+			url:"/erp/Staff_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='depStaffId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
+
+		//结算方式
+		$.ajax({
+			url:"/erp/SettMethod_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='settleId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
+	});
+
+	//点击来源 获取item信息
+	function getitem(){
+		var sourcetype = $("#sourcetype").val();
+		var cnm = $("input[name='cnm']").val();
+		var pagesize = $("#pagesize").val();//每页条数
+
+		var f = {cnm:cnm,pagesize:pagesize};
+		if(sourcetype == "库存产品"){
+			reqappend(f);
+		}
+	}
+
+	//请求并插入items
+	function reqappend(data){
+		//清空所有table tr 除了第一行
+		//$("table[id='items']").empty();
+		$("#items tr:not(:first)").empty("");
+
+		//请求并插入
+		$.ajax({
+			url:"/erp/Item_queryByCNM?id="+new Date(),
+			data: data,
+			type:"post",
+			dataType:"json",
+			success:function(result){
+				for(var i=0;i<result.data.length;i++){
+					var fid = result.data[i].fid;
+					var code = result.data[i].code;
+					var name = result.data[i].name;
+					var model = result.data[i].model;
+					var custItemCode = result.data[i].custItemCode;
+					var custItemModel = result.data[i].custItemModel;
+					var saleUnitIdName = result.data[i].saleUnitIdName;
+					var salePrice = result.data[i].salePrice;
+					var purPrice = result.data[i].purPrice;
+					var defaultCustomerIdName = result.data[i].defaultCustomerIdName;
+					var defaultStorehouseIdName = result.data[i].defaultStorehouseIdName;
+					var staffIdName = result.data[i].staffIdName;
+					var sourFid = 0;
+					var sourBillNo = '';
+					var sourEntryId = 0;
+					var apphtml = "<tr>" +
+							"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
+							"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+code+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+name+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+model+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+saleUnitIdName+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'><input type='text' onchange='checkNum(this)' style='width:60px;'></td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+salePrice+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='purPrice"+fid+"'>"+purPrice+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='defaultCustomerIdName"+fid+"'>"+defaultCustomerIdName+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='defaultStorehouseIdName"+fid+"'>"+defaultStorehouseIdName+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='staffIdName"+fid+"'>"+staffIdName+"</td>\n" +
+							"<input type='hidden' id='sourFid"+fid+"' name='sourFid"+fid+"' value='"+sourFid+"' >"+
+							"<input type='hidden' id='sourBillNo"+fid+"' name='sourBillNo"+fid+"' value='"+sourBillNo+"' >"+
+							"<input type='hidden' id='sourEntryId"+fid+"' name='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
+							"\t\t\t\t\t\t\t</tr>";
+					$("table[id='items']").append(apphtml);
+					var startpage = result.startpage;
+					var pagecount = result.pagecount;
+					var countTatol = result.countTatol;
+					$("#startpage").text(startpage);
+					$("#pagecount").text(pagecount);
+					$("#countTatol").text(countTatol);
+					$("#nowpage").text(startpage);
+
+				}
+
+				//alert(JSON.stringify(result));
+			}
+		});
+	}
+
+	//获取已存在行的fid
+	function gettrfid(){
+		var arr = new Array();
+		var i = 0;
+		$.each($(".num"), function() {
+			arr[i] = $(this).text();
+			i++;
+		});
+		return arr;
+	}
+
+	//获取checkbox选中的value数据
+	var trlen = 0;//行号累计
+	var arr = new Array();
+	function getHabit() {
+		//$('input:checkbox:checked') 等同于 $('input[type=checkbox]:checked')
+		var ids  = new Array();
+		var i = 0;
+		//获取选中的id
+		$.each($('input:checkbox:checked'), function() {
+			ids[i] = $(this).val();
+			i++;
+		});
+
+		//添加到行
+		for(j = 0,len=ids.length; j < len; j++) {
+
+			//行号
+			trlen = trlen+1;
+			var fid = $("#fid"+ids[j]+" input").val();
+			var code = $("#code"+ids[j]).text();
+			var name = $("#name"+ids[j]).text();
+			var model = $("#model"+ids[j]).text();
+			var custItemCode = $("#custItemCode"+ids[j]).text();
+			var custItemModel = $("#custItemModel"+ids[j]).text();
+			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
+			var qty = $("#qty"+ids[j]+" input").val();
+			if(qty <= 0){
+				qty = 1;
+			}
+			var salePrice = $("#salePrice"+ids[j]).text();
+			var amt = qty*salePrice;
+			var sourFid = $("#sourFid"+ids[j]).val();
+			var sourBillNo = $("#sourBillNo"+ids[j]).val();
+			var sourEntryId = $("#sourEntryId"+ids[j]).val();
+			var sourcetype = $("#sourcetype").val();
+			//alert(qty);
+
+			var insertrow = "<tr>"+
+					"<input type='hidden' name='itemId0"+fid+trlen+"' value='"+fid+"' style='width:20px;'>"+
+					"<td>"+
+					"<span class='num'>"+trlen+"</span>"+
+					"<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>"+
+					"</td>"+
+					"<td>"+code+"<input type='hidden' name='itemCode0"+fid+trlen+"' value='"+code+"' style='width:20px;'></td>"+
+					"<td>"+name+"<input type='hidden' name='itemName0"+fid+trlen+"' value='"+name+"' style='width:20px;'></td>"+
+					"<td>"+model+"<input type='hidden' name='itemModel0"+fid+trlen+"' value='"+model+"' style='width:20px;'></td>"+
+					"<td>"+custItemCode+"<input type='hidden' name='custItemCode0"+fid+trlen+"' value='"+custItemCode+"' style='width:20px;'></td>"+
+					"<td>"+custItemModel+"<input type='hidden' name='custItemModel0"+fid+trlen+"' value='"+custItemModel+"' style='width:20px;'></td>"+
+					"<td>"+saleUnitIdName+"<input type='hidden' name='unitName0"+fid+trlen+"' value='"+saleUnitIdName+"' style='width:20px;'></td>"+
+					"<td><input type='text' name='custOrderNum0"+fid+trlen+"' style='width:100px;'></td>"+
+					"<td><input type='text' id='qty_"+trlen+"' name='qty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
+					"<td><input type='text' name='batchNumber0"+fid+trlen+"' style='width:60px;'></td>"+
+					"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:80px;'></td>"+
+					"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:80px;'></td>"+
+					"<td id='taxamt"+trlen+"'>"+amt+"</td>"+
+					"<td>"+
+					"<input style='width:90px;' name='finishDate0"+fid+trlen+"' class='form_date' readonly/>"+
+					"</td>"+
+					"<td><input type='text' name='rowRemark0"+fid+trlen+"' style='width:40px;'></td>"+
+					"<td>"+sourcetype+"<input type='hidden' name='sourType0"+fid+trlen+"' value='"+sourcetype+"'></td>"+
+					"<input type='hidden' name='sourFid0"+fid+trlen+"' value='"+sourFid+"' >"+
+					"<input type='hidden' name='sourBillNo0"+fid+trlen+"' value='"+sourBillNo+"' >"+
+					"<input type='hidden' name='sourEntryId0"+fid+trlen+"' value='"+sourEntryId+"' >"+
+					"</tr>";
+			$(".panel-infos table").append(insertrow);
+			arr.push(trlen);
+
+			//重新加载时间控件
+			$('.form_date').datetimepicker({
+				language : 'zh-CN',
+				format : 'yyyy-mm-dd',//日期格式
+				weekStart: 1,
+				todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+			});
+			$("input[name='finishDate0"+fid+trlen+"']").val(end);//时间赋予
+
+		}
+		//window.alert("你选了" + $('input[type=checkbox]:checked').length + "个,其中有" + ids);
+		closemodal();//关闭拟态框
+		ratejs('rate',-1);//重新根据汇率计算不含税价
+
+	}
+
+	//正整数判断 var regex = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;
+	function checkNum(obj,type,fid){
+		var value = obj.value;
+		var re = /^[1-9]{1}[0-9]*$/;//正整数
+		if(!re.test(value)){
+			obj.value=0;
+			alert("请输入正整数！");
+		}
+
+		//2、计算
+		ratejs(type,fid);
+	}
+
+	//正数小数点4位判断 var regex = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;
+	function checkNum4(obj,type,fid){
+		var value = obj.value;
+		var re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+		if(!re.test(value)){
+			obj.value=0;
+			alert("请输入正确数值！(4位小数点)");
+		}
+
+		//2、计算
+		ratejs(type,fid);
+	}
+
+	//正数小数点4位判断 全局试用
+	$(document).on("change",".checkNum4",function (e){
+		var target=e.target||e.srcElement;//获取当前点击的对象
+		var e_id = target.id;
+		var str = e_id.split('_');//id+序号
+		var type = str[0];
+		var fid = str[1];
+
+		var value = $("#"+e_id+"").val();
+		var re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+		if(!re.test(value)){
+			$("#"+e_id+"").val(0);
+			alert("请输入正确数值！(4位小数点)");
+		}
+
+
+		//2、计算
+		ratejs(type,fid);
+
+	});
+
+	//小数点四舍五入 数值 位数
+	function decimal(num,v){
+		var vv = Math.pow(10,v);
+		return Math.round(num*vv)/vv;
+	}
+
+	//合计
+	function total(){
+		var rate = $("input[name='rate']").val();
+		var taxAmtTotal = 0;
+		var taxAmtnoTotal = 0;
+
+		var trlens = gettrfid();
+		for (id in trlens){
+			taxAmtTotal += parseFloat($("#taxamt"+trlens[id]).text());
+		}
+		taxAmtnoTotal = taxAmtTotal/(1+(rate/100));
+
+		/*$('.panel-infos tr').each(function() {
+			$(this).find('td:eq(11)').each(function(){
+				taxAmtTotal += parseFloat($(this).text());
+			});
+		});*/
+		$("#taxAmtTotal").text(decimal(taxAmtTotal,4));//含税金额合计
+		$("#taxAmtnoTotal").text(decimal(taxAmtnoTotal,4));//b不含税金额合计
+	}
+
+	//计算
+	function ratejs(type,fid){
+		var taxPrice=$("#taxPrice_"+fid+"").val();//当前含税单价
+		var taxPriceNo = $("#taxPriceNo_"+fid+"").val();//当前不含税单价
+		var qty = $("#qty_"+fid+"").val();//当前数量
+		var rate = $("input[name='rate']").val();//当前税率
+		var amt = $("#taxamt"+fid+"").text();//当前含税金额
+		//alert(taxPrice+"=="+qty);
+
+		var taxPriceNoup = taxPrice/(1+(rate/100));
+		var taxPriceup = taxPriceNo*(1+(rate/100));
+
+		if(type=="qty"){//数量改变
+			$("#taxamt"+fid+"").text( decimal(qty*taxPrice,4) );//1、含税金额更新
+		}else if(type=="taxPrice"){//含税单价改变
+			$("#taxPriceNo_"+fid+"").val( decimal(taxPriceNoup,4) );//1、不含税单价更新
+			$("#taxamt"+fid+"").text( decimal(qty*taxPrice,4) );//2、含税金额更新
+		}else if(type=="taxPriceNo"){//不含税单价改变
+			$("#taxPrice_"+fid+"").val( decimal(taxPriceup,4) );//1、含税单价跟新
+			$("#taxamt"+fid+"").text( decimal(qty*taxPriceup,4) );//2、含税金额更新
+		}else if(type=="rate"){//税率改变
+			for (id in arr){
+				ratejs('taxPrice',arr[id]);
+			}
+		}
+		total();//合计
+	}
+
+	//获取联系方式 根据客户id
+	function getcontact(){
+		var custId = $("select[name='custId']").val();
+		/*alert(custId);
+		alert(custJOSN.length);*/
+		for(var i=0;i<custJOSN.length;i++){
+			if(custJOSN[i].fid == custId){
+				var rate = custJOSN[i].vat_rate;
+				if(rate!=null){
+					$("#rate").val(rate);
+				}else{
+					$("#rate").val(0);
+				}
+				$("#contact_bill").val(custJOSN[i].contact);
+				$("#phone_bill").val(custJOSN[i].phone);
+				$("#address_bill").val(custJOSN[i].address);
+			}
+		}
+	}
+
+	//翻页获取items
+	function getItemByPage(page){
+		var startpage = parseFloat($("#nowpage").text());//当前页数
+		var pagesize = parseFloat($("#pagesize").val());//每页条数
+		var pagecount = parseFloat($("#pagecount").text());//总页数
+		var cnm = $("input [name='cnm']").val();
+		cnm = cnm == null || cnm == ""?"":cnm;
+		var data = {};
+		//alert(startpage+"-"+pagesize+"-"+cnm);
+		if(page == 'first'){
+			data.startpage = 1;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		if(page == 'previous'){
+			data.startpage = (startpage-1)>0?(startpage-1):1;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		if(page == 'next'){
+			data.startpage = (startpage+1)>pagecount?pagecount:(startpage+1);
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		if(page == 'last'){
+			data.startpage = pagecount;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		//alert(data);
+		reqappend(data);
+	}
+	
+</script>
+
+<style type="text/css">
+
+	body{
+		background-color:#FCFCFC;
+	}
+	
+	.panel-body{
+		padding-top:0px;
+	}
+	
+	.panel-body .input-group{
+		margin-right:20px;
+		margin-top:15px;
+		width:200px;
+		float:left;
+	}
+	
+	.list-group-item{
+		padding:5px 10px;
+	}
+	
+	.list-group{
+		float:left;
+		margin-right:100px;
+	}
+	
+	.table{
+		float:left;
+		margin-top:1px;
+	}
+	
+	tr td,th{
+		text-align:center;
+		font-size:15px;
+	}
+	
+	.glyphicon-minus{
+		display:none;
+	}
+	
+	tr td:hover .glyphicon-minus{
+		display:block;
+	}
+	
+	tr td:hover .num{
+		display:none;
+	}
+
+	.diylabel{
+		margin-top:10px;
+		margin-left:20px;
+		float:left;
+	}
+
+
+</style>
+
+<title>销售订单-新增</title>
+</head>
+<body>
+
+
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<b>销售订单-新增</b>
+		<!--<b style="margin-left:30px;">SO-201025001</b>-->
+		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;">
+			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
+			<div class="btn-group btn-group-sm" role="group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Other
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#">提交并审核</a></li>
+					<li><a href="#">提交并新建</a></li>
+				</ul>
+			</div>
+		</div>
+		
+	</div>
+
+	<form method="post" action="CustType_add" id="f1">
+		<div class="panel-body">
+
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:red;"></span>客户</button>
+				 </span>
+				<select name="custId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+				　　<option value="-1">-- --</option>
+				</select>
+			</div>
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">单据日期</button>
+				 </span>
+				 <input name="billDate" class="form-control form_date" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
+			</div>
+
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">摘要</button>
+				 </span>
+				 <input type="text" name="remark" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
+			</div>
+
+
+
+
+
+
+		</div>
+		
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">单据信息</div>
+			<div class="panel-body">
+				<ul class="nav nav-tabs">
+					<li role="presentation" onclick="navcut(this,'contact')" class="active"><a href="#">产品</a></li>
+					<!-- <li role="presentation" onclick="navcut(this,'currency')"><a href="#">货币信息</a></li> -->
+					<li role="presentation" onclick="navcut(this,'otherinfo')"><a href="#">其他</a></li>
+					
+					<li style="float:right;" id="btn-row">
+						<a href="#">
+							<button class="btn btn-info btn-xs" onclick="getitem()" type="button" data-toggle="modal" data-target="#myModal">来源</button>
+							<!--<button class="btn btn-info btn-xs" onclick="testinsert()" type="button">test插入</button>-->
+							<!--<button class="btn btn-info btn-xs" type="button" onclick="del_row()">删行</button>-->
+						</a>
+					</li>
+				</ul>
+				
+				<div class="panel-infos" id="contact">
+					<div style="height:230px;overflow-x:auto;overflow-y:auto;">
+						<table class="table table-striped table-bordered table-condensed table-hover" >	
+							<tr>
+								<th style="width:50px;">行号</th>
+								<th>产品编码</th>
+								<th>名称</th>
+								<th>型号</th>
+								<th>客户产品编码</th>
+								<th>客户产品型号</th>
+								<th>单位</th>
+								<th>客户订单号</th>
+								<th>数量</th>
+								<th>完工数量</th>
+								<th>批号</th>
+								<th>单价(含税)</th>
+								<th>金额</th>
+								<th>交期</th>
+								<th>备注</th>
+								<th>来源</th>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body" style="padding:0;height:40px;">
+						<div class="diylabel">
+							<label>含税金额:</label>
+							<label id="taxAmtTotal">0.00</label>
+						</div>
+						<div class="diylabel">
+							<label>不含税金额:</label>
+							<label id="taxAmtnoTotal">0.00</label>
+						</div>
+					</div>
+				</div>
+				
+				<!-- <div class="panel-infos" id="currency" hidden>
+					
+					<div class="input-group">
+					  <span class="input-group-btn">
+							<button class="btn btn-default" type="button">结算方式</button>
+					  </span>
+					  <select name="select" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+							<option value="">-- --</option>　　
+							<option value="等于">管理员</option>
+						　　<option value="大于">张三</option>
+						　　<option value="小于">李四</option>
+						</select>
+					</div>
+					
+				</div> -->
+				
+				<div class="panel-infos" id="otherinfo" hidden>
+					<div class="panel-body"><!--style="padding:0;margin-top:-20px;"-->
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">部门</button>
+						 </span>
+							<select name="depId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+								<option value="-1">-- --</option>
+							</select>
+						</div>
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">业务员</button>
+						 </span>
+							<select name="depStaffId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+								<option value="-1">-- --</option>
+							</select>
+						</div>
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">制单</button>
+						 </span>
+							<input type="text" class="form-control" value="admin" disabled aria-describedby="basic-addon1">
+						</div>
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">审核</button>
+						 </span>
+							<input type="text" class="form-control" value="" disabled aria-describedby="basic-addon1">
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+	</form>
+</div>
+
+
+<!-- 模态框声明 -->
+	<div class="modal fade" id="myModal" style="height:600px;">
+		<!-- 窗口声明 -->
+		<div class="modal-dialog" style="width:100%;">
+			<!-- 内容声明 -->
+			<div class="modal-content">
+			
+				<div class="modal-header" style="height:50px;">
+					<button class="close" data-dismiss="modal"><span>&times;</span></button>
+					<h6 class="modal-title">
+						<select id="sourcetype" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+							<option value="库存产品">库存产品(BOM主件)</option>
+						</select>
+					</h6>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<form class="form-inline">
+							<div class="form-group">
+								<input type="text" value="" NAME="cnm" class="form-control" placeholder="请输入物料编码、名称或型号" style="width:300px;">
+							</div>
+							<button type="button" onclick="getitem()" class="btn btn-info">查询</button>
+							<!--<button type="button" class="btn btn-info" style="margin-left:50%;">确定</button>-->
+							<button type="button" class="btn btn-info" style="margin-left:10px;" onclick="getHabit()">新增</button>
+						</form>
+
+						<div style="height:300px;overflow-x:auto;overflow-y:auto;">
+							<table id="items" class="table table-striped table-bordered table-condensed table-hover" >
+								<tr>
+									<th style="width:60px">选中</th>
+									<th>编码</th>
+									<th>名称</th>
+									<th>型号</th>
+									<th>客户编码</th>
+									<th>客户型号</th>
+									<th>销售单位</th>
+									<th>数量</th>
+									<th>销售价格</th>
+									<th>采购价格</th>
+									<th>默认客户</th>
+									<th>默认仓库</th>
+									<th>负责人</th>
+								</tr>
+							</table>
+						</div>
+						<center>
+							<a href="#" onclick="getItemByPage('first')">首页</a>
+							<a href="#" onclick="getItemByPage('previous')">上一页</a>
+							<span id="nowpage">1</span>
+							<a href="#" onclick="getItemByPage('next')">下一页</a>
+							<a href="#" onclick="getItemByPage('last')">尾页</a>
+							[<span id="startpage"></span>/<span id="pagecount"></span>]
+							共<span id="countTatol"></span>条
+							<select id="pagesize" onchange="getItemByPage('first')" class="selectpicker" data-live-search="true" data-actions-box="true">
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+								<option value="80">80</option>
+							</select>
+						</center>
+						
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+
+<link href="/erp/style/DatePicker2/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+
+	$('.form_datetime').datetimepicker({
+		language : 'zh-CN',
+		format : 'yyyy-mm-dd hh:ii:ss',//日期格式
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+		showMeridian: 1
+	});
+	$('.form_date').datetimepicker({
+		language : 'zh-CN',
+		format : 'yyyy-mm-dd',//日期格式
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+	});
+	$('.form_time').datetimepicker({
+		language : 'zh-CN',
+		format : 'hh:ii',//日期格式
+		weekStart: 1,//一周的开始 1 星期一 0星期天
+		todayBtn:  1,//是否显示'today'按钮
+		autoclose: 1,//是否自动关闭日期选择器
+		todayHighlight: 1,//当天日期高亮
+		//选择 年月日时分 43210
+		startView: 1,//首先显示的视图
+		minView: 0,//最精确的时间选择视图
+		maxView: 1,
+
+		forceParse: 0//强制解析
+	});
+	</script>
+
+
+
+</body>
+</html>

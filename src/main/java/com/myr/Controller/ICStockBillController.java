@@ -1,9 +1,6 @@
 package com.myr.Controller;
 
-import com.myr.Bean.Icstockbill;
-import com.myr.Bean.Icstockbillentry;
-import com.myr.Bean.Poorder;
-import com.myr.Bean.Poorderentry;
+import com.myr.Bean.*;
 import com.myr.Service.ICStockBillEntryService;
 import com.myr.Service.IcStockBillService;
 import com.myr.Service.PurOrderEntryService;
@@ -11,17 +8,21 @@ import com.myr.Service.PurOrderService;
 import com.myr.utils.DateOption;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -114,11 +115,26 @@ public class ICStockBillController {
 
     //序时簿 采购入库
     @RequestMapping("/ICStockBillIndex")
-    public String ICStockBillIndex(Model model,HttpServletRequest request){
-        String AllQuery = request.getParameter("AllQuery");
+    public String ICStockBillIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                   @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
+                                   Model model,HttpServletRequest request){
 
-        List<Icstockbill> icstockbills = icStockBillService.IcStockBill_page(AllQuery);
-        model.addAttribute("datas",icstockbills);
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = icStockBillService.getCounts(map);
+        //主数据
+        List<Icstockbill> icstockbills = icStockBillService.IcStockBill_page(map);
+        //封装数据
+        PageUtils<Icstockbill> pageUtils = new PageUtils<Icstockbill>(startpage, pagesize, countTatol, icstockbills);
+        model.addAttribute("datas",pageUtils);
+
+
+        /*List<Icstockbill> icstockbills = icStockBillService.IcStockBill_page(map);
+        model.addAttribute("datas",icstockbills);*/
         return "desktop/ICStockBillIndex";
     }
 

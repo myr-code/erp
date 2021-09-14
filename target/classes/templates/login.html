@@ -1,0 +1,116 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ERP信息化系统</title>
+<link href="style/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<script src="style/js/jquery.min.js"></script>
+<script src="style/js/bootstrap.min.js"></script>
+<style>
+
+	body{
+		background:url('img/randombga.jpg') center no-repeat;
+	}
+
+	#f1{
+		position: absolute;
+		top: 20%;
+		right: 10%;
+	}
+
+
+
+
+</style>
+
+<script type="text/javascript">
+	/*$(function(){
+		var contextPath = '${#request.getContextPath()}';
+		alert(contextPath);
+	})*/;
+
+<!-- 登录表单效验 -->
+ function formcheck(){
+	var username = $("#username").val();
+	var psd = $("#psd").val();
+	if(username==""||psd==""){
+		alert("账号或密码为空！");
+		return false;
+	}
+
+	var f = $("#f1").serialize();
+		$.ajax({
+			url:"/user_login",
+			data:f,
+			type:"post",
+			dataType:"json",
+			success:function(result){
+				//alert(JSON.stringify(result));
+				if(result.code==200){
+					location.href="page_index";
+				}else if(result.code==500){
+					alert("账号或密码错误!");
+					location.href="page_login";
+				}else if(result.code==501){
+					alert("验证码错误!");
+				}else if(result.code==401){
+					alert("账号被冻结!");
+				}
+
+			}
+		});
+
+ }
+
+
+
+</script>
+</head>
+
+<body>
+<center>
+	<form method="post" action="user_login" id="f1">
+
+		<div class="panel panel-primary">
+			<!-- Default panel contents -->
+			<div class="panel-heading">Welcome Back</div>
+			<div class="panel-body">
+				<div class="input-group" style="width:300px">
+					<!--<span class="input-group-addon">用户：</span>-->
+					<input type="text" class="form-control" name="email" placeholder="Username" id="username">
+				</div>
+				<br>
+				<div class="input-group" style="width:300px">
+					<!--<span class="input-group-addon">密码：</span>-->
+					<input type="password" class="form-control" name="password" placeholder="password" id="psd">
+				</div>
+				<div class="input-group" style="width:300px">
+					<a href="#" style="float:right">注册</a>
+					<span style="float:right">/</span>
+					<a href="#" style="float:right">忘记密码</a>
+				</div>
+				<br>
+				<span></span>
+				<div class="input-group" style="width:300px">
+					<button class="btn btn-primary" onclick="return formcheck();">登录</button>
+				</div>
+			</div>
+
+		</div>
+
+	</form>
+</center>
+
+<footer class="footer navbar-fixed-bottom ">
+    <div class="container">
+		<center>
+			<A HREF="javascript:void(0)">&copy; 2020 作者 牧羊人 ERP管理系统</A>
+		</center>
+    </div>
+</footer>
+
+
+
+</body>
+
+</html>

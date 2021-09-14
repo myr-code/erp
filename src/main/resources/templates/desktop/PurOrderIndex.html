@@ -162,7 +162,7 @@
 			//alert(datas);
 			//提交表单
 			$.ajax({
-				url:path+"/PurOrder_del",
+				url:"/erp/PurOrder_del",
 				data: {"datas":datas},//转换为json数据格式  JSON.stringify(datas)
 				type:"post",
 				dataType:"json",
@@ -201,7 +201,7 @@
 
 			//客户
 			$.ajax({
-				url:path+"/Customer_all",
+				url:"/erp/Customer_all",
 				type:"post",
 				dataType:"json",
 				success:function (result) {
@@ -214,7 +214,7 @@
 
 			//部门
 			$.ajax({
-				url:path+"/Depart_all",
+				url:"/erp/Depart_all",
 				type:"post",
 				dataType:"json",
 				success:function (result) {
@@ -228,7 +228,7 @@
 
 			//制单人
 			$.ajax({
-				url:path+"/Staff_all",
+				url:"/erp/Staff_all",
 				type:"post",
 				dataType:"json",
 				success:function (result) {
@@ -283,6 +283,44 @@
 			/*location.href="CustomerEdit/"+fid;*/
 			window.parent.topage('left50203','采购订单-编辑','PurOrderEdit/'+fid);
 		}
+	}
+
+	//翻页
+	function getItemByPage(page){
+		var startpage = parseFloat($("#nowpage").text());//当前页数
+		var pagesize = parseFloat($("#pagesize").val());//每页条数
+		var pagecount = parseFloat($("#pagecount").text());//总页数
+		var AllQuery = $("input [name='AllQuery']").val();
+		AllQuery = AllQuery == null || AllQuery == ""?"":AllQuery;
+		var data = {};
+		//alert(startpage+"-"+pagesize+"-"+cnm);
+		if(page == 'first'){
+			data.startpage = 1;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'previous'){
+			data.startpage = (startpage-1)>0?(startpage-1):1;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'next'){
+			data.startpage = (startpage+1)>pagecount?pagecount:(startpage+1);
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'last'){
+			data.startpage = pagecount;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'nowpage'){
+			data.startpage = startpage;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		//alert(data);
+		window.location.href="ProductPlanIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
 	}
 	</script>
 	

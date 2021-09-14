@@ -1,0 +1,43 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.UnitMapper">
+
+    <!--1.添加计量单位-->
+    <insert id="addUnit">
+        INSERT INTO t_unit(`fid`, `name`, `remark`, `createDate`, `updateDate`, `fdisable`)
+        VALUES
+        (NULL, #{name}, #{remark}, now(), #{updateDate}, 0);
+    </insert>
+
+    <select id="unit_all" resultType="com.myr.Bean.Unit">
+        select * from t_unit WHERE fdisable = 0
+    </select>
+
+    <select id="Unit_page" resultType="com.myr.Bean.Unit">
+        select * from t_unit where fdisable = 0 and
+        (name like '%${str}%' or remark like '%${str}%')
+    </select>
+
+    <delete id="delUnit">
+        delete from t_unit where fid = #{fid}
+    </delete>
+
+    <select id="getUnitById" resultType="com.myr.Bean.Unit">
+        select * from t_unit where fid = #{fid}
+    </select>
+
+    <update id="updateUnit">
+        UPDATE `t_unit` SET `name` = #{name}, `remark` = #{remark}, `updateDate` = now()
+        WHERE `fid` = #{fid};
+     </update>
+
+    <select id="isexits" resultType="integer">
+        select case when count(*) >=1 then 1 else 0 end from t_unit where name = #{name}
+        <if test="fid != null and fid !=''">
+            and fid not in (#{fid})
+        </if>
+    </select>
+
+
+</mapper>
