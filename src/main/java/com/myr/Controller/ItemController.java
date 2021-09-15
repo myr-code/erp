@@ -90,12 +90,16 @@ public class ItemController {
     @RequestMapping("/Item_queryByCNM")
     @ResponseBody
     public PageUtils Item_queryByCNM(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
-                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "cnm",defaultValue = "")String cnm, Model model) {
+                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize,
+                               @RequestParam(value = "cnm",defaultValue = "")String cnm,
+                                @RequestParam(value = "bom",defaultValue = "")String bom,
+                                     Model model) {
         //获取items
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
         map.put("str",cnm);
+        map.put("bom",bom);
         List<Item> items = itemService.Item_queryByCNM(map);
 
         //获取总条数

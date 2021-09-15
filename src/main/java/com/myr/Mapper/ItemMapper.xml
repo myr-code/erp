@@ -23,9 +23,13 @@
         LEFT JOIN t_store g on a.defaultStorehouseId = g.fid
         LEFT JOIN t_department h on a.depId = h.fid
         LEFT JOIN t_staff i on a.staffId = i.fid
+        left join t_bom j on a.fid = j.muid
         where a.fdisable = 0 and (a.code like '%${str}%' or a.name like '%${str}%' or a.model like '%${str}%'
         or a.specs like '%${str}%' or a.parameter like '%${str}%' or a.custItemCode like '%${str}%'
         or a.custItemName like '%${str}%' or a.custItemModel like '%${str}%' or a.custItemSpecs like '%${str}%')
+        <if test="bom == 'only'">
+            and j.muid &gt; 0
+        </if>
 	</select>
 
     <select id="Item_page" resultType="com.myr.Bean.Item">
@@ -119,7 +123,11 @@
         LEFT JOIN t_store g on a.defaultStorehouseId = g.fid
         LEFT JOIN t_department h on a.depId = h.fid
         LEFT JOIN t_staff i on a.staffId = i.fid
+        left join t_bom j on a.fid = j.muid
         where a.fdisable = 0 and (a.code like '%${str}%' or a.name like '%${str}%' or a.model like '%${str}%')
+        <if test="bom == 'only'">
+            and j.muid &gt; 0
+        </if>
         limit #{startpage},#{pagesize}
     </select>
 

@@ -11,10 +11,10 @@
 	`fdisable`, `remark`, `rowRemark`, `finish_qty`, `finish_static`, `sourFid`, `sourBillNo`,
 	`sourEntryId`, `sourType`, `billStaf`, `createDate`)
 	VALUES
-	(null, #{billNo}, #{billDate}, #{custId}, #{entryId}, #{itemId}, #{custOrderNum}, #{finishDate},
+	(null, #{billNo}, #{billDate}, #{custId.fid}, #{entryId}, #{itemId.fid}, #{custOrderNum}, #{finishDate},
 	 #{qty}, #{batchNumber}, #{taxPrice}, #{taxPriceNo}, #{fcess}, (#{taxPrice}*#{qty}), ( #{taxPriceNo} *#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ),
 	  #{fdisable}, #{remark}, #{rowRemark}, #{finishQty}, #{finishStatic}, #{sourFid}, #{sourBillNo},
-	   #{sourEntryId}, #{sourType}, #{billStaf}, now());
+	   #{sourEntryId}, #{sourType}, #{billStaf.fid}, now());
 	</insert>
 
 	<!--获取单号-->

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ProductPlanService {
-    Integer addMrp_ProductPlan(MrpProductplan mrpProductplan);
+    Integer addMrp_ProductPlan(List<MrpProductplan> mrpProductplans);
 
     //获取系统单号  1销售订单
     String getBillNo(String dates);

@@ -19,7 +19,9 @@ public interface IcStockBillService {
 
     List<Icstockbill> IcStockBill_page(Map<String,Object> map);
 
-    List<Icstockbill> IcStockBill_saleout_page(@Param("str") String str);
+    int getCounts_saleout(Map<String,Object> map);
+
+    List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map);
 
     List<Icstockbill> IcStockBill_pageGj(DateOption dateOption);
 

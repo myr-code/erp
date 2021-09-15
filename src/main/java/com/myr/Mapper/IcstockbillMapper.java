@@ -23,8 +23,11 @@ public interface IcstockbillMapper {
     //销售订单序时簿
     List<Icstockbill> IcStockBill_page(Map<String,Object> map);
 
+    //获取总条数
+    int getCounts_saleout(Map<String,Object> map);
+
     //销售订单序时簿
-    List<Icstockbill> IcStockBill_saleout_page(@Param("str") String str);
+    List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map);
 
     //销售订单序时簿 高级查询
     List<Icstockbill> IcStockBill_pageGj(DateOption dateOption);

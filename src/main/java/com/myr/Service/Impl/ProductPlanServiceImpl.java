@@ -15,8 +15,11 @@ public class ProductPlanServiceImpl implements ProductPlanService {
     Mrp_ProductPlanMapper productPlanMapper;
 
     @Override
-    public Integer addMrp_ProductPlan(MrpProductplan mrpProductplan) {
-        return productPlanMapper.addMrp_ProductPlan(mrpProductplan);
+    public Integer addMrp_ProductPlan(List<MrpProductplan> mrpProductplans) {
+        for (MrpProductplan mrpProductplan : mrpProductplans) {
+            productPlanMapper.addMrp_ProductPlan(mrpProductplan);
+        }
+        return 1;
     }
 
     @Override

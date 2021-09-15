@@ -43,8 +43,13 @@ public class IcStockBillServiceImpl implements IcStockBillService {
     }
 
     @Override
-    public List<Icstockbill> IcStockBill_saleout_page(String str) {
-        return icstockbillMapper.IcStockBill_saleout_page(str);
+    public int getCounts_saleout(Map<String, Object> map) {
+        return icstockbillMapper.getCounts_saleout(map);
+    }
+
+    @Override
+    public List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map) {
+        return icstockbillMapper.IcStockBill_saleout_page(map);
     }
 
     @Override
