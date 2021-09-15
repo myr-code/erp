@@ -41,13 +41,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
+    public int getCounts_index(Map<String, Object> map) {
+        return saleOrderMapper.getCounts_index(map);
+    }
+
+    @Override
     public List<SaleOrder> SaleOrder_sour(Map<String, Object> map) {
         return saleOrderMapper.SaleOrder_sour(map);
     }
 
     @Override
-    public List<SaleOrder> SaleOrder_page(String str) {
-        return saleOrderMapper.SaleOrder_page(str);
+    public List<SaleOrder> SaleOrder_page(Map<String,Object> map) {
+        return saleOrderMapper.SaleOrder_page(map);
     }
 
     @Override

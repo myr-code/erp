@@ -42,6 +42,21 @@
         </if>
     </select>
 
+    <select id="getCounts_index" resultType="int">
+        select
+            count(*)
+        from t_saleorder a LEFT JOIN t_saleorderentry b on a.fid = b.mid
+                           LEFT JOIN t_customer c on a.custId = c.fid
+                           LEFT JOIN t_settlement_method d on a.settleId = d.fid
+                           LEFT JOIN t_department e on a.depId = e.fid
+                           LEFT JOIN t_staff f on a.depStaffId = f.fid
+                           LEFT JOIN t_staff g on a.billStaffId = g.fid
+        where 1=1
+        <if test="str != null or str != ''">
+            and (a.GSBillNo like '%${str}%' or c.name like '%${str}%' or b.itemname like '%${str}%' or b.itemcode like '%${str}%' or b.itemmodel like '%${str}%')
+        </if>
+    </select>
+
     <select id="SaleOrder_sour" resultMap="SaleOrderMap">
         select
         a.*,b.fid as 'ffid',
@@ -94,7 +109,12 @@
         LEFT JOIN t_department e on a.depId = e.fid
         LEFT JOIN t_staff f on a.depStaffId = f.fid
         LEFT JOIN t_staff g on a.billStaffId = g.fid
-        where (a.GSBillNo like '%${str}%' or b.itemname like '%${str}%' or b.itemcode like '%${str}%' or b.itemmodel like '%${str}%')
+        where 1=1
+        <if test="str != null or str != ''">
+            and (a.GSBillNo like '%${str}%' or c.name like '%${str}%' or b.itemname like '%${str}%' or b.itemcode like '%${str}%' or b.itemmodel like '%${str}%')
+        </if>
+        order by a.billDate desc,a.billNo desc,b.entryId
+        limit #{startpage},#{pagesize}
     </select>
 
     <select id="SaleOrder_pageGj" resultMap="SaleOrderMap">

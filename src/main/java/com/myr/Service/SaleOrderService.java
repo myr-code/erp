@@ -16,9 +16,11 @@ public interface SaleOrderService {
 
     int getCounts(Map<String,Object> map);
 
+    int getCounts_index(Map<String,Object> map);
+
     List<SaleOrder> SaleOrder_sour(Map<String,Object> map);
 
-    List<SaleOrder> SaleOrder_page(String str);
+    List<SaleOrder> SaleOrder_page(Map<String,Object> map);
 
     List<SaleOrder> SaleOrder_pageGj(DateOption dateOption);
 

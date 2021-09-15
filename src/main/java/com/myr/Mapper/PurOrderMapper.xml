@@ -36,6 +36,17 @@
         </if>
     </select>
 
+    <select id="getCounts_index" resultType="int">
+        select count(*)
+        from t_poorder a LEFT JOIN t_poorderentry b on a.fid = b.mid
+        LEFT JOIN t_supplier c on a.suppId = c.fid
+        LEFT JOIN t_settlement_method d on a.settId = d.fid
+        LEFT JOIN t_department e on a.depaId = e.fid
+        <if test="str != null or str != ''">
+            where (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
+        </if>
+    </select>
+
     <select id="PurOrder_sour" resultMap="PurOrderMap">
         select
         a.*,b.fid as 'ffid',
@@ -80,6 +91,8 @@
         <if test="str != null or str != ''">
             where (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
         </if>
+        order by a.billDate desc,a.billNo desc,b.entryId
+        limit #{startpage},#{pagesize}
     </select>
 
     <select id="PurOrder_pageGj" resultMap="PurOrderMap">

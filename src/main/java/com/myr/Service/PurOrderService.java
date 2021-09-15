@@ -17,9 +17,11 @@ public interface PurOrderService {
 
     int getCounts(Map<String,Object> map);
 
+    int getCounts_index(Map<String,Object> map);
+
     List<Poorder> PurOrder_sour(Map<String,Object> map);
 
-    List<Poorder> PurOrder_page(@Param("str") String str);
+    List<Poorder> PurOrder_page(Map<String,Object> map);
 
     List<Poorder> PurOrder_pageGj(DateOption dateOption);
 

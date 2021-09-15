@@ -139,11 +139,24 @@ public class PurOrderController {
 
     //序时簿
     @RequestMapping("/PurOrderIndex")
-    public String SaleOrderIndex(Model model,HttpServletRequest request){
-        String AllQuery = request.getParameter("AllQuery");
+    public String SaleOrderIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                 @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
+            Model model,HttpServletRequest request){
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
 
-        List<Poorder> poorders = purOrderService.PurOrder_page(AllQuery);
-        model.addAttribute("datas",poorders);
+        //获取总条数
+        int countTatol = purOrderService.getCounts_index(map);
+        //主数据
+        List<Poorder> poorders = purOrderService.PurOrder_page(map);
+        //封装数据
+        PageUtils<Poorder> pageUtils = new PageUtils<Poorder>(startpage, pagesize, countTatol, poorders);
+        model.addAttribute("datas",pageUtils);
+
+        /*List<Poorder> poorders = purOrderService.PurOrder_page(map);
+        model.addAttribute("datas",poorders);*/
         return "desktop/PurOrderIndex";
     }
 

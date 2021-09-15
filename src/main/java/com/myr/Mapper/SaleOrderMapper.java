@@ -21,14 +21,17 @@ public interface SaleOrderMapper {
     //获取系统单号  1销售订单
     String getBillNo(String dates);
 
-    //获取总条数
+    //获取总条数-mrp
     int getCounts(Map<String,Object> map);
+
+    //获取总条数-序时簿
+    int getCounts_index(Map<String,Object> map);
 
     //销售订单  选择来源
     List<SaleOrder> SaleOrder_sour(Map<String,Object> map);
 
     //销售订单序时簿
-    List<SaleOrder> SaleOrder_page(@Param("str") String str);
+    List<SaleOrder> SaleOrder_page(Map<String,Object> map);
 
     //销售订单序时簿 高级查询
     List<SaleOrder> SaleOrder_pageGj(DateOption dateOption);

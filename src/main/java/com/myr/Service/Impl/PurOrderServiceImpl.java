@@ -42,13 +42,18 @@ public class PurOrderServiceImpl implements PurOrderService {
     }
 
     @Override
+    public int getCounts_index(Map<String, Object> map) {
+        return purOrderMapper.getCounts_index(map);
+    }
+
+    @Override
     public List<Poorder> PurOrder_sour(Map<String,Object> map) {
         return purOrderMapper.PurOrder_sour(map);
     }
 
     @Override
-    public List<Poorder> PurOrder_page(String str) {
-        return purOrderMapper.PurOrder_page(str);
+    public List<Poorder> PurOrder_page(Map<String,Object> map) {
+        return purOrderMapper.PurOrder_page(map);
     }
 
     @Override

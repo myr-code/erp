@@ -31,10 +31,10 @@ public class Testpo {
     
     @Test
     public void testadd(){
-        List<Poorder> Poorders = purOrderService.PurOrder_page("0304");
+        /*List<Poorder> Poorders = purOrderService.PurOrder_page("0304");
         for (Poorder Poorder : Poorders) {
             System.out.println(Poorder);
-        }
+        }*/
     }
 
     @Test

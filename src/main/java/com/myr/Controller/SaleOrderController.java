@@ -141,11 +141,25 @@ public class SaleOrderController {
 
     //序时簿
     @RequestMapping("/SaleOrderIndex")
-    public String SaleOrderIndex(Model model,HttpServletRequest request){
-        String AllQuery = request.getParameter("AllQuery");
+    public String SaleOrderIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                 @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
+                                 Model model,HttpServletRequest request){
+        System.out.println("str="+AllQuery);
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
 
-        List<SaleOrder> saleOrders = saleOrderService.SaleOrder_page(AllQuery);
-        model.addAttribute("datas",saleOrders);
+        //获取总条数
+        int countTatol = saleOrderService.getCounts_index(map);
+        //主数据
+        List<SaleOrder> saleOrders = saleOrderService.SaleOrder_page(map);
+        //封装数据
+        PageUtils<SaleOrder> pageUtils = new PageUtils<SaleOrder>(startpage, pagesize, countTatol, saleOrders);
+        model.addAttribute("datas",pageUtils);
+
+        /*List<SaleOrder> saleOrders = saleOrderService.SaleOrder_page(map);
+        model.addAttribute("datas",saleOrders);*/
         return "desktop/SaleOrderIndex";
     }
 
