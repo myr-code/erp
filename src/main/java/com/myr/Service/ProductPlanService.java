@@ -18,4 +18,8 @@ public interface ProductPlanService {
     int getCounts(Map<String,Object> map);
 
     List<MrpProductplan> Mrp_ProductPlan_page(Map<String,Object> map);
+
+    List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
+
+    Integer delMrpProductPlan(String billNo);
 }

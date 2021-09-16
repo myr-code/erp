@@ -29,7 +29,7 @@ public interface Mrp_ProductPlanMapper {
     List<MrpProductplan> Mrp_ProductPlan_pageGj(DateOption dateOption);
 
     //删除
-    Integer delMrpProductPlan(Integer mid);
+    Integer delMrpProductPlan(String billNo);
 
     //更新
     Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan);

@@ -36,4 +36,14 @@ public class ProductPlanServiceImpl implements ProductPlanService {
     public List<MrpProductplan> Mrp_ProductPlan_page(Map<String, Object> map) {
         return productPlanMapper.Mrp_ProductPlan_page(map);
     }
+
+    @Override
+    public List<MrpProductplan> getMrp_ProductPlanById(Integer mid) {
+        return productPlanMapper.getMrp_ProductPlanById(mid);
+    }
+
+    @Override
+    public Integer delMrpProductPlan(String billNo) {
+        return productPlanMapper.delMrpProductPlan(billNo);
+    }
 }
