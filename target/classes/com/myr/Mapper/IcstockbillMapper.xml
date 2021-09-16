@@ -50,6 +50,19 @@
         limit #{startpage},#{pagesize}
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_saleout" resultType="int">
+        select count(*)
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_customer c on a.suppId = c.fid
+        LEFT JOIN t_settlement_method d on a.settId = d.fid
+        LEFT JOIN t_department e on a.depaId = e.fid
+        where a.billtype = '销售出库'
+        <if test="str != null or str != ''">
+            and (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
+        </if>
+    </select>
+
     <select id="IcStockBill_saleout_page" resultMap="IcStockBillMap">
         select
         a.*,b.fid as 'ffid',
@@ -64,6 +77,8 @@
         <if test="str != null or str != ''">
             and (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
         </if>
+        order by a.billDate desc,a.billNo desc,b.entryId
+        limit #{startpage},#{pagesize}
     </select>
 
     <select id="IcStockBill_pageGj" resultMap="IcStockBillMap">

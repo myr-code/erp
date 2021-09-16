@@ -123,17 +123,17 @@
 		//items.push(f);
 		//alert(f);
 		$.ajax({
-			url:"/erp/SaleOrder_add",
+			url:"/erp/MrpProductplan_add",
 			data:f,
 			type:"post",
 			dataType:"json",
 			success:function(result){
 				if(result.code==200){
 					alert("添加成功！");
-					location.href="/erp/sale/page_SaleOrderAdd";
+					location.href="/erp/mrp/page_ProductPlanAdd";
 				}else if(result.code==500){
 					alert("添加失败!");
-					location.href="/erp/sale/page_SaleOrderAdd";
+					location.href="/erp/mrp/page_ProductPlanAdd";
 				}
 				//alert(JSON.stringify(result));
 			}
@@ -211,6 +211,10 @@
 
 		var f = {cnm:cnm,pagesize:pagesize};
 		if(sourcetype == "库存产品"){
+			reqappend(f);
+		}
+		if(sourcetype == "BOM主件"){
+			f.bom = "only";
 			reqappend(f);
 		}
 	}
@@ -342,8 +346,8 @@
 					"<td><input type='text' id='qty_"+trlen+"' name='qty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
 					"<td><input type='text' name='batchNumber0"+fid+trlen+"' style='width:60px;'></td>"+
 					"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:80px;'></td>"+
-					"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:80px;'></td>"+
-					"<td id='taxamt"+trlen+"'>"+amt+"</td>"+
+					/*"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:80px;'></td>"+
+					*/"<td id='taxamt"+trlen+"'>"+amt+"</td>"+
 					"<td>"+
 					"<input style='width:90px;' name='finishDate0"+fid+trlen+"' class='form_date' readonly/>"+
 					"</td>"+
@@ -433,6 +437,7 @@
 	//合计
 	function total(){
 		var rate = $("input[name='rate']").val();
+		rate = rate == null || rate == ''?0:rate;
 		var taxAmtTotal = 0;
 		var taxAmtnoTotal = 0;
 
@@ -457,6 +462,7 @@
 		var taxPriceNo = $("#taxPriceNo_"+fid+"").val();//当前不含税单价
 		var qty = $("#qty_"+fid+"").val();//当前数量
 		var rate = $("input[name='rate']").val();//当前税率
+		rate = rate == null || rate == ''?0:rate;
 		var amt = $("#taxamt"+fid+"").text();//当前含税金额
 		//alert(taxPrice+"=="+qty);
 
@@ -591,14 +597,14 @@
 
 </style>
 
-<title>销售订单-新增</title>
+<title>计划单-新增</title>
 </head>
 <body>
 
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>销售订单-新增</b>
+		<b>计划单-新增</b>
 		<!--<b style="margin-left:30px;">SO-201025001</b>-->
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
@@ -679,7 +685,6 @@
 								<th>单位</th>
 								<th>客户订单号</th>
 								<th>数量</th>
-								<th>完工数量</th>
 								<th>批号</th>
 								<th>单价(含税)</th>
 								<th>金额</th>
@@ -767,8 +772,9 @@
 				<div class="modal-header" style="height:50px;">
 					<button class="close" data-dismiss="modal"><span>&times;</span></button>
 					<h6 class="modal-title">
-						<select id="sourcetype" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-							<option value="库存产品">库存产品(BOM主件)</option>
+						<select id="sourcetype" onchange="getitem()" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+							<option value="BOM主件">库存产品(BOM主件)</option>
+							<option value="库存产品">库存产品</option>
 						</select>
 					</h6>
 				</div>

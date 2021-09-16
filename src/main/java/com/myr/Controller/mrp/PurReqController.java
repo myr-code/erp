@@ -2,9 +2,6 @@ package com.myr.Controller.mrp;
 
 import com.myr.Bean.*;
 import com.myr.Service.ProductPlanService;
-import com.myr.Service.SaleOrderEntryService;
-import com.myr.Service.SaleOrderService;
-import com.myr.utils.DateOption;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
 import com.myr.utils.PageUtils;
@@ -25,14 +22,14 @@ import java.util.Map;
 
 @Controller
 @Scope("prototype")
-public class ProductPlanController {
+public class PurReqController {
     @Resource
     ProductPlanService productPlanService;
 
     //01-添加
-    @RequestMapping("/MrpProductplan_add")
+    @RequestMapping("/PurReq_add")
     @ResponseBody
-    public MessageRequest MrpProductplan_add(Icstockbill icstockbill, HttpServletRequest request) {
+    public MessageRequest PurReq_add(Icstockbill icstockbill, HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
@@ -117,8 +114,8 @@ public class ProductPlanController {
     }
 
     //序时簿
-    @RequestMapping("/ProductPlanIndex")
-    public String ProductPlanIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+    @RequestMapping("/PurReqIndex")
+    public String PurReqIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                                    @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
@@ -137,8 +134,8 @@ public class ProductPlanController {
     }
 
     //去到编辑页面
-    @RequestMapping("/ProductPlanEdit/{fid}")
-    public String ProductPlanEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
+    @RequestMapping("/PurReqEdit/{fid}")
+    public String PurReqEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
         List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(fid);
         MrpProductplan mrpProductplan =null;
         if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
@@ -150,9 +147,9 @@ public class ProductPlanController {
     }
 
     //更新
-    @RequestMapping("/ProductPlan_update")
+    @RequestMapping("/PurReq_update")
     @ResponseBody
-    public MessageRequest ProductPlan_update(Poorder poorder, HttpServletRequest request) {
+    public MessageRequest PurReq_update(Poorder poorder, HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
@@ -239,9 +236,9 @@ public class ProductPlanController {
     }
 
     //删除
-    @RequestMapping("/ProductPlan_del")
+    @RequestMapping("/PurReq_del")
     @ResponseBody
-    public MessageRequest ProductPlan_del(HttpServletRequest request) {
+    public MessageRequest PurReq_del(HttpServletRequest request) {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
 
         MessageRequest msg = null;

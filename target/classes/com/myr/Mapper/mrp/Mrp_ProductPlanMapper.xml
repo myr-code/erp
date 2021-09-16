@@ -11,10 +11,10 @@
 	`fdisable`, `remark`, `rowRemark`, `finish_qty`, `finish_static`, `sourFid`, `sourBillNo`,
 	`sourEntryId`, `sourType`, `billStaf`, `createDate`)
 	VALUES
-	(null, #{billNo}, #{billDate}, #{custId}, #{entryId}, #{itemId}, #{custOrderNum}, #{finishDate},
+	(null, #{billNo}, #{billDate}, #{custId.fid}, #{entryId}, #{itemId.fid}, #{custOrderNum}, #{finishDate},
 	 #{qty}, #{batchNumber}, #{taxPrice}, #{taxPriceNo}, #{fcess}, (#{taxPrice}*#{qty}), ( #{taxPriceNo} *#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ),
 	  #{fdisable}, #{remark}, #{rowRemark}, #{finishQty}, #{finishStatic}, #{sourFid}, #{sourBillNo},
-	   #{sourEntryId}, #{sourType}, #{billStaf}, now());
+	   #{sourEntryId}, #{sourType}, #{billStaf.fid}, now());
 	</insert>
 
 	<!--获取单号-->
@@ -49,10 +49,12 @@
 		<result column="billDate" property="billDate"/>
 		<result column="entryId" property="entryId"/>
 		<result column="custOrderNum" property="custOrderNum"/>
+		<result column="batchNumber" property="batchNumber"/>
 		<result column="finishDate" property="finishDate"/>
 		<result column="qty" property="qty"/>
 		<result column="finish_qty" property="finishQty"/>
 		<result column="taxPrice" property="taxPrice"/>
+		<result column="taxAmt" property="taxAmt"/>
 		<result column="remark" property="remark"/>
 
 		<!--客户-->
@@ -69,19 +71,24 @@
 			<result column="itemIdModel" property="model"></result>
 			<result column="custItemCode" property="custItemCode"></result>
 			<result column="custItemName" property="custItemName"></result>
-			<result column="custOrderNum" property="custOrderNum"></result>
+			<result column="custItemModel" property="custItemModel"></result>
+
+			<!--单位-->
+			<association property="saleUnitIdFid" javaType="com.myr.Bean.Unit">
+				<id column="fid" property="fid"/>
+				<result column="unitName" property="name"/>
+			</association>
+		</collection>
+
+		<!--职员 部门负责人-->
+		<collection property="billStaf" javaType="com.myr.Bean.Staff">
+			<id column="staffId" property="fid"/>
 		</collection>
 
 		<!--&lt;!&ndash;部门&ndash;&gt;
 		<collection property="depIdFid" javaType="com.myr.Bean.Department">
 			<id column="fid" property="fid"/>
 			<result column="depIdName" property="name"/>
-		</collection>
-
-		&lt;!&ndash;职员 部门负责人&ndash;&gt;
-		<collection property="depStaffIdFid" javaType="com.myr.Bean.Staff">
-			<id column="fid" property="fid"/>
-			<result column="depStaffIdName" property="name"/>
 		</collection>
 
 		&lt;!&ndash;职员 制单人&ndash;&gt;
@@ -96,6 +103,21 @@
 			<result column="stockName" property="name"/>
 		</collection>-->
 	</resultMap>
+
+	<select id="getMrp_ProductPlanById" resultMap="ProductPlanMap">
+		select a.*,b.`code` as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',
+		       b.custItemCode as 'custItemCode',b.custItemModel as 'custItemModel',
+		       c.`name` as 'unitName'
+		from mrp_productplan a LEFT JOIN t_item b on a.itemId = b.fid
+							   LEFT JOIN t_unit c on b.purUnitId = c.fid
+		where billNo = (select billNo from mrp_productplan where fid = #{fid})
+		order by a.billno,entryId
+	</select>
+
+	<delete id="delMrpProductPlan">
+		DELETE from mrp_productplan
+		where billNo = #{billNo}
+	</delete>
 
 
 
