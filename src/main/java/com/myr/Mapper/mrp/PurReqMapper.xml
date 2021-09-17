@@ -1,0 +1,89 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.mrp.PurReqMapper">
+
+	<!--获取单号-->
+	<select id="getBillNo" resultType="String">
+        SELECT GetBillNo(8,#{date});
+    </select>
+
+	<!--合计总数-->
+	<select id="getCounts" resultType="int">
+		select count(*)
+		from mrp_pur_req a left join t_item b on a.itemId = b.fid
+		left join t_unit c on b.purUnitId = c.fid
+		where a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
+
+	</select>
+
+	<!--序时簿-->
+	<select id="PurReq_page" resultMap="PurReqMap">
+		select a.*,b.code as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel,c.`name` as 'unitName'
+		from mrp_pur_req a left join t_item b on a.itemId = b.fid
+		left join t_unit c on b.purUnitId = c.fid
+		where a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
+		order by billDate desc,billNo desc,entryId
+		limit #{startpage},#{pagesize}
+	</select>
+
+	<resultMap id="PurReqMap" type="com.myr.Bean.MrpPurReq">
+		<id column="fid" property="fid"/>
+		<result column="billNo" property="billNo"/>
+		<result column="billDate" property="billDate"/>
+		<result column="entryId" property="entryId"/>
+		<result column="custOrderNum" property="custOrderNum"/>
+		<result column="batchNumber" property="batchNumber"/>
+		<result column="finishDate" property="finishDate"/>
+		<result column="qty" property="qty"/>
+		<result column="finish_qty" property="finishQty"/>
+		<result column="taxPrice" property="taxPrice"/>
+		<result column="taxAmt" property="taxAmt"/>
+		<result column="remark" property="remark"/>
+
+		<!--item-->
+		<collection property="itemId" javaType="com.myr.Bean.Item">
+			<id column="itemId" property="fid"></id>
+			<result column="itemIdCode" property="code"></result>
+			<result column="itemIdName" property="name"></result>
+			<result column="itemIdModel" property="model"></result>
+			<result column="custItemCode" property="custItemCode"></result>
+			<result column="custItemName" property="custItemName"></result>
+			<result column="custItemModel" property="custItemModel"></result>
+
+			<!--单位-->
+			<association property="saleUnitIdFid" javaType="com.myr.Bean.Unit">
+				<id column="fid" property="fid"/>
+				<result column="unitName" property="name"/>
+			</association>
+		</collection>
+
+		<!--职员 部门负责人-->
+		<!--<collection property="billStaf" javaType="com.myr.Bean.Staff">
+			<id column="staffId" property="fid"/>
+		</collection>-->
+
+		<!--&lt;!&ndash;部门&ndash;&gt;
+		<collection property="depIdFid" javaType="com.myr.Bean.Department">
+			<id column="fid" property="fid"/>
+			<result column="depIdName" property="name"/>
+		</collection>
+
+		&lt;!&ndash;职员 制单人&ndash;&gt;
+		<collection property="billStaffIdFid" javaType="com.myr.Bean.Staff">
+			<id column="fid" property="fid"/>
+			<result column="billStaffIdName" property="name"/>
+		</collection>
+
+		&lt;!&ndash;仓库 item默认仓库&ndash;&gt;
+		<collection property="stockId" javaType="com.myr.Bean.Store">
+			<id column="stockId" property="fid"/>
+			<result column="stockName" property="name"/>
+		</collection>-->
+	</resultMap>
+
+
+
+
+
+</mapper>

@@ -1,7 +1,9 @@
 package com.myr.Controller.mrp;
 
 import com.myr.Bean.*;
+import com.myr.Mapper.mrp.PurReqMapper;
 import com.myr.Service.ProductPlanService;
+import com.myr.Service.PurReqService;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
 import com.myr.utils.PageUtils;
@@ -25,6 +27,9 @@ import java.util.Map;
 public class PurReqController {
     @Resource
     ProductPlanService productPlanService;
+
+    @Resource
+    PurReqService purReqService;
 
     //01-添加
     @RequestMapping("/PurReq_add")
@@ -52,18 +57,18 @@ public class PurReqController {
                 MrpProductplan MrpProductplan = new MrpProductplan();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
-                /*String itemName = request.getParameter("itemName" + num);//item name
+                //*String itemName = request.getParameter("itemName" + num);//item name
                 String itemCode = request.getParameter("itemCode" + num);//item name
                 String itemModel = request.getParameter("itemModel" + num);//item model
                 String custItemCode = request.getParameter("custItemCode" + num);//custitem code
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
-                String unitName = request.getParameter("unitName" + num);//单位*/
+                String unitName = request.getParameter("unitName" + num);//单位*//*
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
                 Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
-                /*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*/
+                //*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*//*
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
-                /*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*/
+                //*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*//*
                 String rowRemark = request.getParameter("rowRemark" + num);//行备注
                 String finishDate = request.getParameter("finishDate" + num);//完成日期
                 int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
@@ -123,14 +128,14 @@ public class PurReqController {
         map.put("cnm",AllQuery);
 
         //获取总条数
-        int countTatol = productPlanService.getCounts(map);
+        int countTatol = purReqService.getCounts(map);
         //主数据
-        List<MrpProductplan> mrpProductplans = productPlanService.Mrp_ProductPlan_page(map);
+        List<MrpPurReq> PurReqs = purReqService.PurReq_page(map);
         //封装数据
-        PageUtils<MrpProductplan> pageUtils = new PageUtils<MrpProductplan>(startpage, pagesize, countTatol, mrpProductplans);
+        PageUtils<MrpPurReq> pageUtils = new PageUtils<MrpPurReq>(startpage, pagesize, countTatol, PurReqs);
         model.addAttribute("datas",pageUtils);
 
-        return "desktop/ProductPlanIndex";
+        return "desktop/PurReqIndex";
     }
 
     //去到编辑页面

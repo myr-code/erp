@@ -308,7 +308,7 @@
 			data.AllQuery = AllQuery;
 		}
 		//alert(data);
-		window.location.href="ProductPlanIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
+		window.location.href="PurReqIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
 	}
 	</script>
 
@@ -423,7 +423,7 @@
 	<center>
 		<h4 style="float:left;color: #5bc0de;"><b>计划单</b></h4>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left120201','计划单-new','mrp/page_ProductPlanAdd');">新增</button>
+			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left150101','采购申请单-new','mrp/page_PurReqAdd');">新增</button>
 
 			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -510,7 +510,6 @@
 		<th>序号</th>
 		<th>公司单号</th>
 		<th>单据日期</th>
-		<th>客户名称</th>
 		<th>产品编码</th>
 		<th>产品名称</th>
 		<th>产品型号</th>
@@ -527,7 +526,6 @@
 		<td th:text="${state.index+1}">1</td>
 		<td th:text="${data.billNo}">ALISA</td>
 		<td th:text="${data.billDate}">女</td>
-		<td th:text="${data.custId.name}">18</td>
 		<td th:text="${data.itemId.code}">18</td>
 		<td th:text="${data.itemId.name}">18</td>
 		<td th:text="${data.itemId.model}">18</td>
