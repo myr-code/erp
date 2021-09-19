@@ -38,23 +38,21 @@ public class PurReqController {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<MrpPurReq> MrpPurReqs = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
-            Integer custId = Integer.parseInt(request.getParameter("custId"));
+            /*Integer custId = Integer.parseInt(request.getParameter("custId"));
             Customer customer = new Customer();
-            customer.setFid(custId);
+            customer.setFid(custId);*/
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
-            String billNo = productPlanService.getBillNo(billDate);
+            String billNo = purReqService.getBillNo(billDate);
             Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
-            Staff staff = new Staff();
-            staff.setFid(depStaffId);
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                MrpPurReq MrpPurReq = new MrpPurReq();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 //*String itemName = request.getParameter("itemName" + num);//item name
@@ -76,33 +74,32 @@ public class PurReqController {
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
+                MrpPurReq.setBillNo(billNo);
+                MrpPurReq.setBillDate(billDate);
+                MrpPurReq.setEntryId(entry);
                 Item item = new Item();
                 item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(staff);
+                MrpPurReq.setItemId(item);
+                MrpPurReq.setCustOrderNum(custOrderNum);
+                MrpPurReq.setFinishDate(finishDate);
+                MrpPurReq.setQty(qty);
+                MrpPurReq.setBatchNumber(batchNumber);
+                MrpPurReq.setTaxPrice(taxPrice);
+                MrpPurReq.setTaxPriceNo(taxPrice);
+                MrpPurReq.setFcess(0);
+                MrpPurReq.setRemark(remark);
+                MrpPurReq.setRowRemark(rowRemark);
+                MrpPurReq.setSourEntryId(sourEntryId);
+                MrpPurReq.setSourType(sourType);
+                MrpPurReq.setBillStaf(depStaffId);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+                MrpPurReqs.add(MrpPurReq);
+                System.out.println("item="+MrpPurReq);
                 entry++;//分录号自增
             }
 
 
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
+            Integer count = purReqService.add_PurReq(MrpPurReqs);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -112,7 +109,6 @@ public class PurReqController {
                 msg = new MessageRequest(500,"添加失败",null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             msg = new MessageRequest(500,"添加失败",null);
         }
         return msg;
@@ -126,6 +122,7 @@ public class PurReqController {
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
         map.put("cnm",AllQuery);
+        System.out.println("cnm="+map.get("cnm"));
 
         //获取总条数
         int countTatol = purReqService.getCounts(map);
@@ -141,14 +138,15 @@ public class PurReqController {
     //去到编辑页面
     @RequestMapping("/PurReqEdit/{fid}")
     public String PurReqEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
-        List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(fid);
-        MrpProductplan mrpProductplan =null;
-        if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-            mrpProductplan = mrp_productPlanById.get(0);
+        List<MrpPurReq> purReqById = purReqService.getPurReqById(fid);
+        MrpPurReq mrpPurReq = null;
+        if(purReqById.size()>0&&purReqById!=null){
+            mrpPurReq = purReqById.get(0);
         }
-        model.addAttribute("data",mrpProductplan);
-        model.addAttribute("datas",mrp_productPlanById);
-        return "/mrp/edit/ProductPlanEdit";
+        System.out.println(mrpPurReq);
+        model.addAttribute("data",mrpPurReq);
+        model.addAttribute("datas",purReqById);
+        return "/mrp/edit/PurReqEdit";
     }
 
     //更新
@@ -158,23 +156,22 @@ public class PurReqController {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<MrpPurReq> mrpPurReqs = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
-            Integer custId = Integer.parseInt(request.getParameter("custId"));
+            /*Integer custId = Integer.parseInt(request.getParameter("custId"));
             Customer customer = new Customer();
-            customer.setFid(custId);
+            customer.setFid(custId);*/
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
             String billNo = request.getParameter("billNo");
+            String mrpNo = request.getParameter("mrpNo");
             Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
-            Staff staff = new Staff();
-            staff.setFid(depStaffId);
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                MrpPurReq mrpPurReq = new MrpPurReq();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 /*String itemName = request.getParameter("itemName" + num);//item name
@@ -196,35 +193,35 @@ public class PurReqController {
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
+                mrpPurReq.setBillNo(billNo);
+                mrpPurReq.setBillDate(billDate);
+                mrpPurReq.setBillDate(billDate);
+                mrpPurReq.setMrpNo(mrpNo);
                 Item item = new Item();
                 item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(staff);
+                mrpPurReq.setItemId(item);
+                mrpPurReq.setCustOrderNum(custOrderNum);
+                mrpPurReq.setFinishDate(finishDate);
+                mrpPurReq.setQty(qty);
+                mrpPurReq.setBatchNumber(batchNumber);
+                mrpPurReq.setTaxPrice(taxPrice);
+                mrpPurReq.setTaxPriceNo(taxPrice);
+                mrpPurReq.setFcess(0);
+                mrpPurReq.setRemark(remark);
+                mrpPurReq.setRowRemark(rowRemark);
+                mrpPurReq.setSourEntryId(sourEntryId);
+                mrpPurReq.setSourType(sourType);
+                mrpPurReq.setBillStaf(depStaffId);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+                mrpPurReqs.add(mrpPurReq);
+                System.out.println("item="+mrpPurReq);
                 entry++;//分录号自增
             }
 
             //删除计划单
-            productPlanService.delMrpProductPlan(billNo);
+            purReqService.delPurReq(billNo);
             //添加计划单
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
+            Integer count = purReqService.add_PurReq(mrpPurReqs);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -234,7 +231,6 @@ public class PurReqController {
                 msg = new MessageRequest(500,"更新失败",null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             msg = new MessageRequest(500,"更新失败",null);
         }
         return msg;
@@ -249,10 +245,10 @@ public class PurReqController {
         MessageRequest msg = null;
         try {
             for (String data : datas) {
-                List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(Integer.parseInt(data));
-                if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-                    String billNo = mrp_productPlanById.get(0).getBillNo();
-                    productPlanService.delMrpProductPlan(billNo);
+                List<MrpPurReq> purReqById = purReqService.getPurReqById(Integer.parseInt(data));
+                if(purReqById.size()>0&&purReqById!=null){
+                    String billNo = purReqById.get(0).getBillNo();
+                    purReqService.delPurReq(billNo);
                 }
             }
 

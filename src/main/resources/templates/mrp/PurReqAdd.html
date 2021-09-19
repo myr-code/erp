@@ -99,10 +99,10 @@
 	//表单效验
 	function fromcheck(){
 		//检测名称
-		if($("select[name='custId']").val() == -1){
+		/*if($("select[name='custId']").val() == -1){
 			alert("请选择客户！");
 			return false;
-		}
+		}*/
 		//是否有选择行检测
 		if($(".num").size() == 0){
 			alert("请选择产品！");
@@ -123,17 +123,17 @@
 		//items.push(f);
 		//alert(f);
 		$.ajax({
-			url:"/erp/MrpProductplan_add",
+			url:"/erp/PurReq_add",
 			data:f,
 			type:"post",
 			dataType:"json",
 			success:function(result){
 				if(result.code==200){
 					alert("添加成功！");
-					location.href="/erp/mrp/page_ProductPlanAdd";
+					location.href="/erp/mrp/page_PurReqAdd";
 				}else if(result.code==500){
 					alert("添加失败!");
-					location.href="/erp/mrp/page_ProductPlanAdd";
+					/*location.href="/erp/mrp/page_PurReqAdd";*/
 				}
 				//alert(JSON.stringify(result));
 			}
@@ -145,7 +145,7 @@
 	var custJOSN = null;
 	$(function (){
 		//select name="" custId settleId depId depStaffId
-		//客户
+		/*//客户
 		$.ajax({
 			url:"/erp/Customer_all",
 			type:"post",
@@ -158,7 +158,7 @@
 				custJOSN = result;//预存 选择后填写地址
 
 			}
-		});
+		});*/
 
 		//部门
 		$.ajax({
@@ -188,7 +188,7 @@
 			}
 		});
 
-		//结算方式
+		/*//结算方式
 		$.ajax({
 			url:"/erp/SettMethod_all",
 			type:"post",
@@ -200,7 +200,7 @@
 				}
 
 			}
-		});
+		});*/
 	});
 
 	//点击来源 获取item信息
@@ -604,7 +604,7 @@
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>计划单-新增</b>
+		<b>申请采购单-新增</b>
 		<!--<b style="margin-left:30px;">SO-201025001</b>-->
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
@@ -625,14 +625,14 @@
 	<form method="post" action="CustType_add" id="f1">
 		<div class="panel-body">
 
-			<div class="input-group input-group-sm">
+			<!--<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:red;"></span>客户</button>
 				 </span>
 				<select name="custId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
-				　　<option value="-1">-- --</option>
+				　　<option value="-1">&#45;&#45; &#45;&#45;</option>
 				</select>
-			</div>
+			</div>-->
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">单据日期</button>
@@ -773,8 +773,8 @@
 					<button class="close" data-dismiss="modal"><span>&times;</span></button>
 					<h6 class="modal-title">
 						<select id="sourcetype" onchange="getitem()" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-							<option value="BOM主件">库存产品(BOM主件)</option>
 							<option value="库存产品">库存产品</option>
+							<option value="BOM主件">库存产品(BOM主件)</option>
 						</select>
 					</h6>
 				</div>

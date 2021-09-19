@@ -185,9 +185,19 @@
 			dataType:"json",
 			success:function (result) {
 				//alert(JSON.stringify(result));
+
+				var billStaf = [[${data.billStaf}]];
 				for(var i=0;i<result.length;i++){
-					$("select[name='depStaffId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					if(billStaf == result[i].fid){
+						$("select[name='depStaffId']").append("<option selected value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}else{
+						$("select[name='depStaffId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}
 				}
+
+				/*for(var i=0;i<result.length;i++){
+					$("select[name='depStaffId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}*/
 
 			}
 		});
@@ -608,7 +618,7 @@
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>计划单-新增</b>
+		<b>计划单-编辑</b>
 		<b style="margin-left:30px;" th:text="${data.billNo}">SO-201025001</b>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PurReqService {
-    /*Integer addMrp_ProductPlan(List<MrpProductplan> mrpProductplans);*/
+    Integer add_PurReq(List<MrpPurReq> mrpPurReqs);
 
     //获取系统单号  1销售订单
     String getBillNo(String dates);
@@ -17,7 +17,7 @@ public interface PurReqService {
 
     List<MrpPurReq> PurReq_page(Map<String,Object> map);
 
-    /*List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
+    List<MrpPurReq> getPurReqById(Integer mid);
 
-    Integer delMrpProductPlan(String billNo);*/
+    Integer delPurReq(String billNo);
 }

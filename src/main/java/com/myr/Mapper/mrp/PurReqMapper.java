@@ -11,7 +11,7 @@ import java.util.Map;
 @Mapper
 public interface PurReqMapper {
     //01-添加
-    Integer addMrp_ProductPlan(MrpProductplan mrpProductplan);
+    Integer add_PurReq(MrpPurReq mrpPurReq);
 
     //获取系统单号  1销售订单
     String getBillNo(String dates);
@@ -29,13 +29,13 @@ public interface PurReqMapper {
     List<MrpProductplan> Mrp_ProductPlan_pageGj(DateOption dateOption);
 
     //删除
-    Integer delMrpProductPlan(String billNo);
+    Integer delPurReq(String billNo);
 
     //更新
     Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan);
 
     //获取一个
-    List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
+    List<MrpPurReq> getPurReqById(Integer mid);
 
 
 }

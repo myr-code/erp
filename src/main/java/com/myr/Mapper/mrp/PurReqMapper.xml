@@ -3,6 +3,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.myr.Mapper.mrp.PurReqMapper">
 
+	<!--添加-->
+	<insert id="add_PurReq">
+		INSERT INTO `mrp_pur_req`
+	(`fid`, `billNo`, `billDate`, `mrpNo`,`entryId`, `itemId`, `custOrderNum`, `finishDate`,
+	`qty`, `batchNumber`, `taxPrice`, `taxPriceNo`, `fcess`, `taxAmt`, `taxAmtNo`, `fcessAmt`,
+	`fdisable`, `remark`, `rowRemark`, `finish_qty`, `finish_static`, `sourFid`, `sourBillNo`,
+	`sourEntryId`, `sourType`, `billStaf`, `createDate`)
+	VALUES
+	(null, #{billNo}, #{billDate}, #{mrpNo}, #{entryId}, #{itemId.fid}, #{custOrderNum}, #{finishDate},
+	 #{qty}, #{batchNumber}, #{taxPrice}, #{taxPriceNo}, #{fcess}, (#{taxPrice}*#{qty}), ( #{taxPriceNo} *#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ),
+	  #{fdisable}, #{remark}, #{rowRemark}, #{finishQty}, #{finishStatic}, #{sourFid}, #{sourBillNo},
+	   #{sourEntryId}, #{sourType}, #{billStaf}, now());
+	</insert>
+
 	<!--获取单号-->
 	<select id="getBillNo" resultType="String">
         SELECT GetBillNo(8,#{date});
@@ -31,6 +45,7 @@
 		<id column="fid" property="fid"/>
 		<result column="billNo" property="billNo"/>
 		<result column="billDate" property="billDate"/>
+		<result column="mrpNo" property="mrpNo"/>
 		<result column="entryId" property="entryId"/>
 		<result column="custOrderNum" property="custOrderNum"/>
 		<result column="batchNumber" property="batchNumber"/>
@@ -40,6 +55,7 @@
 		<result column="taxPrice" property="taxPrice"/>
 		<result column="taxAmt" property="taxAmt"/>
 		<result column="remark" property="remark"/>
+		<result column="billStaf" property="billStaf"/>
 
 		<!--item-->
 		<collection property="itemId" javaType="com.myr.Bean.Item">
@@ -82,6 +98,20 @@
 		</collection>-->
 	</resultMap>
 
+	<select id="getPurReqById" resultMap="PurReqMap">
+		select a.*,b.`code` as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',
+		       b.custItemCode as 'custItemCode',b.custItemModel as 'custItemModel',
+		       c.`name` as 'unitName'
+		from mrp_pur_req a LEFT JOIN t_item b on a.itemId = b.fid
+							   LEFT JOIN t_unit c on b.purUnitId = c.fid
+		where billNo = (select billNo from mrp_pur_req where fid = #{fid})
+		order by a.billno,entryId
+	</select>
+
+	<delete id="delPurReq">
+		DELETE from mrp_pur_req
+		where billNo = #{billNo}
+	</delete>
 
 
 

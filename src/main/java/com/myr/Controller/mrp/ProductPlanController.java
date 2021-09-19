@@ -46,8 +46,6 @@ public class ProductPlanController {
             String remark = request.getParameter("remark");
             String billNo = productPlanService.getBillNo(billDate);
             Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
-            Staff staff = new Staff();
-            staff.setFid(depStaffId);
 
             //整理item集合
             int entry = 1;
@@ -92,7 +90,7 @@ public class ProductPlanController {
                 MrpProductplan.setRowRemark(rowRemark);
                 MrpProductplan.setSourEntryId(sourEntryId);
                 MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(staff);
+                MrpProductplan.setBillStaf(depStaffId);
 
                 MrpProductplans.add(MrpProductplan);
                 System.out.println("item="+MrpProductplan);
@@ -144,6 +142,7 @@ public class ProductPlanController {
         if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
             mrpProductplan = mrp_productPlanById.get(0);
         }
+        System.out.println("mrpProductplan="+mrpProductplan);
         model.addAttribute("data",mrpProductplan);
         model.addAttribute("datas",mrp_productPlanById);
         return "/mrp/edit/ProductPlanEdit";
@@ -166,8 +165,6 @@ public class ProductPlanController {
             String remark = request.getParameter("remark");
             String billNo = request.getParameter("billNo");
             Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
-            Staff staff = new Staff();
-            staff.setFid(depStaffId);
 
             //整理item集合
             int entry = 1;
@@ -212,7 +209,7 @@ public class ProductPlanController {
                 MrpProductplan.setRowRemark(rowRemark);
                 MrpProductplan.setSourEntryId(sourEntryId);
                 MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(staff);
+                MrpProductplan.setBillStaf(depStaffId);
 
                 MrpProductplans.add(MrpProductplan);
                 System.out.println("item="+MrpProductplan);

@@ -34,7 +34,7 @@ public class MrpProductplan {
   private String sourBillNo;
   private int sourEntryId;
   private String sourType;
-  private Staff billStaf;
+  private int billStaf;
   private String createDate;
   private String editDate;
 

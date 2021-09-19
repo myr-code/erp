@@ -14,7 +14,7 @@
 	(null, #{billNo}, #{billDate}, #{custId.fid}, #{entryId}, #{itemId.fid}, #{custOrderNum}, #{finishDate},
 	 #{qty}, #{batchNumber}, #{taxPrice}, #{taxPriceNo}, #{fcess}, (#{taxPrice}*#{qty}), ( #{taxPriceNo} *#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ),
 	  #{fdisable}, #{remark}, #{rowRemark}, #{finishQty}, #{finishStatic}, #{sourFid}, #{sourBillNo},
-	   #{sourEntryId}, #{sourType}, #{billStaf.fid}, now());
+	   #{sourEntryId}, #{sourType}, #{billStaf}, now());
 	</insert>
 
 	<!--获取单号-->
@@ -56,6 +56,7 @@
 		<result column="taxPrice" property="taxPrice"/>
 		<result column="taxAmt" property="taxAmt"/>
 		<result column="remark" property="remark"/>
+		<result column="billStaf" property="billStaf"/>
 
 		<!--客户-->
 		<collection property="custId" javaType="com.myr.Bean.Customer">
@@ -81,9 +82,9 @@
 		</collection>
 
 		<!--职员 部门负责人-->
-		<collection property="billStaf" javaType="com.myr.Bean.Staff">
-			<id column="staffId" property="fid"/>
-		</collection>
+		<!--<collection property="billStaf" javaType="com.myr.Bean.Staff">
+			<id column="billStaf" property="fid"/>
+		</collection>-->
 
 		<!--&lt;!&ndash;部门&ndash;&gt;
 		<collection property="depIdFid" javaType="com.myr.Bean.Department">
