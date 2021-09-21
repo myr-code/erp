@@ -15,7 +15,7 @@ public class MrpBackmater {
   private int custId;
   private String mrpNo;
   private int entryId;
-  private int itemId;
+  private Item itemId;
   private String custOrderNum;
   private String finishDate;
   private double standQty;
