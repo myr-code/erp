@@ -33,11 +33,11 @@ public class BackMaterController {
     //01-添加
     @RequestMapping("/BackMater_add")
     @ResponseBody
-    public MessageRequest BackMater_add(Icstockbill icstockbill, HttpServletRequest request) {
+    public MessageRequest BackMater_add(HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<MrpBackmater> mrpBackmaters = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
             Integer custId = Integer.parseInt(request.getParameter("custId"));
@@ -45,13 +45,13 @@ public class BackMaterController {
             customer.setFid(custId);
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
-            String billNo = productPlanService.getBillNo(billDate);
+            String billNo = backMaterService.getBillNo(billDate);
             Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                MrpBackmater backmater = new MrpBackmater();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 /*String itemName = request.getParameter("itemName" + num);//item name
@@ -73,33 +73,32 @@ public class BackMaterController {
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
+                backmater.setBillNo(billNo);
+                backmater.setBillDate(billDate);
+                backmater.setCustId(customer);
+                backmater.setEntryId(entry);
                 Item item = new Item();
                 item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(depStaffId);
+                backmater.setItemId(item);
+                backmater.setCustOrderNum(custOrderNum);
+                backmater.setFinishDate(finishDate);
+                backmater.setQty(qty);
+                backmater.setBatchNumber(batchNumber);
+                backmater.setTaxPrice(taxPrice);
+                backmater.setTaxPriceNo(taxPrice);
+                backmater.setFcess(0);
+                backmater.setRemark(remark);
+                backmater.setRowRemark(rowRemark);
+                backmater.setSourEntryId(sourEntryId);
+                backmater.setSourType(sourType);
+                backmater.setBillStaf(depStaffId);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+                mrpBackmaters.add(backmater);
+                System.out.println("item="+backmater);
                 entry++;//分录号自增
             }
 
-
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
+            Integer count = backMaterService.add_BackMater(mrpBackmaters);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -109,7 +108,6 @@ public class BackMaterController {
                 msg = new MessageRequest(500,"添加失败",null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             msg = new MessageRequest(500,"添加失败",null);
         }
         return msg;

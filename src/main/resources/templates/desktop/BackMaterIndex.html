@@ -77,7 +77,7 @@
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
 			var fid = chks.val();
-			window.parent.topage('left120203','计划单-编辑','ProductPlanEdit/'+fid);
+			window.parent.topage('left40303','计划单-编辑','ProductPlanEdit/'+fid);
 		});
 
 		//除了表头（第一行）以外所有的行添加click事件.
@@ -189,7 +189,7 @@
 		}else{
 			var fid = $("input[type='checkbox']:checked").val();
 			/*location.href="CustomerEdit/"+fid;*/
-			window.parent.topage('left120203','生产计划-编辑','ProductPlanEdit/'+fid);
+			window.parent.topage('left40303','生产备料-编辑','ProductPlanEdit/'+fid);
 		}
 	}
 
@@ -423,7 +423,7 @@
 	<center>
 		<h4 style="float:left;color: #5bc0de;"><b>生产备料单</b></h4>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left120201','计划单-new','mrp/page_ProductPlanAdd');">新增</button>
+			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left40301','生产备料-new','mrp/page_BackMaterAdd');">新增</button>
 
 			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

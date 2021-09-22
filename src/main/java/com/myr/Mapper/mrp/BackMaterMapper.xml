@@ -4,8 +4,8 @@
 <mapper namespace="com.myr.Mapper.mrp.BackMaterMapper">
 
 	<!--添加-->
-	<insert id="addMrp_ProductPlan">
-		INSERT INTO `mrp_productplan`
+	<insert id="add_BackMater">
+		INSERT INTO `mrp_backmater`
 	(`fid`, `billNo`, `billDate`, `custId`, `entryId`, `itemId`, `custOrderNum`, `finishDate`,
 	`qty`, `batchNumber`, `taxPrice`, `taxPriceNo`, `fcess`, `taxAmt`, `taxAmtNo`, `fcessAmt`,
 	`fdisable`, `remark`, `rowRemark`, `finish_qty`, `finish_static`, `sourFid`, `sourBillNo`,
@@ -19,7 +19,7 @@
 
 	<!--获取单号-->
 	<select id="getBillNo" resultType="String">
-        SELECT GetBillNo(7,#{date});
+        SELECT GetBillNo(6,#{date});
     </select>
 
 	<!--合计总数-->
@@ -29,10 +29,6 @@
 		left join t_customer c on a.custId = c.fid
 		where  a.billNo like '%${cnm}%' or c.name like '%${cnm}%' or b.code like '%${cnm}%' or b.model like '%${cnm}%'
 		order by billDate desc,billNo desc,entryId
-	</select>
-
-	<select id="Mrp_ProductPlan_sour" resultMap="ProductPlanMap">
-
 	</select>
 
 	<select id="BackMater_page" resultMap="BackMaterMap">
@@ -48,7 +44,6 @@
 		<result column="billNo" property="billNo"/>
 		<result column="billDate" property="billDate"/>
 		<result column="entryId" property="entryId"/>
-		<result column="custId" property="custId"/>
 		<result column="custOrderNum" property="custOrderNum"/>
 		<result column="batchNumber" property="batchNumber"/>
 		<result column="finishDate" property="finishDate"/>
@@ -60,10 +55,10 @@
 		<result column="billStaf" property="billStaf"/>
 
 		<!--客户-->
-		<!--<collection property="custId" javaType="com.myr.Bean.Customer">
+		<collection property="custId" javaType="com.myr.Bean.Customer">
 			<id column="custId" property="fid"/>
 			<result column="custIdName" property="name"/>
-		</collection>-->
+		</collection>
 
 		<!--item-->
 		<collection property="itemId" javaType="com.myr.Bean.Item">
@@ -106,7 +101,7 @@
 		</collection>-->
 	</resultMap>
 
-	<select id="getMrp_ProductPlanById" resultMap="ProductPlanMap">
+	<!--<select id="getMrp_ProductPlanById" resultMap="ProductPlanMap">
 		select a.*,b.`code` as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',
 		       b.custItemCode as 'custItemCode',b.custItemModel as 'custItemModel',
 		       c.`name` as 'unitName'
@@ -114,7 +109,7 @@
 							   LEFT JOIN t_unit c on b.purUnitId = c.fid
 		where billNo = (select billNo from mrp_productplan where fid = #{fid})
 		order by a.billno,entryId
-	</select>
+	</select>-->
 
 	<delete id="delMrpProductPlan">
 		DELETE from mrp_productplan

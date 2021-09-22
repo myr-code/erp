@@ -11,7 +11,7 @@ import java.util.Map;
 @Mapper
 public interface BackMaterMapper {
     //01-添加
-    Integer addMrp_ProductPlan(MrpProductplan mrpProductplan);
+    Integer add_BackMater(MrpBackmater mrpBackmater);
 
     //获取系统单号  1销售订单
     String getBillNo(String dates);

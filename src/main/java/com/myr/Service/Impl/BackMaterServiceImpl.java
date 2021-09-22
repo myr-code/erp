@@ -17,14 +17,18 @@ public class BackMaterServiceImpl implements BackMaterService {
     @Resource
     BackMaterMapper backMaterMapper;
 
+
     @Override
-    public Integer addMrp_ProductPlan(List<MrpProductplan> mrpProductplans) {
-        return null;
+    public Integer add_BackMater(List<MrpBackmater> mrpBackmater) {
+        for (MrpBackmater backmater : mrpBackmater) {
+            backMaterMapper.add_BackMater(backmater);
+        }
+        return 1;
     }
 
     @Override
     public String getBillNo(String dates) {
-        return null;
+        return backMaterMapper.getBillNo(dates);
     }
 
     @Override

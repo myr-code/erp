@@ -19,7 +19,7 @@
 
 	<!--获取单号-->
 	<select id="getBillNo" resultType="String">
-        SELECT GetBillNo(8,#{date});
+        SELECT GetBillNo(5,#{date});
     </select>
 
 	<!--合计总数-->

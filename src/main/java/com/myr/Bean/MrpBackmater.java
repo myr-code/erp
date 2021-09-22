@@ -12,7 +12,7 @@ public class MrpBackmater {
   private int fid;
   private String billNo;
   private String billDate;
-  private int custId;
+  private Customer custId;
   private String mrpNo;
   private int entryId;
   private Item itemId;
