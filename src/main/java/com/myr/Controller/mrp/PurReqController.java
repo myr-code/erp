@@ -149,7 +149,7 @@ public class PurReqController {
     //更新
     @RequestMapping("/PurReq_update")
     @ResponseBody
-    public MessageRequest PurReq_update(Poorder poorder, HttpServletRequest request) {
+    public MessageRequest PurReq_update(HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
@@ -215,11 +215,15 @@ public class PurReqController {
                 entry++;//分录号自增
             }
 
-            //删除计划单
+            /*//删除计划单
             purReqService.delPurReq(billNo);
             //添加计划单
-            Integer count = purReqService.add_PurReq(mrpPurReqs);
-            msg = null;
+            Integer count = purReqService.add_PurReq(mrpPurReqs);*/
+
+            MrpPurReq mrpPurReq = new MrpPurReq();
+            mrpPurReq.setBillNo(billNo);
+            Integer count = purReqService.PurReq_update(mrpPurReq,mrpPurReqs);
+
             if(count > 0){
                 //登录成功
                 msg = new MessageRequest(200,"更新成功",null);

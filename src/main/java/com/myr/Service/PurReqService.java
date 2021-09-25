@@ -20,4 +20,6 @@ public interface PurReqService {
     List<MrpPurReq> getPurReqById(Integer mid);
 
     Integer delPurReq(String billNo);
+
+    Integer PurReq_update(MrpPurReq mrpPurReq,List<MrpPurReq> mrpPurReqs);
 }

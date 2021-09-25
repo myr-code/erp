@@ -136,26 +136,26 @@ public class BackMaterController {
 
     //去到编辑页面
     @RequestMapping("/BackMaterEdit/{fid}")
-    public String BackMaterEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
-        List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(fid);
-        MrpProductplan mrpProductplan =null;
-        if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-            mrpProductplan = mrp_productPlanById.get(0);
+    public String BackMaterEdit(@PathVariable("fid") int fid, Model model) {
+        List<MrpBackmater> backMaterById = backMaterService.getBackMaterById(fid);
+        MrpBackmater mrpBackmater =null;
+        if(backMaterById.size()>0&&backMaterById!=null){
+            mrpBackmater = backMaterById.get(0);
         }
-        System.out.println("mrpProductplan="+mrpProductplan);
-        model.addAttribute("data",mrpProductplan);
-        model.addAttribute("datas",mrp_productPlanById);
-        return "/mrp/edit/ProductPlanEdit";
+        /*System.out.println("mrpProductplan="+backMaterById);*/
+        model.addAttribute("data",mrpBackmater);
+        model.addAttribute("datas",backMaterById);
+        return "/mrp/edit/BackMaterEdit";
     }
 
     //更新
     @RequestMapping("/BackMater_update")
     @ResponseBody
-    public MessageRequest BackMater_update(Poorder poorder, HttpServletRequest request) {
+    public MessageRequest BackMater_update(HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<MrpBackmater> mrpBackmaters = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
             Integer custId = Integer.parseInt(request.getParameter("custId"));
@@ -169,7 +169,7 @@ public class BackMaterController {
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                MrpBackmater mrpBackmater = new MrpBackmater();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 /*String itemName = request.getParameter("itemName" + num);//item name
@@ -191,35 +191,39 @@ public class BackMaterController {
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
+                mrpBackmater.setBillNo(billNo);
+                mrpBackmater.setBillDate(billDate);
+                mrpBackmater.setCustId(customer);
+                mrpBackmater.setEntryId(entry);
                 Item item = new Item();
                 item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(depStaffId);
+                mrpBackmater.setItemId(item);
+                mrpBackmater.setCustOrderNum(custOrderNum);
+                mrpBackmater.setFinishDate(finishDate);
+                mrpBackmater.setQty(qty);
+                mrpBackmater.setBatchNumber(batchNumber);
+                mrpBackmater.setTaxPrice(taxPrice);
+                mrpBackmater.setTaxPriceNo(taxPrice);
+                mrpBackmater.setFcess(0);
+                mrpBackmater.setRemark(remark);
+                mrpBackmater.setRowRemark(rowRemark);
+                mrpBackmater.setSourEntryId(sourEntryId);
+                mrpBackmater.setSourType(sourType);
+                mrpBackmater.setBillStaf(depStaffId);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+                mrpBackmaters.add(mrpBackmater);
+                System.out.println("item="+mrpBackmater);
                 entry++;//分录号自增
             }
 
-            //删除计划单
-            productPlanService.delMrpProductPlan(billNo);
+            /*//删除计划单
+            backMaterService.delBackMater(billNo);
             //添加计划单
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
+            Integer count = backMaterService.add_BackMater(mrpBackmaters);*/
+            MrpBackmater mrpBackmater = new MrpBackmater();
+            mrpBackmater.setBillNo(billNo);
+            Integer count = backMaterService.BackMater_update(mrpBackmater,mrpBackmaters);
+
             msg = null;
             if(count > 0){
                 //登录成功
@@ -229,7 +233,6 @@ public class BackMaterController {
                 msg = new MessageRequest(500,"更新失败",null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             msg = new MessageRequest(500,"更新失败",null);
         }
         return msg;
@@ -244,9 +247,9 @@ public class BackMaterController {
         MessageRequest msg = null;
         try {
             for (String data : datas) {
-                List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(Integer.parseInt(data));
-                if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-                    String billNo = mrp_productPlanById.get(0).getBillNo();
+                List<MrpBackmater> mrpBackmaters = backMaterService.getBackMaterById(Integer.parseInt(data));
+                if(mrpBackmaters.size()>0&&mrpBackmaters!=null){
+                    String billNo = mrpBackmaters.get(0).getBillNo();
                     productPlanService.delMrpProductPlan(billNo);
                 }
             }

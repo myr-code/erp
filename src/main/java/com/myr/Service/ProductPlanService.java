@@ -22,4 +22,6 @@ public interface ProductPlanService {
     List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
 
     Integer delMrpProductPlan(String billNo);
+
+    Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan,List<MrpProductplan> mrpProductplans);
 }

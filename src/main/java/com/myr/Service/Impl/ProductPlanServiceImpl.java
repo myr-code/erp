@@ -6,6 +6,7 @@ import com.myr.Service.ProductPlanService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -45,5 +46,23 @@ public class ProductPlanServiceImpl implements ProductPlanService {
     @Override
     public Integer delMrpProductPlan(String billNo) {
         return productPlanMapper.delMrpProductPlan(billNo);
+    }
+
+    @Override
+    @Transactional
+    public Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan,List<MrpProductplan> mrpProductplans) {
+        int rs = 0;
+        if(mrpProductplans.size()>0&&mrpProductplans!=null){
+            mrpProductplan = mrpProductplans.get(0);
+
+            if(productPlanMapper.delMrpProductPlan(mrpProductplan.getBillNo())>0){
+                for (MrpProductplan productplan : mrpProductplans) {
+                    productPlanMapper.addMrp_ProductPlan(productplan);
+                }
+                rs = 1;
+            }
+        }
+
+        return rs;
     }
 }

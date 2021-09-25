@@ -9,6 +9,7 @@ import com.myr.Service.ProductPlanService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -42,12 +43,30 @@ public class BackMaterServiceImpl implements BackMaterService {
     }
 
     @Override
-    public List<MrpProductplan> getMrp_ProductPlanById(Integer mid) {
-        return null;
+    public List<MrpBackmater> getBackMaterById(Integer mid) {
+        return backMaterMapper.getBackMaterById(mid);
     }
 
     @Override
-    public Integer delMrpProductPlan(String billNo) {
-        return null;
+    public Integer delBackMater(String billNo) {
+        return backMaterMapper.delBackMater(billNo);
+    }
+
+    @Override
+    @Transactional
+    public Integer BackMater_update(MrpBackmater mrpBackmater, List<MrpBackmater> mrpBackmaters) {
+        int rs = 0;
+        if(mrpBackmaters.size()>0&&mrpBackmaters!=null){
+            mrpBackmater = mrpBackmaters.get(0);
+
+            if(backMaterMapper.delBackMater(mrpBackmater.getBillNo())>0){
+                for (MrpBackmater backmater : mrpBackmaters) {
+                    backMaterMapper.add_BackMater(backmater);
+                }
+                rs = 1;
+            }
+        }
+
+        return rs;
     }
 }

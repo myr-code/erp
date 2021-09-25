@@ -52,6 +52,7 @@
 		<result column="taxPrice" property="taxPrice"/>
 		<result column="taxAmt" property="taxAmt"/>
 		<result column="remark" property="remark"/>
+		<result column="rowRemark" property="rowRemark"/>
 		<result column="billStaf" property="billStaf"/>
 
 		<!--客户-->
@@ -101,18 +102,18 @@
 		</collection>-->
 	</resultMap>
 
-	<!--<select id="getMrp_ProductPlanById" resultMap="ProductPlanMap">
+	<select id="getBackMaterById" resultMap="BackMaterMap">
 		select a.*,b.`code` as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',
 		       b.custItemCode as 'custItemCode',b.custItemModel as 'custItemModel',
 		       c.`name` as 'unitName'
-		from mrp_productplan a LEFT JOIN t_item b on a.itemId = b.fid
+		from mrp_backmater a LEFT JOIN t_item b on a.itemId = b.fid
 							   LEFT JOIN t_unit c on b.purUnitId = c.fid
-		where billNo = (select billNo from mrp_productplan where fid = #{fid})
+		where billNo = (select billNo from mrp_backmater where fid = #{mid})
 		order by a.billno,entryId
-	</select>-->
+	</select>
 
-	<delete id="delMrpProductPlan">
-		DELETE from mrp_productplan
+	<delete id="delBackMater">
+		DELETE from mrp_backmater
 		where billNo = #{billNo}
 	</delete>
 

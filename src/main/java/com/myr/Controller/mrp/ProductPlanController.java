@@ -216,11 +216,14 @@ public class ProductPlanController {
                 entry++;//分录号自增
             }
 
-            //删除计划单
+            /*//删除计划单
             productPlanService.delMrpProductPlan(billNo);
             //添加计划单
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
-            msg = null;
+            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);*/
+            MrpProductplan mrpProductplan = new MrpProductplan();
+            mrpProductplan.setBillNo(billNo);
+            Integer count = productPlanService.Mrp_ProductPlan_update(mrpProductplan,MrpProductplans);
+
             if(count > 0){
                 //登录成功
                 msg = new MessageRequest(200,"更新成功",null);
@@ -229,7 +232,6 @@ public class ProductPlanController {
                 msg = new MessageRequest(500,"更新失败",null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             msg = new MessageRequest(500,"更新失败",null);
         }
         return msg;

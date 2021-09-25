@@ -9,6 +9,7 @@ import com.myr.Service.PurReqService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +49,23 @@ public class PurReqServiceImpl implements PurReqService {
     @Override
     public Integer delPurReq(String billNo) {
         return purReqMapper.delPurReq(billNo);
+    }
+
+    @Override
+    @Transactional
+    public Integer PurReq_update(MrpPurReq mrpPurReq, List<MrpPurReq> mrpPurReqs) {
+        int rs = 0;
+        if(mrpPurReqs.size()>0&&mrpPurReqs!=null){
+            mrpPurReq = mrpPurReqs.get(0);
+
+            if(purReqMapper.delPurReq(mrpPurReq.getBillNo())>0){
+                for (MrpPurReq purReq : mrpPurReqs) {
+                    purReqMapper.add_PurReq(purReq);
+                }
+                rs = 1;
+            }
+
+        }
+        return rs;
     }
 }

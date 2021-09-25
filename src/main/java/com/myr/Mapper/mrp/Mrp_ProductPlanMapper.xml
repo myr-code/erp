@@ -56,6 +56,7 @@
 		<result column="taxPrice" property="taxPrice"/>
 		<result column="taxAmt" property="taxAmt"/>
 		<result column="remark" property="remark"/>
+		<result column="rowRemark" property="rowRemark"/>
 		<result column="billStaf" property="billStaf"/>
 
 		<!--客户-->
@@ -111,7 +112,7 @@
 		       c.`name` as 'unitName'
 		from mrp_productplan a LEFT JOIN t_item b on a.itemId = b.fid
 							   LEFT JOIN t_unit c on b.purUnitId = c.fid
-		where billNo = (select billNo from mrp_productplan where fid = #{fid})
+		where billNo = (select billNo from mrp_productplan where fid = #{mid})
 		order by a.billno,entryId
 	</select>
 

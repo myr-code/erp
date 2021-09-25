@@ -17,7 +17,9 @@ public interface BackMaterService {
 
     List<MrpBackmater> BackMater_page(Map<String,Object> map);
 
-    List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
+    List<MrpBackmater> getBackMaterById(Integer mid);
 
-    Integer delMrpProductPlan(String billNo);
+    Integer delBackMater(String billNo);
+
+    Integer BackMater_update(MrpBackmater mrpBackmater,List<MrpBackmater> mrpBackmaters);
 }

@@ -29,13 +29,13 @@ public interface BackMaterMapper {
     List<MrpProductplan> Mrp_ProductPlan_pageGj(DateOption dateOption);
 
     //删除
-    Integer delMrpProductPlan(String billNo);
+    Integer delBackMater(String billNo);
 
     //更新
     Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan);
 
     //获取一个
-    List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
+    List<MrpBackmater> getBackMaterById(Integer mid);
 
 
 }
