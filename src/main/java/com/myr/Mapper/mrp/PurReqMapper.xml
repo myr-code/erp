@@ -31,6 +31,26 @@
 
 	</select>
 
+	<!--合计总数-->
+	<select id="getCounts_sour" resultType="int">
+		select count(*)
+		from mrp_pur_req a left join t_item b on a.itemId = b.fid
+		LEFT JOIN t_unit c on b.purUnitId = c.fid
+		where 1=1
+		<if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+			and a.billDate between #{date_start} and #{date_end}
+		</if>
+		<if test="cnm != null or cnm != ''">
+			and (a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%')
+		</if>
+		<if test="range != null and range == 1">
+			and a.qty-IfNULL(a.finish_qty,0) > 0
+		</if>
+		<if test="range != null and range == 2">
+			and a.qty-a.finish_qty&lt;=0
+		</if>
+	</select>
+
 	<!--序时簿-->
 	<select id="PurReq_page" resultMap="PurReqMap">
 		select a.*,b.code as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel,c.`name` as 'unitName'
@@ -57,6 +77,7 @@
 		<result column="remark" property="remark"/>
 		<result column="rowRemark" property="rowRemark"/>
 		<result column="billStaf" property="billStaf"/>
+		<result column="icsQty" property="icsQty"/>
 
 		<!--item-->
 		<collection property="itemId" javaType="com.myr.Bean.Item">
@@ -67,8 +88,9 @@
 			<result column="custItemCode" property="custItemCode"></result>
 			<result column="custItemName" property="custItemName"></result>
 			<result column="custItemModel" property="custItemModel"></result>
+			<result column="unitName" property="purUnitIdName"></result>
 
-			<!--单位-->
+			<!--销售单位-->
 			<association property="saleUnitIdFid" javaType="com.myr.Bean.Unit">
 				<id column="fid" property="fid"/>
 				<result column="unitName" property="name"/>
@@ -98,6 +120,28 @@
 			<result column="stockName" property="name"/>
 		</collection>-->
 	</resultMap>
+
+	<!--2021-09-28 mrp_pur_req触发  t_poorderentry的合计-->
+	<select id="MrpPurReq_sour" resultMap="PurReqMap">
+		select a.*,b.code 'itemIdCode',b.name 'itemIdName',b.model 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel, c.`name` 'unitName'
+		from mrp_pur_req a left join t_item b on a.itemId = b.fid
+		LEFT JOIN t_unit c on b.purUnitId = c.fid
+		where 1=1
+		<if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+			and a.billDate between #{date_start} and #{date_end}
+		</if>
+		<if test="cnm != null or cnm != ''">
+			and (a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%')
+		</if>
+		<if test="range != null and range == 1">
+			and a.qty-IfNULL(a.finish_qty,0) > 0
+		</if>
+		<if test="range != null and range == 2">
+			and a.qty-a.finish_qty&lt;=0
+		</if>
+		order by a.billNo desc,a.entryId
+		limit #{startpage},#{pagesize}
+	</select>
 
 	<select id="getPurReqById" resultMap="PurReqMap">
 		select a.*,b.`code` as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',

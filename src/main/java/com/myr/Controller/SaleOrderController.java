@@ -118,8 +118,8 @@ public class SaleOrderController {
         //获取items
         int range = Integer.parseInt(request.getParameter("range")==null?"0":request.getParameter("range"));//是否选中已入库的数据
         int suppId = Integer.parseInt(request.getParameter("suppId")==null?"0":request.getParameter("suppId"));//主体组织
-        String date_start = request.getParameter("date_start").equals("undefined")?"":request.getParameter("date_start");
-        String date_end = request.getParameter("date_end").equals("undefined")?"":request.getParameter("date_end");
+        String date_start = request.getParameter("date_start")==null?"":request.getParameter("date_start");
+        String date_end = request.getParameter("date_end")==null?"":request.getParameter("date_end");
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);

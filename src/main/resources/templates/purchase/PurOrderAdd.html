@@ -204,7 +204,7 @@
 	});
 
 	//点击来源 获取item信息
-	function getitem(){
+	/*function getitem(){
 		var sourcetype = $("#sourcetype").val();
 		var cnm = $("input[name='cnm']").val();
 		var pagesize = $("#pagesize").val();//每页条数
@@ -213,69 +213,259 @@
 		if(sourcetype == "库存产品"){
 			reqappend(f);
 		}
+	}*/
+
+	//点击来源 获取item信息
+	function getitem(page){
+		if(page == "切换"){//切换来源则清空全局查询
+			$("input[name='cnm']").val("");
+		}
+		$("#items tr").empty("");//删除全部行
+		showtext();//判断是否显示范围
+		AppendTrHead();//添加表头
+		var data = getItemByPage(page);//根据翻页按钮获取条件
+		reqappend(data);//添加表体
+	}
+
+	//判断是否显示范围 未入库 已入库
+	function showtext(){
+		var sourcetype = $("#sourcetype").val();
+		if(sourcetype == "采购申请单"){
+			$("#range").show();
+		}else{
+			$("#range").hide();
+		}
+	}
+
+	//添加表头
+	function AppendTrHead(){
+		//库存产品
+		var kccp = "<tr>"+
+				"<th style='width:60px'>选中</th>"+
+				"<th>编码</th>"+
+				"<th>名称</th>"+
+				"<th>型号</th>"+
+				"<th>客户编码</th>"+
+				"<th>客户型号</th>"+
+				"<th>销售单位</th>"+
+				"<th>数量</th>"+
+				"<th>销售价格</th>"+
+				"<th>采购价格</th>"+
+				"<th>默认客户</th>"+
+				"<th>默认仓库</th>"+
+				"<th>负责人</th>"+
+				"</tr>";
+		//申请采购订单
+		var cgdd = "<tr>"+
+				"<th style='width:60px'>选中</th>"+
+				"<th>单号</th>"+
+				/*"<th>供应商</th>"+
+				"<th>结算方式</th>"+
+				"<th>税率</th>"+*/
+				"<th>分录号</th>"+
+				"<th>编码</th>"+
+				"<th>名称</th>"+
+				"<th>型号</th>"+
+				"<th>客户编码</th>"+
+				"<th>客户型号</th>"+
+				"<th>单位</th>"+
+				"<th>数量</th>"+
+				/*"<th>默认仓库</th>"+*/
+				"<th>已关联</th>"+
+				"<th>未关联</th>"+
+				"<th>客户订单号</th>"+
+				"<th>批号</th>"+
+				"<th>含税价格</th>"+
+				"</tr>";
+		var sourcetype = $("#sourcetype").val();//选择的来源
+		if(sourcetype == "库存产品"){
+			$("table[id='items']").append(kccp);
+		}
+		if(sourcetype == "采购申请单"){
+			$("table[id='items']").append(cgdd);
+		}
+
+
+	}
+
+	//获取翻页查询条件
+	function getItemByPage(page){
+		var startpage = parseFloat($("#nowpage").text());//当前页数
+		var pagesize = parseFloat($("#pagesize").val());//每页条数
+		var pagecount = parseFloat($("#pagecount").text());//总页数
+		var range = $("#range").val();//选择的范围
+		var cnm = $("input[name='cnm']").val();
+		var suppId = $("select[name='suppId']").val();//单据组织
+		cnm = cnm == null || cnm == ""?"":cnm;
+
+		var data = {range:range,suppId:suppId};
+		//alert(range);
+		if(page == 'first'){
+			data.startpage = 1;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}else if(page == 'previous'){
+			data.startpage = (startpage-1)>0?(startpage-1):1;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}else if(page == 'next'){
+			data.startpage = (startpage+1)>pagecount?pagecount:(startpage+1);
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}else if(page == 'last'){
+			data.startpage = pagecount;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}else{//默认没有
+			data.startpage = startpage;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		//alert(data);
+		return data;
 	}
 
 	//请求并插入items
 	function reqappend(data){
 		//清空所有table tr 除了第一行
-		//$("table[id='items']").empty();
-		$("#items tr:not(:first)").empty("");
+		var sourcetype = $("#sourcetype").val();
 
-		//请求并插入
-		$.ajax({
-			url:"/erp/Item_queryByCNM?id="+new Date(),
-			data: data,
-			type:"post",
-			dataType:"json",
-			success:function(result){
-				for(var i=0;i<result.data.length;i++){
-					var fid = result.data[i].fid;
-					var code = result.data[i].code;
-					var name = result.data[i].name;
-					var model = result.data[i].model;
-					var custItemCode = result.data[i].custItemCode;
-					var custItemModel = result.data[i].custItemModel;
-					var saleUnitIdName = result.data[i].saleUnitIdName;
-					var salePrice = result.data[i].salePrice;
-					var purPrice = result.data[i].purPrice;
-					var defaultCustomerIdName = result.data[i].defaultCustomerIdName;
-					var defaultStorehouseIdName = result.data[i].defaultStorehouseIdName;
-					var staffIdName = result.data[i].staffIdName;
-					var sourFid = 0;
-					var sourBillNo = '';
-					var sourEntryId = 0;
-					var apphtml = "<tr>" +
-							"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
-							"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+code+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+name+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+model+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+saleUnitIdName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'><input type='text' onchange='checkNum(this)' style='width:60px;'></td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+salePrice+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='purPrice"+fid+"'>"+purPrice+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='defaultCustomerIdName"+fid+"'>"+defaultCustomerIdName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='defaultStorehouseIdName"+fid+"'>"+defaultStorehouseIdName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='staffIdName"+fid+"'>"+staffIdName+"</td>\n" +
-							"<input type='hidden' id='sourFid"+fid+"' name='sourFid"+fid+"' value='"+sourFid+"' >"+
-							"<input type='hidden' id='sourBillNo"+fid+"' name='sourBillNo"+fid+"' value='"+sourBillNo+"' >"+
-							"<input type='hidden' id='sourEntryId"+fid+"' name='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
-							"\t\t\t\t\t\t\t</tr>";
-					$("table[id='items']").append(apphtml);
-					var startpage = result.startpage;
-					var pagecount = result.pagecount;
-					var countTatol = result.countTatol;
-					$("#startpage").text(startpage);
-					$("#pagecount").text(pagecount);
-					$("#countTatol").text(countTatol);
-					$("#nowpage").text(startpage);
+		if(sourcetype == "库存产品"){
+			//请求并插入
+			$.ajax({
+				url:"/erp/Item_queryByCNM?id="+new Date(),
+				data: data,
+				type:"post",
+				dataType:"json",
+				success:function(result){
+					for(var i=0;i<result.data.length;i++){
+						var fid = result.data[i].fid;
+						var code = result.data[i].code;
+						var name = result.data[i].name;
+						var model = result.data[i].model;
+						var custItemCode = result.data[i].custItemCode;
+						var custItemModel = result.data[i].custItemModel;
+						var saleUnitIdName = result.data[i].saleUnitIdName;
+						var salePrice = result.data[i].salePrice;
+						var purPrice = result.data[i].purPrice;
+						var defaultCustomerIdName = result.data[i].defaultCustomerIdName;
+						var defaultStorehouseIdName = result.data[i].defaultStorehouseIdName;
+						var defaultStorehouseId = result.data[i].defaultStorehouseId;
+						var staffIdName = result.data[i].staffIdName;
+						var custOrderNum = "";
+						var batchNumber = "";
+						var sourFid = 0;
+						var sourBillNo = '';
+						var sourEntryId = 0;
+						var apphtml = "<tr>" +
+								"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
+								"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+code+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+name+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+model+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+saleUnitIdName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'><input type='text' onchange='checkNum(this)' style='width:60px;'></td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+salePrice+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='purPrice"+fid+"'>"+purPrice+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='defaultCustomerIdName"+fid+"'>"+defaultCustomerIdName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='defaultStorehouseIdName"+fid+"'>"+defaultStorehouseIdName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='staffIdName"+fid+"'>"+staffIdName+"</td>\n" +
+								"<input type='hidden' id='itemId"+fid+"' value='"+sourFid+"' >"+
+								"<input type='hidden' id='custOrderNum"+fid+"' value='"+sourFid+"' >"+
+								"<input type='hidden' id='batchNumber"+fid+"' value='"+sourFid+"' >"+
+								"<input type='hidden' id='sourFid"+fid+"' value='"+sourFid+"' >"+
+								"<input type='hidden' id='sourBillNo"+fid+"' value='"+sourBillNo+"' >"+
+								"<input type='hidden' id='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
+								"<input type='hidden' id='stockId"+fid+"' value='"+defaultStorehouseId+"' >"+
+								"\t\t\t\t\t\t\t</tr>";
+						$("table[id='items']").append(apphtml);
+						var startpage = result.startpage;
+						var pagecount = result.pagecount;
+						var countTatol = result.countTatol;
+						$("#startpage").text(startpage);
+						$("#pagecount").text(pagecount);
+						$("#countTatol").text(countTatol);
+						$("#nowpage").text(startpage);
 
+					}
+
+					//alert(JSON.stringify(result));
 				}
+			});
+		}
+		if(sourcetype == "采购申请单"){
+			//请求并插入
+			$.ajax({
+				url:"/erp/Sour_PurReq",
+				data: data,
+				type:"post",
+				dataType:"json",
+				success:function(result){
+					for(var i=0;i<result.data.length;i++){
+						var fid = result.data[i].fid;//唯一id
+						var itemId = result.data[i].itemId.fid;//itemid
+						var billNo = result.data[i].billNo;
+						/*var suppIdFidName = result.data[i].suppIdFid.name;
+						var settIdFidName = result.data[i].settIdFid.name;
+						var rate = result.data[i].rate;*/
+						var entryId = result.data[i].entryId;
+						var itemCode = result.data[i].itemId.code;
+						var itemName = result.data[i].itemId.name;
+						var itemModel = result.data[i].itemId.model;
+						var custItemCode = result.data[i].itemId.custItemCode;
+						var custItemModel = result.data[i].itemId.custItemModel;
+						var unitName = result.data[i].itemId.purUnitIdName;
+						var qty = result.data[i].qty;
+						/*var stockId = result.data[i].stockId.fid;
+						var stockName = result.data[i].stockId.name;*/
+						var custOrderNum = result.data[i].custOrderNum;
+						var batchNumber = result.data[i].batchNumber;
+						var taxPrice = result.data[i].taxPrice;
+						var sourFid = result.data[i].fid;
+						var sourEntryId = result.data[i].entryId;
+						var icsQty = result.data[i].finishQty;//已关联数量
+						var apphtml = "<tr>" +
+								"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
+								"\t\t\t\t\t\t\t\t<td>"+billNo+"</td>\n" +
+								/*"\t\t\t\t\t\t\t\t<td>"+suppIdFidName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+settIdFidName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='rate"+fid+"'>"+rate+"</td>\n" +*/
+								"\t\t\t\t\t\t\t\t<td>"+entryId+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+itemCode+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+itemName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+itemModel+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+unitName+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+qty+"</td>\n" +
+								/*"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +*/
+								"\t\t\t\t\t\t\t\t<td id='icsQty"+fid+"'>"+icsQty+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-icsQty<=0?0:qty-icsQty)+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='custOrderNum"+fid+"'>"+custOrderNum+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='batchNumber"+fid+"'>"+batchNumber+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+taxPrice+"</td>\n" +
+								"<input type='hidden' id='itemId"+fid+"' value='"+itemId+"' >"+
+								"<input type='hidden' id='sourFid"+fid+"' value='"+sourFid+"' >"+
+								"<input type='hidden' id='sourBillNo"+fid+"' value='"+billNo+"' >"+
+								"<input type='hidden' id='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
+								/*"<input type='hidden' id='stockId"+fid+"' value='"+stockId+"' >"+*/
+								"\t\t\t\t\t\t\t</tr>";
+						$("table[id='items']").append(apphtml);
+						var startpage = result.startpage;
+						var pagecount = result.pagecount;
+						var countTatol = result.countTatol;
+						$("#startpage").text(startpage);
+						$("#pagecount").text(pagecount);
+						$("#countTatol").text(countTatol);
+						$("#nowpage").text(startpage);
 
-				//alert(JSON.stringify(result));
-			}
-		});
+					}
+
+					//alert(JSON.stringify(result));
+				}
+			});
+		}
 	}
 
 	//获取已存在行的fid
@@ -315,7 +505,8 @@
 			var custItemModel = $("#custItemModel"+ids[j]).text();
 			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
 			var qty = $("#qty"+ids[j]+" input").val();
-			if(qty <= 0){
+			alert("数量"+j+"="+qty);
+			if(qty <= 0 || qty ==null){
 				qty = 1;
 			}
 			var salePrice = $("#salePrice"+ids[j]).text();
@@ -499,7 +690,7 @@
 	}
 
 	//翻页获取items
-	function getItemByPage(page){
+	/*function getItemByPage(page){
 		var startpage = parseFloat($("#nowpage").text());//当前页数
 		var pagesize = parseFloat($("#pagesize").val());//每页条数
 		var pagecount = parseFloat($("#pagecount").text());//总页数
@@ -529,7 +720,7 @@
 		}
 		//alert(data);
 		reqappend(data);
-	}
+	}*/
 	
 </script>
 
@@ -814,6 +1005,7 @@
 					<button class="close" data-dismiss="modal"><span>&times;</span></button>
 					<h6 class="modal-title">
 						<select id="sourcetype" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+							<option value="采购申请单">采购申请单</option>
 							<option value="库存产品">库存产品</option>
 						</select>
 					</h6>
@@ -827,6 +1019,11 @@
 							<button type="button" onclick="getitem()" class="btn btn-info">查询</button>
 							<!--<button type="button" class="btn btn-info" style="margin-left:50%;">确定</button>-->
 							<button type="button" class="btn btn-info" style="margin-left:10px;" onclick="getHabit()">新增</button>
+							<select id="range" onchange="getitem('切换')" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+								<option value="1">未入库</option>
+								<option value="3">全部</option>
+								<option value="2">已入库</option>
+							</select>
 						</form>
 
 						<div style="height:300px;overflow-x:auto;overflow-y:auto;">
@@ -849,14 +1046,14 @@
 							</table>
 						</div>
 						<center>
-							<a href="#" onclick="getItemByPage('first')">首页</a>
-							<a href="#" onclick="getItemByPage('previous')">上一页</a>
+							<a href="#" onclick="getitem('first')">首页</a>
+							<a href="#" onclick="getitem('previous')">上一页</a>
 							<span id="nowpage">1</span>
-							<a href="#" onclick="getItemByPage('next')">下一页</a>
-							<a href="#" onclick="getItemByPage('last')">尾页</a>
+							<a href="#" onclick="getitem('next')">下一页</a>
+							<a href="#" onclick="getitem('last')">尾页</a>
 							[<span id="startpage"></span>/<span id="pagecount"></span>]
 							共<span id="countTatol"></span>条
-							<select id="pagesize" class="selectpicker" data-live-search="true" data-actions-box="true">
+							<select id="pagesize" onchange="getitem()" class="selectpicker" data-live-search="true" data-actions-box="true">
 								<option value="10">10</option>
 								<option value="20">20</option>
 								<option value="50">50</option>

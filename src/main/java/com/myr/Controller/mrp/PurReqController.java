@@ -132,6 +132,36 @@ public class PurReqController {
         return "desktop/PurReqIndex";
     }
 
+    //选择来源
+    @RequestMapping("/Sour_PurReq")
+    @ResponseBody
+    public PageUtils Sour_PurReq(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                    @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "cnm",defaultValue = "")String cnm, HttpServletRequest request){
+        //获取items
+        int range = Integer.parseInt(request.getParameter("range")==null?"0":request.getParameter("range"));//是否选中已入库的数据
+        int suppId = Integer.parseInt(request.getParameter("suppId")==null?"0":request.getParameter("suppId"));//主体组织
+        String date_start = request.getParameter("date_start")==null?"":request.getParameter("date_start");
+        String date_end = request.getParameter("date_end")==null?"":request.getParameter("date_end");
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("cnm",cnm);
+        map.put("range",range);
+        map.put("suppId",suppId);
+        map.put("date_start",date_start);
+        map.put("date_end",date_end);
+        System.out.println(map.toString());
+        List<MrpPurReq> purReqs = purReqService.MrpPurReq_sour(map);
+
+        //获取总条数
+        int countTatol = purReqService.getCounts_sour(map);
+
+        PageUtils<MrpPurReq> pageUtils = new PageUtils<MrpPurReq>(startpage, pagesize, countTatol, purReqs);
+        System.out.println(pageUtils);
+        return pageUtils;
+    }
+
+
     //去到编辑页面
     @RequestMapping("/PurReqEdit/{fid}")
     public String PurReqEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
@@ -192,7 +222,7 @@ public class PurReqController {
 
                 mrpPurReq.setBillNo(billNo);
                 mrpPurReq.setBillDate(billDate);
-                mrpPurReq.setBillDate(billDate);
+                mrpPurReq.setEntryId(entry);
                 mrpPurReq.setMrpNo(mrpNo);
                 Item item = new Item();
                 item.setFid(itemId);

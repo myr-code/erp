@@ -19,8 +19,11 @@ public interface PurReqMapper {
     //获取总条数
     int getCounts(Map<String,Object> map);
 
+    //获取总条数 来源
+    int getCounts_sour(Map<String,Object> map);
+
     //选择来源
-    List<MrpProductplan> Mrp_ProductPlan_sour(Map<String,Object> map);
+    List<MrpPurReq> MrpPurReq_sour(Map<String,Object> map);
 
     //销售订单序时簿
     List<MrpPurReq> PurReq_page(Map<String,Object> map);

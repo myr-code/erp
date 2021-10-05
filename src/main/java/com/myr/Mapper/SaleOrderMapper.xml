@@ -63,7 +63,7 @@
         b.mid,b.entryid,b.itemId,b.itemcode,b.itemname,b.itemmodel,b.custitemcode,b.custitemmodel
         ,b.qty,b.custOrderNum,b.finishDate,b.batchNumber,b.taxPrice,b.taxPriceNo,b.fcess,b.taxAmt,b.taxAmtNo,b.fcessAmt,b.rowRemark as 'midRemark',b.source,
         c.`name` as 'custIdName',d.`name` as 'settleIdName',e.`name` as 'depIdName',
-        g.`name` as 'billStaffIdName',f.`name` as 'depStaffIdName',i.qty as 'icsQty',
+        g.`name` as 'billStaffIdName',f.`name` as 'depStaffIdName',b.qty as 'icsQty',
         h.defaultStorehouseId as 'stockId', h.name as 'stockName'
         from t_saleorder a LEFT JOIN t_saleorderentry b on a.fid = b.mid
         LEFT JOIN t_customer c on a.custId = c.fid
@@ -71,10 +71,10 @@
         LEFT JOIN t_department e on a.depId = e.fid
         LEFT JOIN t_staff f on a.depStaffId = f.fid
         LEFT JOIN t_staff g on a.billStaffId = g.fid
-        LEFT JOIN icstockbillentry i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId
         left join (
         select a.fid,a.defaultStorehouseId,b.`name` from t_item a left join t_store b on a.defaultStorehouseId = b.fid
         ) h on b.itemId = h.fid
+
         where 1=1
         <if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
             and a.billDate between #{date_start} and #{date_end}

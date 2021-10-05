@@ -37,6 +37,16 @@ public class PurReqServiceImpl implements PurReqService {
     }
 
     @Override
+    public int getCounts_sour(Map<String, Object> map) {
+        return purReqMapper.getCounts_sour(map);
+    }
+
+    @Override
+    public List<MrpPurReq> MrpPurReq_sour(Map<String, Object> map) {
+        return purReqMapper.MrpPurReq_sour(map);
+    }
+
+    @Override
     public List<MrpPurReq> PurReq_page(Map<String, Object> map) {
         return purReqMapper.PurReq_page(map);
     }

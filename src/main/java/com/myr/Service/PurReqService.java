@@ -15,6 +15,11 @@ public interface PurReqService {
     //获取总条数
     int getCounts(Map<String,Object> map);
 
+    //获取总条数 来源
+    int getCounts_sour(Map<String,Object> map);
+
+    List<MrpPurReq> MrpPurReq_sour(Map<String,Object> map);
+
     List<MrpPurReq> PurReq_page(Map<String,Object> map);
 
     List<MrpPurReq> getPurReqById(Integer mid);
