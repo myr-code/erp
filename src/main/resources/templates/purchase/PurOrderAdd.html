@@ -327,7 +327,6 @@
 
 	//请求并插入items
 	function reqappend(data){
-		//清空所有table tr 除了第一行
 		var sourcetype = $("#sourcetype").val();
 
 		if(sourcetype == "库存产品"){
@@ -403,7 +402,7 @@
 				dataType:"json",
 				success:function(result){
 					for(var i=0;i<result.data.length;i++){
-						var fid = result.data[i].fid;//唯一id
+						var fid = result.data[i].fid+"00"+result.data[i].itemId.fid;//唯一id
 						var itemId = result.data[i].itemId.fid;//itemid
 						var billNo = result.data[i].billNo;
 						/*var suppIdFidName = result.data[i].suppIdFid.name;
@@ -505,7 +504,6 @@
 			var custItemModel = $("#custItemModel"+ids[j]).text();
 			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
 			var qty = $("#qty"+ids[j]+" input").val();
-			alert("数量"+j+"="+qty);
 			if(qty <= 0 || qty ==null){
 				qty = 1;
 			}

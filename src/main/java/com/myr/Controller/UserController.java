@@ -24,8 +24,8 @@ public class UserController {
 
     //01-登录 user_login
     @RequestMapping("/user_login")
-    /*@ResponseBody*/
-    public String login(User user, HttpSession session, Model model,HttpServletRequest request) {
+    @ResponseBody
+    public MessageRequest login(User user, HttpSession session, Model model,HttpServletRequest request) {
         String contextPath = request.getServletContext().getContextPath();
 
         System.out.println(contextPath);
@@ -38,12 +38,11 @@ public class UserController {
             session.setAttribute("user",dbuser);
             session.setAttribute("contextPath",contextPath);
             msg = new MessageRequest(200,"登录成功",dbuser);
-            return "index";
         }else {
             //登录失败
             msg = new MessageRequest(500,"登录失败",null);
-            return "login";
         }
+        return msg;
     }
 
     //02-退出登录 user_logout

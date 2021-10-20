@@ -281,7 +281,7 @@
 			day = "0"+day
 		}
 		end = year+"-"+month+"-"+day;
-		start = year+"-"+month+"-01";
+		start = (year-1)+"-"+month+"-01";
 		//$(".form_date").val(start);
 		$(".billDate_start").val(start);
 		$(".billDate_end").val(end);

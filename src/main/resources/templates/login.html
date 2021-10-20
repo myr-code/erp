@@ -35,12 +35,11 @@
 	var psd = $("#psd").val();
 	if(username==""||psd==""){
 		alert("账号或密码为空！");
-		return false;
-	}
-
-	var f = $("#f1").serialize();
+	}else{
+		/*var f = $("#f1").serialize();*/
+		var f = {email:username,password:psd};
 		$.ajax({
-			url:"/user_login",
+			url:"/erp/user_login",
 			data:f,
 			type:"post",
 			dataType:"json",
@@ -59,7 +58,7 @@
 
 			}
 		});
-
+	}
  }
 
 
@@ -69,7 +68,7 @@
 
 <body>
 <center>
-	<form method="post" action="user_login" id="f1">
+	<div id="f1">
 
 		<div class="panel panel-primary">
 			<!-- Default panel contents -->
@@ -92,13 +91,13 @@
 				<br>
 				<span></span>
 				<div class="input-group" style="width:300px">
-					<button class="btn btn-primary" onclick="return formcheck();">登录</button>
+					<button class="btn btn-primary" onclick="formcheck()">登录</button>
 				</div>
 			</div>
 
 		</div>
 
-	</form>
+	</div>
 </center>
 
 <footer class="footer navbar-fixed-bottom ">

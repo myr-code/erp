@@ -1,10 +1,8 @@
 package com.myr.Controller.mrp;
 
 import com.myr.Bean.*;
+import com.myr.Service.ProductPickService;
 import com.myr.Service.ProductPlanService;
-import com.myr.Service.SaleOrderEntryService;
-import com.myr.Service.SaleOrderService;
-import com.myr.utils.DateOption;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
 import com.myr.utils.PageUtils;
@@ -25,32 +23,38 @@ import java.util.Map;
 
 @Controller
 @Scope("prototype")
-public class ProductPlanController {
+public class ProductPickController {
     @Resource
     ProductPlanService productPlanService;
 
+    @Resource
+    ProductPickService productPickService;
+
     //01-添加
-    @RequestMapping("/MrpProductplan_add")
+    @RequestMapping("/ProductPick_add")
     @ResponseBody
-    public MessageRequest MrpProductplan_add(Icstockbill icstockbill, HttpServletRequest request) {
+    public MessageRequest ProductPick_add(HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<MrpProductpick> mrpProductpicks = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
             Integer custId = Integer.parseInt(request.getParameter("custId"));
+            Integer suppId = Integer.parseInt(request.getParameter("suppId"));
             Customer customer = new Customer();
             customer.setFid(custId);
+            Supplier supplier = new Supplier();
+            supplier.setFid(suppId);
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
-            String billNo = productPlanService.getBillNo(billDate);
+            String billNo = productPickService.getBillNo(billDate);
             Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                MrpProductpick mrpProductpick = new MrpProductpick();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 /*String itemName = request.getParameter("itemName" + num);//item name
@@ -60,8 +64,8 @@ public class ProductPlanController {
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
                 String unitName = request.getParameter("unitName" + num);//单位*/
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
-                /*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*/
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
+                Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 /*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*/
@@ -72,35 +76,36 @@ public class ProductPlanController {
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
+                mrpProductpick.setBillNo(billNo);
+                mrpProductpick.setBillDate(billDate);
+                mrpProductpick.setCustId(customer);
+                mrpProductpick.setSuppId(supplier);
+                mrpProductpick.setEntryId(entry);
                 Item item = new Item();
                 item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourBillNo(sourBillNo);
-                MrpProductplan.setSourFid(sourFid);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(depStaffId);
+                mrpProductpick.setItemId(item);
+                mrpProductpick.setCustOrderNum(custOrderNum);
+                mrpProductpick.setFinishDate(finishDate);
+                mrpProductpick.setQty(qty);
+                mrpProductpick.setStockId(stockId);
+                mrpProductpick.setBatchNumber(batchNumber);
+                mrpProductpick.setTaxPrice(taxPrice);
+                mrpProductpick.setTaxPriceNo(taxPrice);
+                mrpProductpick.setFcess(0);
+                mrpProductpick.setRemark(remark);
+                mrpProductpick.setRowRemark(rowRemark);
+                mrpProductpick.setSourFid(sourFid);
+                mrpProductpick.setSourBillNo(sourBillNo);
+                mrpProductpick.setSourEntryId(sourEntryId);
+                mrpProductpick.setSourType(sourType);
+                mrpProductpick.setBillStaf(depStaffId);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+                mrpProductpicks.add(mrpProductpick);
+                System.out.println("item="+mrpProductpick);
                 entry++;//分录号自增
             }
 
-
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
+            Integer count = productPickService.add_ProductPick(mrpProductpicks);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -117,8 +122,8 @@ public class ProductPlanController {
     }
 
     //序时簿
-    @RequestMapping("/ProductPlanIndex")
-    public String ProductPlanIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+    @RequestMapping("/ProductPickIndex")
+    public String ProductPickIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                                    @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
@@ -126,43 +131,75 @@ public class ProductPlanController {
         map.put("cnm",AllQuery);
 
         //获取总条数
-        int countTatol = productPlanService.getCounts(map);
+        int countTatol = productPickService.getCounts(map);
         //主数据
-        List<MrpProductplan> mrpProductplans = productPlanService.Mrp_ProductPlan_page(map);
+        List<MrpProductpick> mrpProductpicks = productPickService.ProductPick_page(map);
         //封装数据
-        PageUtils<MrpProductplan> pageUtils = new PageUtils<MrpProductplan>(startpage, pagesize, countTatol, mrpProductplans);
+        PageUtils<MrpProductpick> pageUtils = new PageUtils<MrpProductpick>(startpage, pagesize, countTatol, mrpProductpicks);
         model.addAttribute("datas",pageUtils);
 
-        return "desktop/ProductPlanIndex";
+        return "desktop/ProductPickIndex";
+    }
+
+    //选择来源
+    @RequestMapping("/Sour_ProductPick")
+    @ResponseBody
+    public PageUtils Sour_ProductPick(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                 @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "cnm",defaultValue = "")String cnm, HttpServletRequest request){
+        //获取items
+        int range = Integer.parseInt(request.getParameter("range")==null?"0":request.getParameter("range"));//是否选中已入库的数据
+        int suppId = Integer.parseInt(request.getParameter("suppId")==null?"0":request.getParameter("suppId"));//主体组织
+        String date_start = request.getParameter("date_start")==null?"":request.getParameter("date_start");
+        String date_end = request.getParameter("date_end")==null?"":request.getParameter("date_end");
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("cnm",cnm);
+        map.put("range",range);
+        map.put("suppId",suppId);
+        map.put("date_start",date_start);
+        map.put("date_end",date_end);
+        System.out.println(map.toString());
+        List<MrpProductpick> mrpProductpicks = productPickService.ProductPick_sour(map);
+
+        //获取总条数
+        int countTatol = productPickService.getCounts_sour(map);
+
+        PageUtils<MrpProductpick> pageUtils = new PageUtils<MrpProductpick>(startpage, pagesize, countTatol, mrpProductpicks);
+        System.out.println(pageUtils);
+        return pageUtils;
     }
 
     //去到编辑页面
-    @RequestMapping("/ProductPlanEdit/{fid}")
-    public String ProductPlanEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
-        List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(fid);
-        MrpProductplan mrpProductplan =null;
-        if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-            mrpProductplan = mrp_productPlanById.get(0);
+    @RequestMapping("/ProductPickEdit/{fid}")
+    public String ProductPickEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
+        List<MrpProductpick> productPick_byId = productPickService.get_ProductPick_ById(fid);
+        MrpProductpick mrpProductpick =null;
+        if(productPick_byId.size()>0&&productPick_byId!=null){
+            mrpProductpick = productPick_byId.get(0);
         }
-        System.out.println("mrpProductplan="+mrpProductplan);
-        model.addAttribute("data",mrpProductplan);
-        model.addAttribute("datas",mrp_productPlanById);
-        return "/mrp/edit/ProductPlanEdit";
+        System.out.println("mrpProductpick="+mrpProductpick);
+        model.addAttribute("data",mrpProductpick);
+        model.addAttribute("datas",productPick_byId);
+        return "/mrp/edit/ProductPickEdit";
     }
 
     //更新
-    @RequestMapping("/ProductPlan_update")
+    @RequestMapping("/ProductPick_update")
     @ResponseBody
-    public MessageRequest ProductPlan_update(Poorder poorder, HttpServletRequest request) {
+    public MessageRequest ProductPick_update( HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<MrpProductpick> mrpProductpicks = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
             Integer custId = Integer.parseInt(request.getParameter("custId"));
+            Integer suppId = Integer.parseInt(request.getParameter("suppId"));
             Customer customer = new Customer();
             customer.setFid(custId);
+            Supplier supplier = new Supplier();
+            supplier.setFid(suppId);
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
             String billNo = request.getParameter("billNo");
@@ -171,7 +208,7 @@ public class ProductPlanController {
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                MrpProductpick mrpProductpick = new MrpProductpick();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 /*String itemName = request.getParameter("itemName" + num);//item name
@@ -182,7 +219,7 @@ public class ProductPlanController {
                 String unitName = request.getParameter("unitName" + num);//单位*/
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
                 double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
-                /*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*/
+                Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 /*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*/
@@ -193,67 +230,64 @@ public class ProductPlanController {
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
+                mrpProductpick.setBillNo(billNo);
+                mrpProductpick.setBillDate(billDate);
+                mrpProductpick.setCustId(customer);
+                mrpProductpick.setSuppId(supplier);
+                mrpProductpick.setEntryId(entry);
                 Item item = new Item();
                 item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourBillNo(sourBillNo);
-                MrpProductplan.setSourFid(sourFid);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(depStaffId);
+                mrpProductpick.setItemId(item);
+                mrpProductpick.setCustOrderNum(custOrderNum);
+                mrpProductpick.setFinishDate(finishDate);
+                mrpProductpick.setQty(qty);
+                mrpProductpick.setStockId(stockId);
+                mrpProductpick.setBatchNumber(batchNumber);
+                mrpProductpick.setTaxPrice(taxPrice);
+                mrpProductpick.setTaxPriceNo(taxPrice);
+                mrpProductpick.setFcess(0);
+                mrpProductpick.setRemark(remark);
+                mrpProductpick.setRowRemark(rowRemark);
+                mrpProductpick.setSourFid(sourFid);
+                mrpProductpick.setSourBillNo(sourBillNo);
+                mrpProductpick.setSourEntryId(sourEntryId);
+                mrpProductpick.setSourType(sourType);
+                mrpProductpick.setBillStaf(depStaffId);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+                mrpProductpicks.add(mrpProductpick);
+                System.out.println("item="+mrpProductpick);
                 entry++;//分录号自增
             }
 
-            /*//删除计划单
-            productPlanService.delMrpProductPlan(billNo);
-            //添加计划单
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);*/
-            MrpProductplan mrpProductplan = new MrpProductplan();
-            mrpProductplan.setBillNo(billNo);
-            Integer count = productPlanService.Mrp_ProductPlan_update(mrpProductplan,MrpProductplans);
-
+            Integer count = productPickService.update_ProductPick(mrpProductpicks);
+            msg = null;
             if(count > 0){
                 //登录成功
-                msg = new MessageRequest(200,"更新成功",null);
+                msg = new MessageRequest(200,"添加成功",null);
             }else {
                 //登录失败
-                msg = new MessageRequest(500,"更新失败",null);
+                msg = new MessageRequest(500,"添加失败",null);
             }
         } catch (Exception e) {
-            msg = new MessageRequest(500,"更新失败",null);
+            e.printStackTrace();
+            msg = new MessageRequest(500,"添加失败",null);
         }
         return msg;
     }
 
     //删除
-    @RequestMapping("/ProductPlan_del")
+    @RequestMapping("/ProductPick_del")
     @ResponseBody
-    public MessageRequest ProductPlan_del(HttpServletRequest request) {
+    public MessageRequest ProductPick_del(HttpServletRequest request) {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
 
         MessageRequest msg = null;
         try {
             for (String data : datas) {
-                List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(Integer.parseInt(data));
-                if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-                    String billNo = mrp_productPlanById.get(0).getBillNo();
-                    productPlanService.delMrpProductPlan(billNo);
+                List<MrpProductpick> productPick_byId = productPickService.get_ProductPick_ById(Integer.parseInt(data));
+                if(productPick_byId.size()>0&&productPick_byId!=null){
+                    String billNo = productPick_byId.get(0).getBillNo();
+                    productPickService.del_ProductPick(billNo);
                 }
             }
 
