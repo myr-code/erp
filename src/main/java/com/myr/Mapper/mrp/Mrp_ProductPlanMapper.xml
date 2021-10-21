@@ -58,6 +58,10 @@
 		<result column="remark" property="remark"/>
 		<result column="rowRemark" property="rowRemark"/>
 		<result column="billStaf" property="billStaf"/>
+		<result column="sourFid" property="sourFid"/>
+		<result column="sourBillNo" property="sourBillNo"/>
+		<result column="sourEntryId" property="sourEntryId"/>
+		<result column="sourType" property="sourType"/>
 
 		<!--客户-->
 		<collection property="custId" javaType="com.myr.Bean.Customer">

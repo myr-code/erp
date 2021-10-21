@@ -765,6 +765,9 @@
 			dataType:"json",
 			success:function(result){
 
+				var cg = 0;
+				var bl = 0;
+				var jh = 0;
 				for(var i=0;i<result.data.length;i++){
 					var itemId = result.data[i].itemId;
 					var mainItemCode = result.data[i].mainItemCode;
@@ -773,12 +776,18 @@
 							"</div>";
 					if(itemId == 1){//采购申请单
 						$("#po_mand").append(h);
+						cg++;
 					}else if(itemId == 2){//生产备料单
 						$("#back_mand").append(h);
+						bl++;
 					}else if(itemId == 3){//生产计划单
 						$("#ph_mand").append(h);
+						jh++;
 					}
 				}
+				alert("生成采购申请单"+cg+"张，\n"+
+						"生成生产备料单"+bl+"张，\n"+
+						"生成生产计划单"+jh+"张。");
 
 			}
 		});

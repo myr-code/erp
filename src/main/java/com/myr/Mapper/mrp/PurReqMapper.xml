@@ -78,6 +78,10 @@
 		<result column="rowRemark" property="rowRemark"/>
 		<result column="billStaf" property="billStaf"/>
 		<result column="icsQty" property="icsQty"/>
+		<result column="sourFid" property="sourFid"/>
+		<result column="sourBillNo" property="sourBillNo"/>
+		<result column="sourEntryId" property="sourEntryId"/>
+		<result column="sourType" property="sourType"/>
 
 		<!--item-->
 		<collection property="itemId" javaType="com.myr.Bean.Item">
