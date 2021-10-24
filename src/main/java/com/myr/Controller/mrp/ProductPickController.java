@@ -137,6 +137,7 @@ public class ProductPickController {
         //封装数据
         PageUtils<MrpProductpick> pageUtils = new PageUtils<MrpProductpick>(startpage, pagesize, countTatol, mrpProductpicks);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
         return "desktop/ProductPickIndex";
     }

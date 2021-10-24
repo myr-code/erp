@@ -147,6 +147,25 @@
 		//select name="" custId settleId depId depStaffId
 		//客户
 
+		//供应商
+		$.ajax({
+			url:"/erp/Supplier_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				var suppId = [[${data.suppId.fid}]];
+				for(var i=0;i<result.length;i++){
+					if(suppId == result[i].fid){
+						$("select[name='suppId']").append("<option selected value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}else{
+						$("select[name='suppId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}
+				}
+
+			}
+		});
+
 		//部门
 		$.ajax({
 			url:"/erp/Depart_all",
@@ -287,8 +306,8 @@
 	}
 
 	//获取checkbox选中的value数据
-	var trlen = 0;//行号累计
 	var arr = new Array();
+	var trlen = [[${datas.size()}]];//行号累计 已存在的行
 	function getHabit() {
 		//$('input:checkbox:checked') 等同于 $('input[type=checkbox]:checked')
 		var ids  = new Array();
@@ -622,9 +641,18 @@
 
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">供应商</button>
+				 </span>
+				<select name="suppId" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+					　　<option value="-1">-- --</option>
+				</select>
+			</div>
+
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">生产计划单</button>
 				 </span>
-				<input type="text" name="mrpNo" th:value="${data.mrpNo}" class="form-control" placeholder="billNo" readonly aria-describedby="basic-addon1">
+				<input type="text" name="mrpNo" th:value="${data.mrpNo}" class="form-control" placeholder="" readonly aria-describedby="basic-addon1">
 			</div>
 
 			<div class="input-group input-group-sm">

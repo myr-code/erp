@@ -119,20 +119,24 @@ public class ProductPlanController {
     //序时簿
     @RequestMapping("/ProductPlanIndex")
     public String ProductPlanIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
-                                   @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
+                                   @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model){
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
         map.put("cnm",AllQuery);
 
+
         //获取总条数
         int countTatol = productPlanService.getCounts(map);
+        System.out.println("countTatol="+countTatol);
         //主数据
         List<MrpProductplan> mrpProductplans = productPlanService.Mrp_ProductPlan_page(map);
         //封装数据
         PageUtils<MrpProductplan> pageUtils = new PageUtils<MrpProductplan>(startpage, pagesize, countTatol, mrpProductplans);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
+        System.out.println(pageUtils.getPagecount());
         return "desktop/ProductPlanIndex";
     }
 

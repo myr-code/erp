@@ -130,6 +130,7 @@ public class BackMaterController {
         //封装数据
         PageUtils<MrpBackmater> pageUtils = new PageUtils<MrpBackmater>(startpage, pagesize, countTatol, mrpBackmaters);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
         return "desktop/BackMaterIndex";
     }
@@ -245,17 +246,23 @@ public class BackMaterController {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
 
         MessageRequest msg = null;
+        int count = 0;
         try {
             for (String data : datas) {
-                List<MrpBackmater> mrpBackmaters = backMaterService.getBackMaterById(Integer.parseInt(data));
-                if(mrpBackmaters.size()>0&&mrpBackmaters!=null){
-                    String billNo = mrpBackmaters.get(0).getBillNo();
-                    productPlanService.delMrpProductPlan(billNo);
+                List<MrpBackmater> backMaterById = backMaterService.getBackMaterById(Integer.parseInt(data));
+                if(backMaterById.size()>0&&backMaterById!=null){
+                    String billNo = backMaterById.get(0).getBillNo();
+                    count = backMaterService.delBackMater(billNo);
                 }
             }
 
             //登录成功
-            msg = new MessageRequest(200,"删除成功",null);
+            if(count>0){
+                msg = new MessageRequest(200,"删除成功",null);
+            }else {
+                msg = new MessageRequest(500,"删除成功,单据已被删除或不存在！",null);
+            }
+
         } catch (Exception e) {
             //登录失败
             msg = new MessageRequest(500,"删除失败",null);

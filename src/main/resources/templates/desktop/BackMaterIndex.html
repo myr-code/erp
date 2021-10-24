@@ -169,7 +169,7 @@
 				success:function(result){
 					if(result.code==200){
 						alert("删除成功！");
-						location.href="BackMaterIndex";
+						querys();//提交
 					}else if(result.code==500){
 						alert("删除失败!");
 						/*location.href="BackMaterIndex";*/
@@ -246,7 +246,8 @@
 
 	//查询
 	function querys(){
-		$("#AllQuery").submit();
+		getItemByPage('nowpage');
+		/*$("#AllQuery").submit();*/
 	}
 
 	//回车事件绑定
@@ -308,7 +309,7 @@
 			data.AllQuery = AllQuery;
 		}
 		//alert(data);
-		window.location.href="ProductPlanIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
+		window.location.href="BackMaterIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
 	}
 	</script>
 
@@ -492,10 +493,10 @@
 	</center>
 
 <div>
-	<form method="post" action="ProductPlanIndex" id="AllQuery">
+	<form method="post" action="#" id="AllQuery">
 		<div class="input-group input-group-sm">
 			<span class="input-group-addon" id="basic-addon1">模糊查询</span>
-			<input type="text" name="AllQuery" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
+			<input type="text" name="AllQuery" th:value="${AllQuery}" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
 		</div>
 	</form>
 	<button type="submit" class="btn btn-default btn-sm query" onclick="querys()">查询</button>

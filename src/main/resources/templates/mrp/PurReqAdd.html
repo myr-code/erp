@@ -160,6 +160,20 @@
 			}
 		});*/
 
+		//供应商
+		$.ajax({
+			url:"/erp/Supplier_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='suppId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
+
 		//部门
 		$.ajax({
 			url:"/erp/Depart_all",
@@ -633,6 +647,14 @@
 				　　<option value="-1">&#45;&#45; &#45;&#45;</option>
 				</select>
 			</div>-->
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">供应商</button>
+				 </span>
+				<select name="suppId" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+					　　<option value="-1">-- --</option>
+				</select>
+			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">单据日期</button>

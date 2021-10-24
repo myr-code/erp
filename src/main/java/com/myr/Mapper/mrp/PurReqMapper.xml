@@ -6,12 +6,12 @@
 	<!--添加-->
 	<insert id="add_PurReq">
 		INSERT INTO `mrp_pur_req`
-	(`fid`, `billNo`, `billDate`, `mrpNo`,`entryId`, `itemId`, `custOrderNum`, `finishDate`,
+	(`fid`, `billNo`, `billDate`, `mrpNo`, `suppId`,`entryId`, `itemId`, `custOrderNum`, `finishDate`,
 	`qty`, `batchNumber`, `taxPrice`, `taxPriceNo`, `fcess`, `taxAmt`, `taxAmtNo`, `fcessAmt`,
 	`fdisable`, `remark`, `rowRemark`, `finish_qty`, `finish_static`, `sourFid`, `sourBillNo`,
 	`sourEntryId`, `sourType`, `billStaf`, `createDate`)
 	VALUES
-	(null, #{billNo}, #{billDate}, #{mrpNo}, #{entryId}, #{itemId.fid}, #{custOrderNum}, #{finishDate},
+	(null, #{billNo}, #{billDate}, #{mrpNo}, #{suppId.fid}, #{entryId}, #{itemId.fid}, #{custOrderNum}, #{finishDate},
 	 #{qty}, #{batchNumber}, #{taxPrice}, #{taxPriceNo}, #{fcess}, (#{taxPrice}*#{qty}), ( #{taxPriceNo} *#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ),
 	  #{fdisable}, #{remark}, #{rowRemark}, #{finishQty}, #{finishStatic}, #{sourFid}, #{sourBillNo},
 	   #{sourEntryId}, #{sourType}, #{billStaf}, now());
@@ -27,7 +27,8 @@
 		select count(*)
 		from mrp_pur_req a left join t_item b on a.itemId = b.fid
 		left join t_unit c on b.purUnitId = c.fid
-		where a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
+		left join t_supplier d on a.suppId = d.fid
+		where a.billNo like '%${cnm}%' or d.name like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
 
 	</select>
 
@@ -54,9 +55,11 @@
 	<!--序时簿-->
 	<select id="PurReq_page" resultMap="PurReqMap">
 		select a.*,b.code as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel,c.`name` as 'unitName'
+		,d.`name` as 'suppIdName'
 		from mrp_pur_req a left join t_item b on a.itemId = b.fid
 		left join t_unit c on b.purUnitId = c.fid
-		where a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
+		left join t_supplier d on a.suppId = d.fid
+		where a.billNo like '%${cnm}%' or d.name like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
 		order by billDate desc,billNo desc,entryId
 		limit #{startpage},#{pagesize}
 	</select>
@@ -101,10 +104,11 @@
 			</association>
 		</collection>
 
-		<!--职员 部门负责人-->
-		<!--<collection property="billStaf" javaType="com.myr.Bean.Staff">
-			<id column="staffId" property="fid"/>
-		</collection>-->
+		<!--供应商-->
+		<collection property="suppId" javaType="com.myr.Bean.Supplier">
+			<id column="suppId" property="fid"/>
+			<result column="suppIdName" property="name"/>
+		</collection>
 
 		<!--&lt;!&ndash;部门&ndash;&gt;
 		<collection property="depIdFid" javaType="com.myr.Bean.Department">

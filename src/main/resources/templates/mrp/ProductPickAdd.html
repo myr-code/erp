@@ -402,7 +402,7 @@
 				dataType:"json",
 				success:function(result){
 					for(var i=0;i<result.data.length;i++){
-						var fid = result.data[i].fid+"00"+result.data[i].itemId.fid;//唯一id
+						var fid = result.data[i].itemId.fid;//唯一id +"00"+result.data[i].itemId.fid
 						var itemId = result.data[i].itemId.fid;//itemid
 						var billNo = result.data[i].billNo;
 						/*var suppIdFidName = result.data[i].suppIdFid.name;

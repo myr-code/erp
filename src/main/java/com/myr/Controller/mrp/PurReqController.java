@@ -41,6 +41,9 @@ public class PurReqController {
             /*Integer custId = Integer.parseInt(request.getParameter("custId"));
             Customer customer = new Customer();
             customer.setFid(custId);*/
+            Integer suppId = Integer.parseInt(request.getParameter("suppId"));
+            Supplier supplier = new Supplier();
+            supplier.setFid(suppId);
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
             String billNo = purReqService.getBillNo(billDate);
@@ -73,6 +76,7 @@ public class PurReqController {
 
                 MrpPurReq.setBillNo(billNo);
                 MrpPurReq.setBillDate(billDate);
+                MrpPurReq.setSuppId(supplier);
                 MrpPurReq.setEntryId(entry);
                 Item item = new Item();
                 item.setFid(itemId);
@@ -114,7 +118,7 @@ public class PurReqController {
     //序时簿
     @RequestMapping("/PurReqIndex")
     public String PurReqIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
-                                   @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
+                                   @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model){
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
@@ -128,6 +132,7 @@ public class PurReqController {
         //封装数据
         PageUtils<MrpPurReq> pageUtils = new PageUtils<MrpPurReq>(startpage, pagesize, countTatol, PurReqs);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
         return "desktop/PurReqIndex";
     }
@@ -189,6 +194,9 @@ public class PurReqController {
             /*Integer custId = Integer.parseInt(request.getParameter("custId"));
             Customer customer = new Customer();
             customer.setFid(custId);*/
+            Integer suppId = Integer.parseInt(request.getParameter("suppId"));
+            Supplier supplier = new Supplier();
+            supplier.setFid(suppId);
             String billDate = request.getParameter("billDate");
             String remark = request.getParameter("remark");
             String billNo = request.getParameter("billNo");
@@ -222,6 +230,7 @@ public class PurReqController {
 
                 mrpPurReq.setBillNo(billNo);
                 mrpPurReq.setBillDate(billDate);
+                mrpPurReq.setSuppId(supplier);
                 mrpPurReq.setEntryId(entry);
                 mrpPurReq.setMrpNo(mrpNo);
                 Item item = new Item();

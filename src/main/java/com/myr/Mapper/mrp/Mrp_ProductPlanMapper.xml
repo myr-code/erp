@@ -27,8 +27,8 @@
 		select count(*) from mrp_productplan a
 		left join t_item b on a.itemId = b.fid
 		left join t_customer c on a.custId = c.fid
-		where  a.billNo like '%${cnm}%' or c.name like '%${cnm}%' or b.code like '%${cnm}%' or b.model like '%${cnm}%'
-		order by billDate desc,billNo desc,entryId
+		where  a.billNo like '%${cnm}%' or c.name like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
+
 	</select>
 
 	<select id="Mrp_ProductPlan_sour" resultMap="ProductPlanMap">
@@ -37,7 +37,9 @@
 
 	<select id="Mrp_ProductPlan_page" resultMap="ProductPlanMap">
         select a.fid,a.billNo,a.billDate,a.custId,c.`name` as 'custIdName',a.itemId,b.`code` as 'itemIdCode',b.`name` as 'itemIdName',b.model as 'itemIdModel',b.custItemCode,b.custItemName,a.custOrderNum,a.finishDate,a.qty,a.finish_qty,a.taxPrice,a.remark
-		from mrp_productplan a left join t_item b on a.itemId = b.fid left join t_customer c on a.custId = c.fid
+		from mrp_productplan a
+		left join t_item b on a.itemId = b.fid
+		left join t_customer c on a.custId = c.fid
 		where a.billNo like '%${cnm}%' or c.name like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%'
 		order by billDate desc,billNo desc,entryId
 		limit #{startpage},#{pagesize}

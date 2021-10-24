@@ -13,6 +13,7 @@ public class MrpPurReq {
   private String billNo="";
   private String billDate="";
   private String mrpNo="";
+  private Supplier suppId;
   private int entryId;
   private Item itemId;
   private String custOrderNum="";
