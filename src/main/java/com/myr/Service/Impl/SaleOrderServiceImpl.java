@@ -46,6 +46,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
+    public List<SaleOrder> SaleOrder_mrp(Map<String, Object> map) {
+        return saleOrderMapper.SaleOrder_mrp(map);
+    }
+
+    @Override
+    public int getCounts_mrp(Map<String, Object> map) {
+        return saleOrderMapper.getCounts_mrp(map);
+    }
+
+    @Override
     public List<SaleOrder> SaleOrder_sour(Map<String, Object> map) {
         return saleOrderMapper.SaleOrder_sour(map);
     }

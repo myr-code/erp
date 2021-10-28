@@ -18,6 +18,10 @@ public interface SaleOrderService {
 
     int getCounts_index(Map<String,Object> map);
 
+    List<SaleOrder> SaleOrder_mrp(Map<String,Object> map);
+
+    int getCounts_mrp(Map<String,Object> map);
+
     List<SaleOrder> SaleOrder_sour(Map<String,Object> map);
 
     List<SaleOrder> SaleOrder_page(Map<String,Object> map);

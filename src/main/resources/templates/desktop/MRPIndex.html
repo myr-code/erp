@@ -401,8 +401,8 @@
 							"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+unitName+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td>"+qty+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='icsQty"+fid+"'>"+icsQty+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-icsQty<=0?0:qty-icsQty)+"</td>\n" +
+							/*"\t\t\t\t\t\t\t\t<td id='icsQty"+fid+"'>"+icsQty+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-icsQty<=0?0:qty-icsQty)+"</td>\n" +*/
 							"\t\t\t\t\t\t\t\t<td id='custOrderNum"+fid+"'>"+custOrderNum+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='batchNumber"+fid+"'>"+batchNumber+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+taxPrice+"</td>\n" +
@@ -788,6 +788,7 @@
 				alert("生成采购申请单"+cg+"张，\n"+
 						"生成生产备料单"+bl+"张，\n"+
 						"生成生产计划单"+jh+"张。");
+				getitem(0);
 
 			}
 		});
@@ -846,13 +847,13 @@
 		</div>
 		<div class="input-group input-group-sm" style="width: 80px;">
 			<select id="range" onchange="getitem('切换')" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-				<option value="1">未完成</option>
-				<option value="2">已完成</option>
+				<option value="1">未计算</option>
+				<option value="2">已计算</option>
 				<option value="3">全部</option>
 			</select>
 		</div>
 
-		<div class="input-group input-group-sm" style="width: 150px;">
+		<div class="input-group input-group-sm" style="width: 140px;">
 			<select onchange="getitem('选择客户')" name="suppId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
 				<option value="-1">--请选择客户--</option>
 			</select>
@@ -955,8 +956,8 @@
 			<th>单位</th>
 			<th>数量</th>
 			<th>默认仓库</th>
-			<th>已入库</th>
-			<th>未入库</th>
+			<!--<th>已入库</th>
+			<th>未入库</th>-->
 			<th>客户订单号</th>
 			<th>批号</th>
 			<th>含税价格</th>

@@ -22,10 +22,16 @@ public interface SaleOrderMapper {
     String getBillNo(String dates);
 
     //获取总条数-mrp
+    int getCounts_mrp(Map<String,Object> map);
+
+    //获取总条数-mrp
     int getCounts(Map<String,Object> map);
 
     //获取总条数-序时簿
     int getCounts_index(Map<String,Object> map);
+
+    //销售订单  选择来源
+    List<SaleOrder> SaleOrder_mrp(Map<String,Object> map);
 
     //销售订单  选择来源
     List<SaleOrder> SaleOrder_sour(Map<String,Object> map);

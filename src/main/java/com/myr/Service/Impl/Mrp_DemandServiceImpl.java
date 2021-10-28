@@ -58,6 +58,7 @@ public class Mrp_DemandServiceImpl implements Mrp_DemandService {
     }
 
     @Override
+    @Transactional
     public List<Mrp_Demand> GenerateMrp(Map<String, Object> map) {
         return mrp_demandMapper.GenerateMrp(map);
     }

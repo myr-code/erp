@@ -18,6 +18,39 @@
         SELECT GetBillNo(1,#{date});
     </select>
 
+    <select id="getCounts_mrp" resultType="int">
+        select
+        count(*)
+        from t_saleorder a LEFT JOIN t_saleorderentry b on a.fid = b.mid
+        LEFT JOIN t_customer c on a.custId = c.fid
+        LEFT JOIN t_settlement_method d on a.settleId = d.fid
+        LEFT JOIN t_department e on a.depId = e.fid
+        LEFT JOIN t_staff f on a.depStaffId = f.fid
+        LEFT JOIN t_staff g on a.billStaffId = g.fid
+        left join (
+        select a.fid,a.defaultStorehouseId,b.`name` from t_item a left join t_store b on a.defaultStorehouseId = b.fid
+        ) h on b.itemId = h.fid
+        /*LEFT JOIN icstockbillentry i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId*/
+        where 1=1
+        <if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+            and a.billDate between #{date_start} and #{date_end}
+        </if>
+        <if test="suppId != null and suppId > 0">
+            and a.custId = #{suppId}
+        </if>
+        <if test="cnm != null or cnm != ''">
+            and (a.billNo like '%${cnm}%' or b.itemname like '%${cnm}%' or b.itemcode like '%${cnm}%' or b.itemmodel like '%${cnm}%')
+        </if>
+        <if test="range != null and range == 1">
+            and b.ismrp = 0
+            /*and b.qty-IfNULL(i.qty,0) > 0*/
+        </if>
+        <if test="range != null and range == 2">
+            and b.ismrp = 1
+            /*and b.qty-i.qty&lt;=0*/
+        </if>
+    </select>
+
     <select id="getCounts" resultType="int">
         select count(*)
         from t_saleorder a LEFT JOIN t_saleorderentry b on a.fid = b.mid
@@ -55,6 +88,47 @@
         <if test="str != null or str != ''">
             and (a.GSBillNo like '%${str}%' or c.name like '%${str}%' or b.itemname like '%${str}%' or b.itemcode like '%${str}%' or b.itemmodel like '%${str}%')
         </if>
+    </select>
+
+    <select id="SaleOrder_mrp" resultMap="SaleOrderMap">
+        select
+        a.*,b.fid as 'ffid',
+        b.mid,b.entryid,b.itemId,b.itemcode,b.itemname,b.itemmodel,b.custitemcode,b.custitemmodel
+        ,b.qty,b.custOrderNum,b.finishDate,b.batchNumber,b.taxPrice,b.taxPriceNo,b.fcess,b.taxAmt,b.taxAmtNo,b.fcessAmt,b.rowRemark as 'midRemark',b.source,
+        c.`name` as 'custIdName',d.`name` as 'settleIdName',e.`name` as 'depIdName',
+        g.`name` as 'billStaffIdName',f.`name` as 'depStaffIdName',/*i.qty as 'icsQty',*/
+        h.defaultStorehouseId as 'stockId', h.name as 'stockName'
+        from t_saleorder a LEFT JOIN t_saleorderentry b on a.fid = b.mid and b.ismrp = 0
+        LEFT JOIN t_customer c on a.custId = c.fid
+        LEFT JOIN t_settlement_method d on a.settleId = d.fid
+        LEFT JOIN t_department e on a.depId = e.fid
+        LEFT JOIN t_staff f on a.depStaffId = f.fid
+        LEFT JOIN t_staff g on a.billStaffId = g.fid
+        left join (
+        select a.fid,a.defaultStorehouseId,b.`name` from t_item a left join t_store b on a.defaultStorehouseId = b.fid
+        ) h on b.itemId = h.fid
+        /*LEFT JOIN icstockbillentry i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId*/
+        where 1=1
+        <if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+            and a.billDate between #{date_start} and #{date_end}
+        </if>
+        <if test="suppId != null and suppId > 0">
+            and a.custId = #{suppId}
+        </if>
+        <if test="cnm != null or cnm != ''">
+            and (a.billNo like '%${cnm}%' or b.itemname like '%${cnm}%' or b.itemcode like '%${cnm}%' or b.itemmodel like '%${cnm}%')
+        </if>
+        <if test="range != null and range == 1">
+            and b.ismrp = 0
+            /*and b.qty-IfNULL(i.qty,0) > 0*/
+        </if>
+        <if test="range != null and range == 2">
+            and b.ismrp = 1
+            /*and b.qty-i.qty&lt;=0*/
+        </if>
+        order by b.mid,b.entryid
+        limit #{startpage},#{pagesize}
+
     </select>
 
     <select id="SaleOrder_sour" resultMap="SaleOrderMap">
