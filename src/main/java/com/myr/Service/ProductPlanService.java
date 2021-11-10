@@ -14,6 +14,10 @@ public interface ProductPlanService {
     //获取系统单号  1销售订单
     String getBillNo(String dates);
 
+    int getCounts_sour(Map<String,Object> map);
+
+    List<MrpProductplan> ProductPlan_sour(Map<String,Object> map);
+
     //获取总条数
     int getCounts(Map<String,Object> map);
 
@@ -23,5 +27,5 @@ public interface ProductPlanService {
 
     Integer delMrpProductPlan(String billNo);
 
-    Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan,List<MrpProductplan> mrpProductplans);
+    Integer Mrp_ProductPlan_update(List<MrpProductplan> mrpProductplans);
 }

@@ -230,6 +230,9 @@
 			type:"post",
 			dataType:"json",
 			success:function (result) {
+				/*for(var i=0;i<result.length;i++){
+					$("select[name='stockId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}*/
 				stockJOSN = result;//预存 选择item后追加item仓库
 			}
 		});

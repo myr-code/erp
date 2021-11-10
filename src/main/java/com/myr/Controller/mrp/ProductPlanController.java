@@ -116,6 +116,37 @@ public class ProductPlanController {
         return msg;
     }
 
+    //选择来源
+    @RequestMapping("/Sour_ProductPlan")
+    @ResponseBody
+    public PageUtils Sour_ProductPick(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                      @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "cnm",defaultValue = "")String cnm, HttpServletRequest request){
+        //获取items
+        int range = Integer.parseInt(request.getParameter("range")==null?"0":request.getParameter("range"));//是否选中已入库的数据
+        int suppId = Integer.parseInt(request.getParameter("suppId")==null?"0":request.getParameter("suppId"));//主体组织
+        String date_start = request.getParameter("date_start")==null?"":request.getParameter("date_start");
+        String date_end = request.getParameter("date_end")==null?"":request.getParameter("date_end");
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("cnm",cnm);
+        map.put("range",range);
+        map.put("suppId",suppId);
+        map.put("date_start",date_start);
+        map.put("date_end",date_end);
+        System.out.println(map.toString());
+
+        List<MrpProductplan> mrpProductplans = productPlanService.ProductPlan_sour(map);
+
+        //获取总条数
+        int countTatol = productPlanService.getCounts_sour(map);
+
+        PageUtils<MrpProductplan> pageUtils = new PageUtils<MrpProductplan>(startpage, pagesize, countTatol, mrpProductplans);
+        System.out.println(pageUtils);
+        return pageUtils;
+    }
+
+
     //序时簿
     @RequestMapping("/ProductPlanIndex")
     public String ProductPlanIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
@@ -228,9 +259,7 @@ public class ProductPlanController {
             productPlanService.delMrpProductPlan(billNo);
             //添加计划单
             Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);*/
-            MrpProductplan mrpProductplan = new MrpProductplan();
-            mrpProductplan.setBillNo(billNo);
-            Integer count = productPlanService.Mrp_ProductPlan_update(mrpProductplan,MrpProductplans);
+            Integer count = productPlanService.Mrp_ProductPlan_update(MrpProductplans);
 
             if(count > 0){
                 //登录成功
@@ -256,8 +285,7 @@ public class ProductPlanController {
             for (String data : datas) {
                 List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(Integer.parseInt(data));
                 if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-                    String billNo = mrp_productPlanById.get(0).getBillNo();
-                    productPlanService.delMrpProductPlan(billNo);
+                    productPlanService.delMrpProductPlan(mrp_productPlanById.get(0).getBillNo());
                 }
             }
 

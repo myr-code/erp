@@ -7,19 +7,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Icstockbillentry {
+public class MrpProductinstore {
 
   private int fid;
-  private int mid;
+  private String billNo;
+  private String billDate;
+  private int finalStoreId;
+  private Supplier suppId;
+  private String billType;
+  private int typeId;
   private int entryId;
-  private int itemId;
-  private String itemCode;
-  private String itemName;
-  private String itemModel;
-  private String custItemCode;
-  private String custItemModel;
-  private String unitName;
+  private Item itemId;
   private String custOrderNum;
+  private String finishDate;
   private double qty;
   private int stockId;
   private String batchNumber;
@@ -30,12 +30,16 @@ public class Icstockbillentry {
   private double taxAmtNo;
   private double fcessAmt;
   private int fdisable;
-  private int stockType;
+  private String remark;
   private String rowRemark;
+  private int finishQty;
+  private int finishStatic;
   private int sourFid;
   private String sourBillNo;
   private int sourEntryId;
   private String sourType;
-
+  private int billStaf;
+  private String createDate;
+  private String editDate;
 
 }

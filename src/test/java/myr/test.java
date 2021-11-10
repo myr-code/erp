@@ -1,6 +1,12 @@
 package myr;
 
 
+import com.myr.Bean.MrpProductpick;
+import com.myr.utils.GetClassValue;
+import com.myr.utils.ObjectUtils;
+import org.junit.Test;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +14,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class test {
+
+    @Test
+    public void testobjectUtils(HttpServletRequest request) throws Exception {
+        MrpProductpick mrpProductpick = new MrpProductpick();
+        mrpProductpick.setBillNo("dfdf");
+        Object o = GetClassValue.GetOneClassValue("2", mrpProductpick, request);
+        System.out.println(o);
+    }
 
     public String getHtmlContent(String htmlurl) {
         URL url;

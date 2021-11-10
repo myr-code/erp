@@ -29,6 +29,16 @@ public class ProductPlanServiceImpl implements ProductPlanService {
     }
 
     @Override
+    public int getCounts_sour(Map<String, Object> map) {
+        return productPlanMapper.getCounts_sour(map);
+    }
+
+    @Override
+    public List<MrpProductplan> ProductPlan_sour(Map<String, Object> map) {
+        return productPlanMapper.ProductPlan_sour(map);
+    }
+
+    @Override
     public int getCounts(Map<String, Object> map) {
         return productPlanMapper.getCounts(map);
     }
@@ -50,9 +60,10 @@ public class ProductPlanServiceImpl implements ProductPlanService {
 
     @Override
     @Transactional
-    public Integer Mrp_ProductPlan_update(MrpProductplan mrpProductplan,List<MrpProductplan> mrpProductplans) {
+    public Integer Mrp_ProductPlan_update(List<MrpProductplan> mrpProductplans) {
         int rs = 0;
-        if(mrpProductplans.size()>0&&mrpProductplans!=null){
+        MrpProductplan mrpProductplan = null;
+        if(mrpProductplans!=null && mrpProductplans.size()>0){
             mrpProductplan = mrpProductplans.get(0);
 
             if(productPlanMapper.delMrpProductPlan(mrpProductplan.getBillNo())>0){

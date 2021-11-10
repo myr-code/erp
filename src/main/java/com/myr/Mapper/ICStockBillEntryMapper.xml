@@ -7,11 +7,11 @@
     <insert id="addICStockBillEntry">
         INSERT INTO `icstockbillentry`(`fid`, `mid`, `entryId`, `itemId`, `itemCode`, `itemName`, `itemModel`, `custItemCode`,
         `custItemModel`, `unitName`, `custOrderNum`, `qty`,`stockId`, `batchNumber`, `taxPrice`, `taxPriceNo`, `fcess`, `taxAmt`,
-        `taxAmtNo`, `fcessAmt`, `rowRemark`, `sourFid`, `sourBillNo`, `sourEntryId`, `sourType`)
+        `taxAmtNo`, `fcessAmt`, `stockType`, `rowRemark`, `sourFid`, `sourBillNo`, `sourEntryId`, `sourType`)
         VALUES
         (null, #{mid}, #{entryId}, #{itemId}, #{itemCode}, #{itemName}, #{itemModel}, #{custItemCode},
         #{custItemModel}, #{unitName}, #{custOrderNum}, #{qty}, #{stockId}, #{batchNumber}, #{taxPrice}, #{taxPriceNo}, #{fcess}, (#{taxPrice}*#{qty}),
-         (#{taxPriceNo}*#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ), #{rowRemark}, #{sourFid}, #{sourBillNo}, #{sourEntryId}, #{sourType});
+         (#{taxPriceNo}*#{qty}), ( (#{taxPriceNo} *#{qty}) * (#{fcess}/100) ), #{stockType}, #{rowRemark}, #{sourFid}, #{sourBillNo}, #{sourEntryId}, #{sourType});
     </insert>
 
     <delete id="ICStockBillEntry_del">

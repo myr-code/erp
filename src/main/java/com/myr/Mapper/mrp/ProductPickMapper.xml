@@ -61,7 +61,7 @@
 
 	<!--2021-09-28 mrp_pur_req触发  t_poorderentry的合计-->
 	<select id="ProductPick_sour" resultMap="ProductPickMap">
-		select a.*,b.code 'itemIdCode',b.name 'itemIdName',b.model 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel, c.`name` 'unitName'
+		select a.*,b.code 'itemIdCode',b.name 'itemIdName',b.model 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel, c.`name` 'purUnitIdName'
 		from mrp_backmater a left join t_item b on a.itemId = b.fid
 		LEFT JOIN t_unit c on b.purUnitId = c.fid
 		where 1=1
@@ -72,10 +72,10 @@
 			and (a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%')
 		</if>
 		<if test="range != null and range == 1">
-			and a.qty-IfNULL(a.finish_qty,0) > 0
+			and a.finish_static = 0
 		</if>
 		<if test="range != null and range == 2">
-			and a.qty-a.finish_qty&lt;=0
+			and a.finish_static = 1
 		</if>
 		order by a.billNo desc,a.entryId
 		limit #{startpage},#{pagesize}
@@ -122,6 +122,7 @@
 			<result column="custItemCode" property="custItemCode"></result>
 			<result column="custItemName" property="custItemName"></result>
 			<result column="custItemModel" property="custItemModel"></result>
+			<result column="purUnitIdName" property="purUnitIdName"></result>
 
 			<!--单位-->
 			<association property="saleUnitIdFid" javaType="com.myr.Bean.Unit">

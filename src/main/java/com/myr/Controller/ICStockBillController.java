@@ -60,6 +60,7 @@ public class ICStockBillController {
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价
+                int stockType = Integer.parseInt(request.getParameter("stockType" + num));//仓库类型
                 String rowRemark = request.getParameter("rowRemark" + num);//行备注
                 /*String source = request.getParameter("source" + num);//来源*/
                 int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
@@ -81,6 +82,7 @@ public class ICStockBillController {
                 icstockbillentry.setBatchNumber(batchNumber);
                 icstockbillentry.setTaxPrice(taxPrice);
                 icstockbillentry.setTaxPriceNo(taxPriceNo);
+                icstockbillentry.setStockType(stockType);
                 icstockbillentry.setRowRemark(rowRemark);
                 icstockbillentry.setSourFid(sourFid);
                 icstockbillentry.setSourBillNo(sourBillNo);
@@ -98,7 +100,7 @@ public class ICStockBillController {
             //添加头和体
             icstockbill.setBillNo(icStockBillService.getICBillNo(icstockbill.getBillDate()));
             Integer count = icStockBillEntryService.addICStockBillEntry(icstockbill, icstockbillentries);
-            msg = null;
+
             if(count > 0){
                 //登录成功
                 msg = new MessageRequest(200,"添加成功",null);
