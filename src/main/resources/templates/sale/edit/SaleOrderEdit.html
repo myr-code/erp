@@ -223,6 +223,25 @@
 			}
 		});
 
+		//币别
+		$.ajax({
+			url:"/erp/CurrencyType_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				var currencyName = [[${data.currencyName}]];
+				for(var i=0;i<result.length;i++){
+					if(currencyName == result[i].fid){
+						$("select[name='currencyName']").append("<option selected value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}else {
+						$("select[name='currencyName']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}
+				}
+				//alert(JSON.stringify(result));
+
+			}
+		});
+
 		//回显固定选项 <select name="type" select name="currencyName" select name="finishType"
 		var type = [[${data.type}]];
 		var currencyName = [[${data.currencyName}]];
@@ -662,9 +681,9 @@
 					<button class="btn btn-info" type="button">订单类型</button>
 				 </span>
 				 <select name="type" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="0">-- --</option>
-					<option value="1">合同订单</option>
-				　　<option value="2">备货订单</option>
+					<option th:selected="${data.type == 0}? 'selected'" value="0">-- --</option>
+					<option th:selected="${data.type == 1}? 'selected'" value="1">合同订单</option>
+				　　 <option th:selected="${data.type == 2}? 'selected'" value="2">备货订单</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">
@@ -680,9 +699,7 @@
 					<button class="btn btn-info" type="button">币别</button>
 				 </span>
 				 <select name="currencyName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="1">人民币</option>
-				　　<option value="2">美元</option>
-				　　<option value="3">港币</option>
+					 <option value="-1">-- --</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">
@@ -714,9 +731,9 @@
 					<button class="btn btn-info" type="button">交货方式</button>
 				 </span>
 				 <select name="finishType" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="0">-- --</option>
-					<option value="1">送货上门</option>
-				　　<option value="2">上门提货</option>
+					<option th:selected="${data.finishType == '无'}? 'selected'" value="0">-- --</option>
+					<option th:selected="${data.finishType == '送货上门'}? 'selected'" value="1">送货上门</option>
+				　　<option th:selected="${data.finishType == '上门提货'}? 'selected'" value="2">上门提货</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">
@@ -741,7 +758,7 @@
 					<li style="float:right;" id="btn-row">
 						<a href="#">
 							<button class="btn btn-info btn-xs" onclick="getitem()" type="button" data-toggle="modal" data-target="#myModal">来源</button>
-							<button class="btn btn-info btn-xs" onclick="testinsert()" type="button">test插入</button>
+							<!--<button class="btn btn-info btn-xs" onclick="testinsert()" type="button">test插入</button>-->
 							<!--<button class="btn btn-info btn-xs" type="button" onclick="del_row()">删行</button>-->
 						</a>
 					</li>

@@ -60,7 +60,7 @@ public class ICStockBillController {
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价
-                int stockType = Integer.parseInt(request.getParameter("stockType" + num));//仓库类型
+                int stockType = Integer.parseInt(request.getParameter("stockType"));//仓库类型
                 String rowRemark = request.getParameter("rowRemark" + num);//行备注
                 /*String source = request.getParameter("source" + num);//来源*/
                 int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码

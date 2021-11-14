@@ -194,10 +194,10 @@
         </collection>
 
         <!--仓库 item默认仓库-->
-        <collection property="stockId" javaType="com.myr.Bean.Store">
+        <!--<collection property="stockId" javaType="com.myr.Bean.Store">
             <id column="stockId" property="fid"/>
             <result column="stockName" property="name"/>
-        </collection>
+        </collection>-->
 
     </resultMap>
 

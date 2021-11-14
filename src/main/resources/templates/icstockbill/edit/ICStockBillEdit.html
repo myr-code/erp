@@ -239,6 +239,25 @@
 			}
 		});
 
+		//币别
+		$.ajax({
+			url:"/erp/CurrencyType_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				var currName = [[${data.currName}]];
+				for(var i=0;i<result.length;i++){
+					if(currName == result[i].fid){
+						$("select[name='currName']").append("<option selected value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}else {
+						$("select[name='currName']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					}
+				}
+				//alert(JSON.stringify(result));
+
+			}
+		});
+
 		//回显固定选项 <select name="type" select name="currencyName" select name="finishType"
 		var type = [[${data.type}]];
 		var currName = [[${data.currName}]];
@@ -959,9 +978,7 @@
 					<button class="btn btn-info" type="button">币别</button>
 				 </span>
 				 <select name="currName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="1">人民币</option>
-				　　<option value="2">美元</option>
-				　　<option value="3">港币</option>
+					 <option value="-1">-- --</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">

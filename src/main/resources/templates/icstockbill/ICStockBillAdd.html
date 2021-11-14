@@ -217,6 +217,20 @@
 				stockJOSN = result;//预存 选择item后追加item仓库
 			}
 		});
+
+		//币别
+		$.ajax({
+			url:"/erp/CurrencyType_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='currName']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
 	});
 
 	//点击来源 获取item信息
@@ -322,8 +336,8 @@
 						var custItemModel = result.data[i].mid.custItemModel;
 						var unitName = result.data[i].mid.unitName;
 						var qty = result.data[i].mid.qty;
-						var stockId = result.data[i].stockId.fid;
-						var stockName = result.data[i].stockId.name;
+						/*var stockId = result.data[i].stockId.fid;
+						var stockName = result.data[i].stockId.name;*/
 						var custOrderNum = result.data[i].mid.custOrderNum;
 						var batchNumber = result.data[i].mid.batchNumber;
 						var taxPrice = result.data[i].mid.taxPrice;
@@ -344,7 +358,7 @@
 								"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+unitName+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td>"+qty+"</td>\n" +
-								"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +
+								/*"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +*/
 								"\t\t\t\t\t\t\t\t<td id='icsQty"+fid+"'>"+icsQty+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-icsQty<=0?0:qty-icsQty)+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='custOrderNum"+fid+"'>"+custOrderNum+"</td>\n" +
@@ -354,7 +368,7 @@
 								"<input type='hidden' id='sourFid"+fid+"' value='"+sourFid+"' >"+
 								"<input type='hidden' id='sourBillNo"+fid+"' value='"+billNo+"' >"+
 								"<input type='hidden' id='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
-								"<input type='hidden' id='stockId"+fid+"' value='"+stockId+"' >"+
+								/*"<input type='hidden' id='stockId"+fid+"' value='"+stockId+"' >"+*/
 								"\t\t\t\t\t\t\t</tr>";
 						$("table[id='items']").append(apphtml);
 						var startpage = result.startpage;
@@ -407,7 +421,7 @@
 				"<th>客户型号</th>"+
 				"<th>单位</th>"+
 				"<th>数量</th>"+
-				"<th>默认仓库</th>"+
+				/*"<th>默认仓库</th>"+*/
 				"<th>已入库</th>"+
 				"<th>未入库</th>"+
 				"<th>客户订单号</th>"+
@@ -936,9 +950,7 @@
 					<button class="btn btn-info" type="button">币别</button>
 				 </span>
 				 <select name="currName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="1">人民币</option>
-				　　<option value="2">美元</option>
-				　　<option value="3">港币</option>
+					 <option value="-1">-- --</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">

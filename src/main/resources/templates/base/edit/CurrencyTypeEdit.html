@@ -32,8 +32,7 @@
 	
 	
 </style>
-
-	<script type="text/javascript">
+<script type="text/javascript">
 		//主页的项目名
 		var path = $(window.parent.document.body).find("#path").val();
 
@@ -52,7 +51,7 @@
 			var f = {name:name,fid:fid};
 
 			$.ajax({
-				url:"/erp/ItemType_isexits",
+				url:"/erp/CurrencyType_isexits",
 				data:f,
 				type:"post",
 				async: false,//同步请求
@@ -78,36 +77,44 @@
 			//提交表单
 			var f = $("#f1").serialize();
 			$.ajax({
-				url:"/erp/ItemType_update",
+				url:"/erp/CurrencyType_update",
 				data:f,
 				type:"post",
 				dataType:"json",
 				success:function(result){
 					if(result.code==200){
 						alert("更新成功！");
-						window.parent.closemodel('1050503');
+						window.parent.closemodel('1050803');
 					}else if(result.code==-3){
 						alert("已存在，请确定后再添加!");
-						window.parent.closemodel('1050503');
 					}else if(result.code==500){
 						alert("更新失败!");
-						window.parent.closemodel('1050503');
 					}
 					//alert(JSON.stringify(result));
 				}
 			});
 
 		}
+
+		//正数小数点4位判断 var regex = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;
+		function checkNum4(obj){
+			var value = obj.value;
+			var re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+			if(!re.test(value)){
+				obj.value=0;
+				alert("请输入正确数值！(4位小数点)");
+			}
+		}
 	</script>
 
-<title></title>
+<title>计量单位-新增</title>
 </head>
 <body>
 
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>产品类型-编辑</b>
+		<b>币别-编辑</b>
 		<div class="btn-group btn-group-sm p" role="group" style="float:right;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
 			<div class="btn-group btn-group-sm" role="group">
@@ -133,6 +140,13 @@
 					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:red;"></span>名称</button>
 				 </span>
 				 <input type="text" name="name" th:value="${data.name}" onchange="isexits()" class="form-control" placeholder="NAME" aria-describedby="basic-addon1">
+			</div>
+
+			<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button">汇率</button>
+						 </span>
+				<input type="text" name="exchangeRate" th:value="${data.exchangeRate}" onchange="checkNum4(this)" value="1"  class="form-control" placeholder="STOCK" aria-describedby="basic-addon1">
 			</div>
 
 			<div class="input-group input-group-sm" style="width:1000px;">

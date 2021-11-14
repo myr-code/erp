@@ -137,10 +137,9 @@
 			success:function(result){
 				if(result.code==200){
 					alert("添加成功！");
-					location.href="/erp/icstockbill/page_ICStockBillAdd";
+					location.href="/erp/icstockbill/page_SaleOutAdd";
 				}else if(result.code==500){
 					alert("添加失败!");
-					location.href="/erp/icstockbill/page_ICStockBillAdd";
 				}
 				//alert(JSON.stringify(result));
 			}
@@ -217,6 +216,20 @@
 			dataType:"json",
 			success:function (result) {
 				stockJOSN = result;//预存 选择item后追加item仓库
+			}
+		});
+
+		//币别
+		$.ajax({
+			url:"/erp/CurrencyType_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='currName']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
 			}
 		});
 	});
@@ -939,9 +952,7 @@
 					<button class="btn btn-info" type="button">币别</button>
 				 </span>
 				 <select name="currName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="1">人民币</option>
-				　　<option value="2">美元</option>
-				　　<option value="3">港币</option>
+					 <option value="-1">-- --</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">

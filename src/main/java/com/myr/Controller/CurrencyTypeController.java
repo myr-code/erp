@@ -1,7 +1,8 @@
 package com.myr.Controller;
 
-import com.myr.Bean.*;
-import com.myr.Service.CustTypeService;
+import com.myr.Bean.CurrencyType;
+import com.myr.Bean.ItemType;
+import com.myr.Service.CurrencyTypeService;
 import com.myr.Service.ItemTypeService;
 import com.myr.utils.MessageRequest;
 import org.springframework.context.annotation.Scope;
@@ -18,16 +19,17 @@ import java.util.List;
 
 @Controller
 @Scope("prototype")
-public class ItemTypeController {
+public class CurrencyTypeController {
     @Resource
-    ItemTypeService itemTypeService;
+    CurrencyTypeService currencyTypeService;
+
 
     //01-添加
-    @RequestMapping("/ItemType_add")
+    @RequestMapping("/CurrencyType_add")
     @ResponseBody
-    public MessageRequest ItemType_add(ItemType itemType) {
-        System.out.println("要添加的产品类型=" + itemType);
-        Integer count = itemTypeService.addItemType(itemType);
+    public MessageRequest CurrencyType_add(CurrencyType currencyType) {
+        System.out.println("要添加的币别=" + currencyType);
+        Integer count = currencyTypeService.add_CurrencyType(currencyType);
         MessageRequest msg = null;
         if(count > 0){
             //登录成功
@@ -44,30 +46,30 @@ public class ItemTypeController {
     }
 
    //02-查询所有
-    @RequestMapping("/ItemType_all")
+    @RequestMapping("/CurrencyType_all")
     @ResponseBody
-    public List<ItemType> CustType_all() {
-        List<ItemType> itemTypes = itemTypeService.ItemType_all();
-        return itemTypes;
+    public List<CurrencyType> CurrencyType_all() {
+        List<CurrencyType> currencyTypes = currencyTypeService.CurrencyType_all();
+        return currencyTypes;
     }
 
     //03-序时簿分页
-    @RequestMapping("/ItemTypeIndex")
-    public String DepartIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+    @RequestMapping("/CurrencyTypeIndex")
+    public String CurrencyTypeIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, Model model) {
-        List<ItemType> itemTypes = itemTypeService.ItemType_all();
-        model.addAttribute("datas",itemTypes);
-        return "desktop/ItemTypeIndex";
+        List<CurrencyType> currencyTypes = currencyTypeService.CurrencyType_all();
+        model.addAttribute("datas",currencyTypes);
+        return "desktop/CurrencyTypeIndex";
     }
 
     //删除
-    @RequestMapping("/ItemType_del")
+    @RequestMapping("/CurrencyType_del")
     @ResponseBody
-    public MessageRequest ItemType_del(HttpServletRequest request) {
+    public MessageRequest CurrencyType_del(HttpServletRequest request) {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
         Integer count = 0;
         for (String data : datas) {
-            count = itemTypeService.delItemType(Integer.parseInt(data));
+            count = currencyTypeService.del_CurrencyType(Integer.parseInt(data));
             if(count<0){//有异常时
                 break;//跳出当前循环体，也称结束当前循环体
             }
@@ -85,19 +87,19 @@ public class ItemTypeController {
     }
 
     //去到编辑页面
-    @RequestMapping("/ItemTypeEdit/{fid}")
-    public String ItemTypeEdit(@PathVariable("fid") int fid, Model model) {
-        ItemType itemTypeById = itemTypeService.getItemTypeById(fid);
-        model.addAttribute("data",itemTypeById);
-        return "/base/edit/ItemTypeEdit";
+    @RequestMapping("/CurrencyTypeEdit/{fid}")
+    public String CurrencyTypeEdit(@PathVariable("fid") int fid, Model model) {
+        CurrencyType currencyTypeById = currencyTypeService.getCurrencyTypeById(fid);
+        model.addAttribute("data",currencyTypeById);
+        return "/base/edit/CurrencyTypeEdit";
     }
 
     //json判断是否存在
-    @RequestMapping("/ItemType_isexits")
+    @RequestMapping("/CurrencyType_isexits")
     @ResponseBody
-    public MessageRequest ItemType_isexits(ItemType itemType) {
-        System.out.println(itemType);
-        Integer count = itemTypeService.isexits(itemType);
+    public MessageRequest CurrencyType_isexits(CurrencyType currencyType) {
+        System.out.println(currencyType);
+        Integer count = currencyTypeService.isexits(currencyType);
         MessageRequest msg = null;
         if(count == 1){
             //存在
@@ -110,10 +112,10 @@ public class ItemTypeController {
     }
 
     //更新
-    @RequestMapping("/ItemType_update")
+    @RequestMapping("/CurrencyType_update")
     @ResponseBody
-    public MessageRequest ItemType_update(ItemType itemType) {
-        Integer count = itemTypeService.updateItemType(itemType);
+    public MessageRequest CurrencyType_update(CurrencyType currencyType) {
+        Integer count = currencyTypeService.update_CurrencyType(currencyType);
         MessageRequest msg = null;
         if(count > 0){
             //登录成功
