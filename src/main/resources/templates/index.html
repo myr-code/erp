@@ -4,7 +4,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="/erp/style/js/jquery.min.js"></script>
 <script src="/erp/style/js/bootstrap.min.js"></script>
+<script src="/erp/style/js/jquery.contextMenu.js"></script>
 <link href="/erp/style/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="/erp/style/css/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+
 <style type="text/css">
 	body {
 		margin: 0;
@@ -81,7 +84,7 @@
 
 	.menuchild{
 		float:left;
-		margin-left:5px;
+		margin-left:1px;
 	}
 	.menuchild .glyphicon-remove{
 		padding:0;
@@ -189,12 +192,13 @@
 		$("iframe[id!='main"+numid+"']").hide();
 
 		changecolor(numid);
+		SetNowModelId(numid);
 	}
 
 	//关闭top菜单并选中最后一个菜单
 	function closemodel(numid){
 
-		//删除模块
+		//删除模块 菜单、菜单X、模块主体
 		$("#top"+numid+"").remove();
 		$("#main"+numid+"").remove();
 		$("#close"+numid+"").remove();
@@ -211,6 +215,7 @@
 		//模块显示与隐藏
 		$("iframe").hide();
 		$("iframe[id='main"+numid+"']").show();
+		SetNowModelId(numid);
 	}
 
 	//颜色选中
@@ -227,6 +232,7 @@
 		//按钮颜色
 		$("button[id!='top0']").css("background-color","");
 		$("#top0").css("background-color","#337ab7");
+		 SetNowModelId(0);
 	 }
 
 	 //退出系统
@@ -240,10 +246,54 @@
 		alert(obj);
 	}
 
+	function SetNowModelId(numid){
+		$("#NowModelId").val(numid);
+	}
+
+	//关闭所有菜单
+	function CloseAllModel(){
+		//删除模块 菜单、菜单X、模块主体
+		$("button[id^='top']").slice(1).remove();
+		$("button[id^='close']").remove();
+		$("iframe[id^='main']").slice(1).remove();
+
+		//选择主页
+		changemodel(0);
+	}
+
+	//关闭其他菜单
+	function CloseOtherModel(){
+		var numid = $("#NowModelId").val();
+		//删除main
+
+		$.each($("iframe[id^='main']").slice(1), function() {
+			if($(this).attr('id') != "main"+numid){
+				$(this).remove();
+			}
+		});
+		//删除top
+		$.each($("button[id^='top']").slice(1), function() {
+			if($(this).attr('id') != "top"+numid){
+				$(this).remove();
+			}
+		});
+		//删除close
+		$.each($("button[id^='close']"), function() {
+			if($(this).attr('id') != "close"+numid){
+				$(this).remove();
+			}
+		});
+
+		//选中模块
+		changemodel(numid);
+	}
+
 </script>
+
 <title>ERP</title>
 </head>
 <body>
+<input type="hidden" id="NowModelId">
 
 <!-- 上部 -->
 <div id="Head_1">
@@ -259,6 +309,16 @@
 	</div>
 	<!-- 一些链接按钮 -->
 	<div id="Head_1_FunctionButton" style="float:right;">
+		<div class="btn-group btn-group-sm" role="group">
+			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				其他
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li><a href="#" onclick="CloseAllModel()">关闭所有</a></li>
+				<li><a href="#" onclick="CloseOtherModel()">关闭其他</a></li>
+			</ul>
+		</div>
 		<button class="btn btn-info" onclick="javascript: void(0);">
 			<span class="glyphicon glyphicon-question-sign"></span>
 			<b>帮助</b>	
@@ -287,6 +347,7 @@
 					主页
 				</button>
 			</div>
+
         </div>
 	</div>
 </div>

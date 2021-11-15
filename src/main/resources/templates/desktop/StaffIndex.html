@@ -168,6 +168,20 @@
 			querys();//提交
 		}
 	});
+
+	//全选 obj本身  targ目标 根据本身的变化改变目标
+	function AllChecked(obj,targ){
+		if ($(obj).prop("checked") == true) {
+			// 上面的复选框已被选中
+			$("input[name='"+targ+"']").prop("checked", true);
+			$("input[name='"+targ+"']").css("backgroundColor", "#d0e9c6");
+		} else {
+			// 上面的复选框没被选中
+			$("input[name='"+targ+"']").prop("checked", false);
+			$("input[name='"+targ+"']").css("backgroundColor", "#fff");
+		}
+
+	}
 	</script>
 	
 	
@@ -313,7 +327,10 @@
 
 <table class="table table-striped table-bordered table-condensed table-hover">
 	<tr>
-		<th style="width:60px;">选中</th>
+		<th style="width:60px;">
+			<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">
+			选中
+		</th>
 		<th>序号</th>
 		<th>名称</th>
 		<th>部门</th>

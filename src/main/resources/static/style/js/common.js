@@ -81,3 +81,17 @@ function checkNum4(obj){
 		return false;
 	}
 }
+
+//全选 obj本身  targ目标 根据本身的变化改变目标
+function AllChecked(obj,targ){
+	if ($(obj).prop("checked") == true) {
+		// 上面的复选框已被选中
+		$("input[name='"+targ+"']").prop("checked", true);
+		$("input[name='"+targ+"']").css("backgroundColor", "#d0e9c6");
+	} else {
+		// 上面的复选框没被选中
+		$("input[name='"+targ+"']").prop("checked", false);
+		$("input[name='"+targ+"']").css("backgroundColor", "#fff");
+	}
+
+}
