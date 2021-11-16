@@ -96,7 +96,13 @@
     </style>
 <script type="text/javascript">
 	var path = "";
+	var clientHeight=0;
 	$(function (){
+		clientHeight = document.body.clientHeight-90;//可用页面高度-90(top84-底部预留6)
+
+		//添加主窗体
+		$(".ifra").append("<iframe id='main0' src='page_right' scrolling='no' width='100%' height='"+clientHeight+"' name='right' border='none'></iframe>");
+
 		//主页的项目名
 		/*var a = "[[${session.contextPath}]]";
 		alert(a);*/
@@ -186,7 +192,7 @@
 		"</div>";
 		$(".Head2_FunctionList").append(appendhtml);
 		//添加主窗体
-		$(".ifra").append("<iframe id='main"+numid+"' src='"+url+"' scrolling='no'  width='100%' height='1500' name='right"+numid+"' border='none'></iframe>");
+		$(".ifra").append("<iframe id='main"+numid+"' src='"+url+"' scrolling='no' width='100%' height='"+clientHeight+"' name='right"+numid+"' border='none'></iframe>");
 
 		//隐藏其他主窗体
 		$("iframe[id!='main"+numid+"']").hide();
@@ -439,9 +445,9 @@
 			</li>
 		</ul>
 	</div>
-	
-	<div class="ifra" style="position: absolute; left: 150px; right: 10px; ">
-        <iframe id="main0" src="page_right" scrolling="no"  width="100%" height="1500" name="right" border="none"></iframe>
+
+	<div class="ifra" style="position: absolute; left: 150px; right: 10px;">
+        <!--<iframe id="main0" src="page_right" scrolling="no" width="100%" height="600" name="right" border="none"></iframe>-->
 		
     </div>
 </div>	

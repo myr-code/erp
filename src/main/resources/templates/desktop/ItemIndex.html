@@ -539,46 +539,44 @@
 	
 </div>
 
-<table class="table table-striped table-bordered table-condensed table-hover">
-	<tr>
-		<th style="width:60px;">
-			<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">
-			选中
-		</th>
-		<th>序号</th>
-		<th>编码</th>
-		<th>名称</th>
-		<th>型号</th>
-		<th>客户编码</th>
-		<th>客户型号</th>
-		<th>销售单位</th>
-		<th>销售价格</th>
-		<th>采购价格</th>
-		<th>默认客户</th>
-		<th>默认仓库</th>
-		<th>负责人</th>
-	</tr>
+<div style="height:100%;overflow-x:auto;overflow-y:auto;">
+	<table class="table table-striped table-bordered table-condensed table-hover">
+		<tr>
+			<th style="width:60px;">
+				<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">
+				选中
+			</th>
+			<th>序号</th>
+			<th>编码</th>
+			<th>名称</th>
+			<th>型号</th>
+			<th>客户编码</th>
+			<th>客户型号</th>
+			<th>销售单位</th>
+			<th>销售价格</th>
+			<th>采购价格</th>
+			<th>默认客户</th>
+			<th>默认仓库</th>
+			<th>负责人</th>
+		</tr>
 
-	<tr th:each="item,state:${datas.data}">
-		<td><input type="checkbox" name="fid" th:value="${item.fid}"></td>
-		<td th:text="${state.index+1}">1</td>
-		<td th:text="${item.code}">ALISA</td>
-		<td th:text="${item.name}">女</td>
-		<td th:text="${item.model}">18</td>
-		<td th:text="${item.custItemCode}">18</td>
-		<td th:text="${item.custItemModel}">18</td>
-		<td th:text="${item.saleUnitIdName}">18</td>
-		<td th:text="${item.salePrice}">18</td>
-		<td th:text="${item.purPrice}">18</td>
-		<td th:text="${item.defaultCustomerIdName}">18</td>
-		<td th:text="${item.defaultStorehouseIdName}">18</td>
-		<td th:text="${item.staffIdName}">18</td>
-	</tr>
-</table>
-
-
-
-
+		<tr th:each="item,state:${datas.data}">
+			<td><input type="checkbox" name="fid" th:value="${item.fid}"></td>
+			<td th:text="${state.index+1}">1</td>
+			<td th:text="${item.code}">ALISA</td>
+			<td th:text="${item.name}">女</td>
+			<td th:text="${item.model}">18</td>
+			<td th:text="${item.custItemCode}">18</td>
+			<td th:text="${item.custItemModel}">18</td>
+			<td th:text="${item.saleUnitIdName}">18</td>
+			<td th:text="${item.salePrice}">18</td>
+			<td th:text="${item.purPrice}">18</td>
+			<td th:text="${item.defaultCustomerIdName}">18</td>
+			<td th:text="${item.defaultStorehouseIdName}">18</td>
+			<td th:text="${item.staffIdName}">18</td>
+		</tr>
+	</table>
+</div>
 
 	
 </body>
