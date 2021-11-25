@@ -36,7 +36,13 @@ public class reportController {
 
         try {
             Map pars = new HashMap<>();
+            /*pars.put("id","1");
+            pars.put("name","东鸿");
+            pars.put("age","18");
+            pars.put("sg","172");
+            pars.put("phone","15900000003");*/
             Connection conn = getConnection();
+            /*JasperPrint print = JasperFillManager.fillReport(fis, pars, new JREmptyDataSource());*/
             JasperPrint print = JasperFillManager.fillReport(fis, pars, conn);
             JasperExportManager.exportReportToPdfStream(print,os);
         }catch (JRException e){
