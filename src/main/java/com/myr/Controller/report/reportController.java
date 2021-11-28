@@ -56,7 +56,7 @@ public class reportController {
 
     }
 
-    //基于JDBC连接的方式展示PDF
+    //基于javabean连接的方式展示PDF
     @RequestMapping("/report_javabean")
     public void report_javabean(HttpServletRequest request, HttpServletResponse response)throws Exception {
 

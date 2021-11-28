@@ -732,7 +732,10 @@
 		//alert(data);
 		return data;
 	}
-	
+
+	function BillPrint(fid){
+		location.href="/erp/PurOrder_print/"+fid;
+	}
 </script>
 
 <style type="text/css">
@@ -792,7 +795,7 @@
 	
 </style>
 
-<title>销售订单-新增</title>
+<title>采购订单-编辑</title>
 </head>
 <body>
 
@@ -810,7 +813,7 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li><a href="#">提交并审核</a></li>
-					<li><a href="#">提交并新建</a></li>
+					<li><a th:href="|/erp/PurOrder_print/${data.fid}|" target="_blank">打印</a></li>
 				</ul>
 			</div>
 		</div>
