@@ -1,12 +1,10 @@
 package com.myr.Controller;
 
-import com.myr.Bean.CustType;
-import com.myr.Bean.Customer;
-import com.myr.Bean.Item;
-import com.myr.Bean.Store;
+import com.myr.Bean.*;
 import com.myr.Service.CustTypeService;
 import com.myr.Service.StoreService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -61,10 +61,22 @@ public class StoreController {
 
     //03-序时簿分页
     @RequestMapping("/StoreIndex")
-    public String StoreIndex(Model model, HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
-        List<Store> stores = storeService.Store_all(AllQuery);
-        model.addAttribute("datas",stores);
+    public String StoreIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                             @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = storeService.getCounts_page(map);
+        //主数据
+        List<Store> stores = storeService.Store_page(map);
+        //封装数据
+        PageUtils<Store> pageUtils = new PageUtils<Store>(startpage, pagesize, countTatol, stores);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "desktop/StoreIndex";
     }
 

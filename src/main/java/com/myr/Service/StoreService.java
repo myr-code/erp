@@ -5,9 +5,14 @@ import com.myr.Bean.Item;
 import com.myr.Bean.Store;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StoreService {
     Integer addStore(Store store);
+
+    int getCounts_page(Map<String,Object> map);
+
+    List<Store> Store_page(Map<String,Object> map);
 
     List<Store> Store_all(String str);
 

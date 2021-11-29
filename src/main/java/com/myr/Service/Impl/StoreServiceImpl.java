@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StoreServiceImpl implements StoreService {
@@ -27,6 +28,16 @@ public class StoreServiceImpl implements StoreService {
             return storeMapper.addStore(store);
         }
 
+    }
+
+    @Override
+    public int getCounts_page(Map<String, Object> map) {
+        return storeMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<Store> Store_page(Map<String, Object> map) {
+        return storeMapper.Store_page(map);
     }
 
     @Override

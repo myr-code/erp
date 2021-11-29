@@ -42,10 +42,10 @@ public class TestCustomer {
 
     @Test
     public void page(){
-        List<Customer> w = customerService.Customer_page("w");
+        /*List<Customer> w = customerService.Customer_page("w");
         for (Customer customer : w) {
             System.out.println(customer);
-        }
+        }*/
     }
 
     @Test

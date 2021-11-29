@@ -55,11 +55,12 @@ public class ItemController {
     @RequestMapping("/Item_index")
     public String page_product(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                                @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
-                               Model model,HttpServletRequest request) {
+                               Model model) {
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
         map.put("str",AllQuery);
+        System.out.println(AllQuery);
 
         //获取总条数
         int countTatol = itemService.getCounts(map);
@@ -68,6 +69,7 @@ public class ItemController {
         //封装数据
         PageUtils<Item> pageUtils = new PageUtils<Item>(startpage, pagesize, countTatol, items);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
         /*List<Item> items = itemService.Item_page(map);
         model.addAttribute("items",items);*/

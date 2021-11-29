@@ -5,14 +5,18 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface CustomerMapper {
     //01-添加客戶
     Integer addCustomer(Customer customer);
 
+    //获取总条数
+    int getCounts_page(Map<String,Object> map);
+
     //序时簿 分页 @Param(value="str") String str
-    List<Customer> Customer_page(@Param(value="str") String str);
+    List<Customer> Customer_page(Map<String,Object> map);
 
     //高级查询
     List<Customer> Customer_pageGj(Customer customer);

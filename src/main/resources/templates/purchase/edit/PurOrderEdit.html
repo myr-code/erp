@@ -507,6 +507,7 @@
 			//行号
 			trlen = trlen+1;
 			var fid = $("#fid"+ids[j]+" input").val();
+			var itemId = $("#itemId"+ids[j]+" input").val();
 			var code = $("#code"+ids[j]).text();
 			var name = $("#name"+ids[j]).text();
 			var model = $("#model"+ids[j]).text();
@@ -526,7 +527,7 @@
 			//alert(qty);
 
 			var insertrow = "<tr>"+
-					"<input type='hidden' name='itemId0"+fid+trlen+"' value='"+fid+"' style='width:20px;'>"+
+					"<input type='hidden' name='itemId0"+fid+trlen+"' value='"+itemId+"' style='width:20px;'>"+
 					"<td>"+
 					"<span class='num'>"+trlen+"</span>"+
 					"<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>"+

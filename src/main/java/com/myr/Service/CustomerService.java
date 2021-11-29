@@ -3,11 +3,14 @@ package com.myr.Service;
 import com.myr.Bean.Customer;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CustomerService {
     Integer addCustomer(Customer customer);
 
-    List<Customer> Customer_page(String str);
+    int getCounts_page(Map<String,Object> map);
+
+    List<Customer> Customer_page(Map<String,Object> map);
 
     List<Customer> Customer_pageGj(Customer customer);
 

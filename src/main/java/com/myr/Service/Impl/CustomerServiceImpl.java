@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -28,8 +29,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> Customer_page(String str) {
-        return customerMapper.Customer_page(str);
+    public int getCounts_page(Map<String, Object> map) {
+        return customerMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<Customer> Customer_page(Map<String,Object> map) {
+        return customerMapper.Customer_page(map);
     }
 
     @Override

@@ -51,6 +51,20 @@
         </if>
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*)
+        from t_customer a
+        left join t_cust_type b on a.cust_type_id=b.fid
+        left JOIN t_department c on a.department_id = c.fid
+        LEFT JOIN t_staff d on a.staff_id = d.fid
+        LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0 and
+        (a.`name` like '%${cnm}%' or a.abb like '%${cnm}%' or a.`code` like '%${cnm}%'
+        or a.`address` like '%${cnm}%' or a.`contact` like '%${cnm}%' or a.`phone` like '%${cnm}%')
+
+    </select>
+
     <select id="Customer_page" resultMap="customermap">
         SELECT a.*,b.name as 'cust_type_id_name',c.`name` as 'department_id_name',
         d.`name` as 'staff_id_name',e.`name` as 'settlement_method_id_name'
@@ -60,9 +74,9 @@
         LEFT JOIN t_staff d on a.staff_id = d.fid
         LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
         WHERE a.fdisable = 0 and
-        (a.`name` like '%${str}%' or a.abb like '%${str}%' or a.`code` like '%${str}%'
-        or a.`address` like '%${str}%' or a.`contact` like '%${str}%' or a.`phone` like '%${str}%')
-
+        (a.`name` like '%${cnm}%' or a.abb like '%${cnm}%' or a.`code` like '%${cnm}%'
+        or a.`address` like '%${cnm}%' or a.`contact` like '%${cnm}%' or a.`phone` like '%${cnm}%')
+        limit #{startpage},#{pagesize}
     </select>
 
     <resultMap id="customermap" type="com.myr.Bean.Customer">

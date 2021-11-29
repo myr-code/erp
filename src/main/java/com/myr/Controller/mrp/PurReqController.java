@@ -123,7 +123,6 @@ public class PurReqController {
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
         map.put("cnm",AllQuery);
-        System.out.println("cnm="+map.get("cnm"));
 
         //获取总条数
         int countTatol = purReqService.getCounts(map);

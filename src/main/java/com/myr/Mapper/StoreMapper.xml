@@ -10,6 +10,18 @@
         (NULL, #{name}, 0, #{relativeSupplierId}, #{remark}, now(), #{updateDate}, 0);
     </insert>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*) from t_store a left join t_supplier b on a.relativeSupplierId = b.fid
+        where a.fdisable = 0 and (a.name like '%${str}%' or b.name like '%${str}%' or a.remark like '%${str}%')
+    </select>
+
+    <select id="Store_page" resultType="com.myr.Bean.Store">
+        SELECT a.*,b.`name` as 'relativeSupplierIdName' from t_store a left join t_supplier b on a.relativeSupplierId = b.fid
+        where a.fdisable = 0 and (a.name like '%${str}%' or b.name like '%${str}%' or a.remark like '%${str}%')
+		limit #{startpage},#{pagesize}
+    </select>
+
     <select id="Store_all" resultType="com.myr.Bean.Store">
         SELECT a.*,b.`name` as 'relativeSupplierIdName' from t_store a left join t_supplier b on a.relativeSupplierId = b.fid
         where a.fdisable = 0 and (a.name like '%${str}%' or b.name like '%${str}%' or a.remark like '%${str}%')

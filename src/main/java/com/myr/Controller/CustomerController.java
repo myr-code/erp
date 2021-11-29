@@ -1,8 +1,10 @@
 package com.myr.Controller;
 
 import com.myr.Bean.Customer;
+import com.myr.Bean.MrpPurReq;
 import com.myr.Service.CustomerService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.hibernate.annotations.Parameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -46,11 +48,21 @@ public class CustomerController {
     //序时簿分页
     //@RequestParam(value = "startpage",defaultValue = "1") Integer startpage
     @RequestMapping("/CustomerIndex")
-    public String page_product(Model model,HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
+    public String page_product(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("cnm",AllQuery);
 
-        List<Customer> customers = customerService.Customer_page(AllQuery);
-        model.addAttribute("customers",customers);
+        //获取总条数
+        int countTatol = customerService.getCounts_page(map);
+        //主数据
+        List<Customer> customers = customerService.Customer_page(map);
+        //封装数据
+        PageUtils<Customer> pageUtils = new PageUtils<Customer>(startpage, pagesize, countTatol, customers);
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "/desktop/CustomerIndex";
     }
 
