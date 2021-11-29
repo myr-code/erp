@@ -320,7 +320,7 @@ public class PurOrderController {
         try {
             Map pars = new HashMap<>();
             pars.put("fid",fid);
-            Connection conn = getConnection();
+            Connection conn = DBConn.getConnection();
             /*JasperPrint print = JasperFillManager.fillReport(fis, pars, new JREmptyDataSource());*/
             JasperPrint print = JasperFillManager.fillReport(fis, pars, conn);
             JasperExportManager.exportReportToPdfStream(print,os);
@@ -332,10 +332,5 @@ public class PurOrderController {
 
     }
 
-    //连接数据库
-    private Connection getConnection() throws Exception{
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1/myerp", "root", "123456");
-        return conn;
-    }
+
 }

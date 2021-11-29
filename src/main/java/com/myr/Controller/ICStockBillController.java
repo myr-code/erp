@@ -5,11 +5,13 @@ import com.myr.Service.ICStockBillEntryService;
 import com.myr.Service.IcStockBillService;
 import com.myr.Service.PurOrderEntryService;
 import com.myr.Service.PurOrderService;
-import com.myr.utils.DateOption;
-import com.myr.utils.GetParValues;
-import com.myr.utils.MessageRequest;
-import com.myr.utils.PageUtils;
+import com.myr.utils.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -302,6 +308,33 @@ public class ICStockBillController {
             msg = new MessageRequest(500,"修改失败",null);
         }
         return msg;
+    }
+
+    //基于JDBC连接的方式展示PDF
+    @RequestMapping("/ICStockBill_print/{fid}")
+    public void report_javabean(@PathVariable("fid") String fid,HttpServletRequest request, HttpServletResponse response)throws Exception {
+
+        System.out.println("fid="+fid);
+        //1、引入jasper文件
+        org.springframework.core.io.Resource resource = new ClassPathResource("templates/report_template/so_out.jasper");
+        FileInputStream fis = new FileInputStream(resource.getFile());
+
+        //2、创建JasperPrint,向jasper文件中填充数据
+        ServletOutputStream os = response.getOutputStream();
+
+        try {
+            Map pars = new HashMap<>();
+            pars.put("fid",fid);
+            Connection conn = DBConn.getConnection();
+            /*JasperPrint print = JasperFillManager.fillReport(fis, pars, new JREmptyDataSource());*/
+            JasperPrint print = JasperFillManager.fillReport(fis, pars, conn);
+            JasperExportManager.exportReportToPdfStream(print,os);
+        }catch (JRException e){
+            e.printStackTrace();
+        }finally {
+            os.flush();
+        }
+
     }
 
 }

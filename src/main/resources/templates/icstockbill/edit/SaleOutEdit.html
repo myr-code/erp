@@ -922,7 +922,7 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li><a href="#">提交并审核</a></li>
-					<li><a href="#">提交并新建</a></li>
+					<li><a th:href="|/erp/ICStockBill_print/${data.fid}|" target="_blank">打印</a></li>
 				</ul>
 			</div>
 		</div>
@@ -930,6 +930,7 @@
 	</div>
 
 	<form method="post" action="CustType_add" id="f1">
+		<input type="hidden" name="billType" value="销售出库">
 		<input type="hidden" name="fid" th:value="${data.fid}">
 		<div class="panel-body">
 
