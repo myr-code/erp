@@ -47,7 +47,7 @@ public class SaleOrderController {
                 String custItemCode = request.getParameter("custItemCode" + num);//custitem code
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
                 String unitName = request.getParameter("unitName" + num);//单位
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价

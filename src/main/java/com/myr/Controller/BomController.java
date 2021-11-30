@@ -57,7 +57,7 @@ public class BomController {
                 String custItemCode = request.getParameter("custItemCode" + num);//custitem code
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
                 String unitName = request.getParameter("unitName" + num);//单位
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 Integer defSuppId = Integer.parseInt(request.getParameter("defSuppId" + num));//完成时间
                 String defaultSupplierIdName = request.getParameter("defaultSupplierIdName" + num);//完成时间
@@ -227,7 +227,7 @@ public class BomController {
                 String custItemCode = request.getParameter("custItemCode" + num);//custitem code
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
                 String unitName = request.getParameter("unitName" + num);//单位
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 Integer defSuppId = Integer.parseInt(request.getParameter("defSuppId" + num));//完成时间
                 String defaultSupplierIdName = request.getParameter("defaultSupplierIdName" + num);//完成时间

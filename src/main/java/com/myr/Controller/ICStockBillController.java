@@ -61,7 +61,7 @@ public class ICStockBillController {
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
                 String unitName = request.getParameter("unitName" + num);//单位
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
                 Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价

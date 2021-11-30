@@ -13,7 +13,7 @@ public class Bomentry {
   private int mid;
   private int entryId;
   private int muid;
-  private int mqty;
+  private double mqty;
   private int cuid;
   private String itemCode;
   private String itemName;
@@ -21,7 +21,7 @@ public class Bomentry {
   private String custItemCode;
   private String custItemModel;
   private String unitName;
-  private int qty;
+  private double qty;
   private double taxPrice;
   private double taxAmt;
   private int DefSuppId;

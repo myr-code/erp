@@ -484,69 +484,6 @@
 		}
 	}
 
-	/*//请求并插入items
-	function reqappend(data){
-		//清空所有table tr 除了第一行
-		//$("table[id='items']").empty();
-		$("#items tr:not(:first)").empty("");
-
-		//请求并插入
-		$.ajax({
-			url:"/erp/Item_queryByCNM?id="+new Date(),
-			data: data,
-			type:"post",
-			dataType:"json",
-			success:function(result){
-				for(var i=0;i<result.data.length;i++){
-					var fid = result.data[i].fid;
-					var code = result.data[i].code;
-					var name = result.data[i].name;
-					var model = result.data[i].model;
-					var custItemCode = result.data[i].custItemCode;
-					var custItemModel = result.data[i].custItemModel;
-					var saleUnitIdName = result.data[i].saleUnitIdName;
-					var salePrice = result.data[i].salePrice;
-					var purPrice = result.data[i].purPrice;
-					var defaultCustomerIdName = result.data[i].defaultCustomerIdName;
-					var defaultStorehouseIdName = result.data[i].defaultStorehouseIdName;
-					var staffIdName = result.data[i].staffIdName;
-					var sourFid = 0;
-					var sourBillNo = '';
-					var sourEntryId = 0;
-					var apphtml = "<tr>" +
-							"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
-							"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+code+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+name+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+model+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+saleUnitIdName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'><input type='text' onchange='checkNum(this)' style='width:60px;'></td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+salePrice+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='purPrice"+fid+"'>"+purPrice+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='defaultCustomerIdName"+fid+"'>"+defaultCustomerIdName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='defaultStorehouseIdName"+fid+"'>"+defaultStorehouseIdName+"</td>\n" +
-							"\t\t\t\t\t\t\t\t<td id='staffIdName"+fid+"'>"+staffIdName+"</td>\n" +
-							"<input type='hidden' id='sourFid"+fid+"' name='sourFid"+fid+"' value='"+sourFid+"' >"+
-							"<input type='hidden' id='sourBillNo"+fid+"' name='sourBillNo"+fid+"' value='"+sourBillNo+"' >"+
-							"<input type='hidden' id='sourEntryId"+fid+"' name='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
-							"\t\t\t\t\t\t\t</tr>";
-					$("table[id='items']").append(apphtml);
-					var startpage = result.startpage;
-					var pagecount = result.pagecount;
-					var countTatol = result.countTatol;
-					$("#startpage").text(startpage);
-					$("#pagecount").text(pagecount);
-					$("#countTatol").text(countTatol);
-					$("#nowpage").text(startpage);
-
-				}
-
-				//alert(JSON.stringify(result));
-			}
-		});
-	}*/
-
 	//获取已存在行的fid
 	function gettrfid(){
 		var arr = new Array();
@@ -577,13 +514,14 @@
 			//行号
 			trlen = trlen+1;
 			var fid = $("#fid"+ids[j]+" input").val();
+			var itemId = $("#itemId"+ids[j]).val();
 			var code = $("#code"+ids[j]).text();
 			var name = $("#name"+ids[j]).text();
 			var model = $("#model"+ids[j]).text();
 			var custItemCode = $("#custItemCode"+ids[j]).text();
 			var custItemModel = $("#custItemModel"+ids[j]).text();
 			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
-			var qty = $("#qty"+ids[j]+" input").val();
+			var qty = $("#qty"+ids[j]).text();
 			if(qty <= 0||qty == null){
 				qty = 1;
 			}
@@ -599,7 +537,7 @@
 
 			var insertrow = "<tr>"+
 					"<input type='hidden' class='itemIdNum' value='"+fid+trlen+"'>"+
-					"<input type='hidden' name='itemId0"+fid+trlen+"' value='"+fid+"' style='width:20px;'>"+
+					"<input type='hidden' name='itemId0"+fid+trlen+"' value='"+itemId+"' style='width:20px;'>"+
 					"<td>"+
 					"<span class='num'>"+trlen+"</span>"+
 					"<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>"+
@@ -1143,6 +1081,7 @@
 								<input type='hidden' th:name="|sourFid0${d.itemId.fid}${state.index+1}|" th:value="${d.sourFid}"  >
 								<input type='hidden' th:name="|sourBillNo0${d.itemId.fid}${state.index+1}|" th:value="${d.sourBillNo}"  >
 								<input type='hidden' th:name="|sourEntryId0${d.itemId.fid}${state.index+1}|" th:value="${d.sourEntryId}"  >
+								<input type="hidden" th:id="|stockIdls0${d.itemId.fid}${state.index+1}|" th:value="${d.stockId}">
 							</tr>
 						</table>
 					</div>
@@ -1372,6 +1311,10 @@
 	total();//加载后合计
 
 	//加载后更新仓库
+	/*
+	* 1、class="itemId"
+	* 2、<input type="hidden" th:id="|stockIdls0${d.itemId.fid}${state.index+1}|" th:value="${d.stockId}">
+	* */
 	$(function (){
 		//仓库
 		$.ajax({
