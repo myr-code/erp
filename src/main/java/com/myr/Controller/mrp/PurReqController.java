@@ -82,7 +82,7 @@ public class PurReqController {
                 item.setFid(itemId);
                 MrpPurReq.setItemId(item);
                 MrpPurReq.setCustOrderNum(custOrderNum);
-                MrpPurReq.setFinishDate(finishDate);
+                MrpPurReq.setFinishDate(("").equals(finishDate)||finishDate == null ? null:finishDate);
                 MrpPurReq.setQty(qty);
                 MrpPurReq.setBatchNumber(batchNumber);
                 MrpPurReq.setTaxPrice(taxPrice);
@@ -236,7 +236,7 @@ public class PurReqController {
                 item.setFid(itemId);
                 mrpPurReq.setItemId(item);
                 mrpPurReq.setCustOrderNum(custOrderNum);
-                mrpPurReq.setFinishDate(finishDate);
+                mrpPurReq.setFinishDate(("").equals(finishDate)||finishDate == null ? null:finishDate);
                 mrpPurReq.setQty(qty);
                 mrpPurReq.setBatchNumber(batchNumber);
                 mrpPurReq.setTaxPrice(taxPrice);

@@ -16,9 +16,16 @@
         SELECT * from t_settlement_method where fdisable = 0
     </select>
 
-    <select id="settMethod_index" resultType="com.myr.Bean.SettlementMethod">
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*) from t_settlement_method where fdisable = 0 and
+            (name like '%${str}%' or remark like '%${str}%')
+    </select>
+
+    <select id="settMethod_page" resultType="com.myr.Bean.SettlementMethod">
         SELECT * from t_settlement_method where fdisable = 0 and
-        (name like '%${str}%' or remark like '%${str}%')
+            (name like '%${str}%' or remark like '%${str}%')
+            limit #{startpage},#{pagesize}
     </select>
 
     <delete id="delSett">

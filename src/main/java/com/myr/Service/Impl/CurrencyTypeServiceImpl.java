@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CurrencyTypeServiceImpl implements CurrencyTypeService {
@@ -25,6 +26,16 @@ public class CurrencyTypeServiceImpl implements CurrencyTypeService {
             return currencyTypeMapper.add_CurrencyType(currencyType);
         }
 
+    }
+
+    @Override
+    public int getCounts_page(Map<String, Object> map) {
+        return currencyTypeMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<CurrencyType> CurrencyType_page(Map<String, Object> map) {
+        return currencyTypeMapper.CurrencyType_page(map);
     }
 
     @Override

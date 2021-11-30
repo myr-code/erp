@@ -6,13 +6,16 @@ import com.myr.Bean.SettlementMethod;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SettMethodService {
     Integer addSettlementMethod(SettlementMethod settlementMethod);
 
     List<SettlementMethod> settMethod_all();
 
-    List<SettlementMethod> settMethod_index(@Param("str") String str);
+    int getCounts_page(Map<String,Object> map);
+
+    List<SettlementMethod> settMethod_page(Map<String,Object> map);
 
     Integer delSett(Integer fid);
 

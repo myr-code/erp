@@ -63,7 +63,11 @@ public class PurOrderServiceImpl implements PurOrderService {
 
     @Override
     public Integer PurOrder_del(int fid) {
-        return purOrderMapper.PurOrder_del(fid);
+        int count = 0;
+        if(purOrderMapper.PurOrder_del_body(fid)>0){
+            count = purOrderMapper.PurOrder_del(fid);
+        }
+        return count;
     }
 
     @Override

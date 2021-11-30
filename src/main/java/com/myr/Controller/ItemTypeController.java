@@ -4,6 +4,7 @@ import com.myr.Bean.*;
 import com.myr.Service.CustTypeService;
 import com.myr.Service.ItemTypeService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -54,9 +57,21 @@ public class ItemTypeController {
     //03-序时簿分页
     @RequestMapping("/ItemTypeIndex")
     public String DepartIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
-                              @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, Model model) {
-        List<ItemType> itemTypes = itemTypeService.ItemType_all();
-        model.addAttribute("datas",itemTypes);
+                              @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = itemTypeService.getCounts_page(map);
+        //主数据
+        List<ItemType> itemTypes = itemTypeService.ItemType_page(map);
+        //封装数据
+        PageUtils<ItemType> pageUtils = new PageUtils<ItemType>(startpage, pagesize, countTatol, itemTypes);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "desktop/ItemTypeIndex";
     }
 

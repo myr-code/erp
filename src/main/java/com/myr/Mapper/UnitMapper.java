@@ -2,11 +2,13 @@ package com.myr.Mapper;
 
 import com.myr.Bean.Customer;
 import com.myr.Bean.ItemType;
+import com.myr.Bean.Store;
 import com.myr.Bean.Unit;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UnitMapper {
@@ -16,8 +18,11 @@ public interface UnitMapper {
     //02-所有记录
     List<Unit> unit_all();
 
-    //序时簿分页
-    List<Unit> Unit_page(@Param("str") String str);
+    //获取总条数
+    int getCounts_page(Map<String,Object> map);
+
+    //02-序时簿
+    List<Unit> Unit_page(Map<String,Object> map);
 
     //删除
     Integer delUnit(Integer fid);

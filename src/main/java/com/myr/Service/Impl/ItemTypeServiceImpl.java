@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ItemTypeServiceImpl implements ItemTypeService {
@@ -27,6 +28,16 @@ public class ItemTypeServiceImpl implements ItemTypeService {
             return itemTypeMapper.addItemType(itemType);
         }
 
+    }
+
+    @Override
+    public int getCounts_page(Map<String, Object> map) {
+        return itemTypeMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<ItemType> ItemType_page(Map<String, Object> map) {
+        return itemTypeMapper.ItemType_page(map);
     }
 
     @Override

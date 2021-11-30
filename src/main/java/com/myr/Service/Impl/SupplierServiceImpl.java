@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SupplierServiceImpl implements SupplierService {
@@ -33,6 +34,16 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public List<Supplier> Supplier_all(String str) {
         return supplierMapper.Supplier_all(str);
+    }
+
+    @Override
+    public int getCounts_page(Map<String, Object> map) {
+        return supplierMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<Supplier> Supplier_page(Map<String, Object> map) {
+        return supplierMapper.Supplier_page(map);
     }
 
     @Override

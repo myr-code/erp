@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StaffServiceImpl implements StaffService {
@@ -34,8 +35,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> Staff_page(String str) {
-        return staffMapper.Staff_page(str);
+    public int getCounts_page(Map<String, Object> map) {
+        return staffMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<Staff> Staff_page(Map<String, Object> map) {
+        return staffMapper.Staff_page(map);
     }
 
     @Override

@@ -88,7 +88,7 @@ public class PurOrderController {
                 poorderentry.setBatchNumber(batchNumber);
                 poorderentry.setTaxPrice(taxPrice);
                 poorderentry.setTaxPriceNo(taxPriceNo);
-                poorderentry.setFinishDate(finishDate);
+                poorderentry.setFinishDate(("").equals(finishDate)||finishDate == null ? null:finishDate);
                 poorderentry.setRowRemark(rowRemark);
                 poorderentry.setSourFid(sourFid);
                 poorderentry.setSourBillNo(sourBillNo);
@@ -137,7 +137,7 @@ public class PurOrderController {
         map.put("pagesize", pagesize);
         map.put("cnm",cnm);
         map.put("range",range);
-        map.put("suppId",suppId);
+        /*map.put("suppId",suppId);*/
         List<Poorder> poorders = purOrderService.PurOrder_sour(map);
 
         //获取总条数
@@ -244,7 +244,7 @@ public class PurOrderController {
                 String custItemModel = request.getParameter("custItemModel" + num);//custitem model
                 String unitName = request.getParameter("unitName" + num);//单位
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
                 double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价
@@ -269,7 +269,7 @@ public class PurOrderController {
                 poorderentry.setBatchNumber(batchNumber);
                 poorderentry.setTaxPrice(taxPrice);
                 poorderentry.setTaxPriceNo(taxPriceNo);
-                poorderentry.setFinishDate(finishDate);
+                poorderentry.setFinishDate(("").equals(finishDate)||finishDate == null ? null:finishDate);
                 poorderentry.setRowRemark(rowRemark);
                 poorderentry.setSourFid(sourFid);
                 poorderentry.setSourBillNo(sourBillNo);

@@ -133,7 +133,7 @@
 					window.parent.closemodel('50203');
 				}else if(result.code==500){
 					alert("更新失败!");
-					window.parent.closemodel('50203');
+					/*window.parent.closemodel('50203');*/
 				}
 				//alert(JSON.stringify(result));
 			}
@@ -324,18 +324,6 @@
 
 	}
 
-	/*//点击来源 获取item信息
-	function getitem(){
-		var sourcetype = $("#sourcetype").val();
-		var cnm = $("input[name='cnm']").val();
-		var pagesize = $("#pagesize").val();//每页条数
-
-		var f = {cnm:cnm,pagesize:pagesize};
-		if(sourcetype == "库存产品"){
-			reqappend(f);
-		}
-	}*/
-
 	//请求并插入items
 	function reqappend(data){
 		var sourcetype = $("#sourcetype").val();
@@ -507,15 +495,15 @@
 			//行号
 			trlen = trlen+1;
 			var fid = $("#fid"+ids[j]+" input").val();
-			var itemId = $("#itemId"+ids[j]+" input").val();
+			var itemId = $("#itemId"+ids[j]).val();
 			var code = $("#code"+ids[j]).text();
 			var name = $("#name"+ids[j]).text();
 			var model = $("#model"+ids[j]).text();
 			var custItemCode = $("#custItemCode"+ids[j]).text();
 			var custItemModel = $("#custItemModel"+ids[j]).text();
 			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
-			var qty = $("#qty"+ids[j]+" input").val();
-			if(qty <= 0){
+			var qty = $("#qty"+ids[j]).text();
+			if(qty <= 0 || qty ==null){
 				qty = 1;
 			}
 			var salePrice = $("#salePrice"+ids[j]).text();

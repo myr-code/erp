@@ -7,16 +7,20 @@ import com.myr.Bean.Supplier;
 import com.myr.Service.ItemTypeService;
 import com.myr.Service.SupplierService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -56,10 +60,22 @@ public class SupplierController {
     //序时簿分页
     //@RequestParam(value = "startpage",defaultValue = "1") Integer startpage
     @RequestMapping("/SuppIndex")
-    public String SuppIndex(Model model, HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
-        List<Supplier> suppliers = supplierService.Supplier_all(AllQuery);
-        model.addAttribute("datas",suppliers);
+    public String SuppIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                            @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = supplierService.getCounts_page(map);
+        //主数据
+        List<Supplier> suppliers = supplierService.Supplier_page(map);
+        //封装数据
+        PageUtils<Supplier> pageUtils = new PageUtils<Supplier>(startpage, pagesize, countTatol, suppliers);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "/desktop/SupplierIndex";
     }
 

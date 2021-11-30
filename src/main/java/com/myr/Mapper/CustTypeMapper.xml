@@ -15,14 +15,28 @@
         SELECT * from t_cust_type where fdisable = 0 and type = #{type}
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*) from t_cust_type where fdisable = 0 and type = 1 and
+            (name like '%${str}%' or other_remark like '%${str}%')
+    </select>
+
     <select id="custType_page" resultType="com.myr.Bean.CustType">
         SELECT * from t_cust_type where fdisable = 0 and type = 1 and
-        (name like '%${name}%' or other_remark like '%${name}%')
+        (name like '%${str}%' or other_remark like '%${str}%')
+            limit #{startpage},#{pagesize}
+    </select>
+
+    <!--合计总数-->
+    <select id="getCounts_SuppType_page" resultType="int">
+        SELECT count(*) from t_cust_type where fdisable = 0 and type = 2 and
+            (name like '%${str}%' or other_remark like '%${str}%')
     </select>
 
     <select id="SuppType_page" resultType="com.myr.Bean.CustType">
         SELECT * from t_cust_type where fdisable = 0 and type = 2 and
-        (name like '%${name}%' or other_remark like '%${name}%')
+        (name like '%${str}%' or other_remark like '%${str}%')
+            limit #{startpage},#{pagesize}
     </select>
 
     <delete id="delCustType">

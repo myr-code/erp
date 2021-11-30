@@ -356,6 +356,7 @@
 				type:"post",
 				dataType:"json",
 				success:function(result){
+
 					var jsq = 0;
 					for(var i=0;i<result.data.length;i++){
 						var fid = result.data[i].fid;//唯一id
@@ -372,8 +373,8 @@
 						var custItemModel = result.data[i].mid.custItemModel;
 						var unitName = result.data[i].mid.unitName;
 						var qty = result.data[i].mid.qty;
-						var stockId = result.data[i].stockId.fid;
-						var stockName = result.data[i].stockId.name;
+						/*var stockId = result.data[i].stockId.fid;
+						var stockName = result.data[i].stockId.name;*/
 						var custOrderNum = result.data[i].mid.custOrderNum;
 						var batchNumber = result.data[i].mid.batchNumber;
 						var taxPrice = result.data[i].mid.taxPrice;
@@ -394,7 +395,7 @@
 								"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+unitName+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td>"+qty+"</td>\n" +
-								"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +
+								/*"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +*/
 								"\t\t\t\t\t\t\t\t<td id='icsQty"+fid+"'>"+icsQty+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-icsQty<=0?0:qty-icsQty)+"<input type='hidden' value='"+(qty-icsQty<=0?0:qty-icsQty)+"' ></td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='custOrderNum"+fid+"'>"+custOrderNum+"</td>\n" +
@@ -404,9 +405,10 @@
 								"<input type='hidden' id='sourFid"+fid+"' value='"+sourFid+"' >"+
 								"<input type='hidden' id='sourBillNo"+fid+"' value='"+billNo+"' >"+
 								"<input type='hidden' id='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
-								"<input type='hidden' id='stockId"+fid+"' value='"+stockId+"' >"+
+								/*"<input type='hidden' id='stockId"+fid+"' value='"+stockId+"' >"+*/
 								"\t\t\t\t\t\t\t</tr>";
 						$("table[id='items']").append(apphtml);
+
 						var startpage = result.startpage;
 						var pagecount = result.pagecount;
 						var countTatol = result.countTatol;
@@ -464,7 +466,7 @@
 				"<th>客户型号</th>"+
 				"<th>单位</th>"+
 				"<th>数量</th>"+
-				"<th>默认仓库</th>"+
+				/*"<th>默认仓库</th>"+*/
 				"<th>已入库</th>"+
 				"<th>未入库</th>"+
 				"<th>客户订单号</th>"+

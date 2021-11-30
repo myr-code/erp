@@ -32,8 +32,11 @@ public interface PurOrderMapper {
     //销售订单序时簿 高级查询
     List<Poorder> PurOrder_pageGj(DateOption dateOption);
 
-    //删除
+    //删除单据头
     Integer PurOrder_del(int fid);
+
+    //删除单据体
+    Integer PurOrder_del_body(int fid);
 
     //get一个对象
     Poorder getPurById(int fid);

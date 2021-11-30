@@ -129,10 +129,11 @@ public class SaleOrderController {
         map.put("date_start",date_start);
         map.put("date_end",date_end);
         System.out.println(map.toString());
-        List<SaleOrder> saleOrders = saleOrderService.SaleOrder_mrp(map);
+
+        List<SaleOrder> saleOrders = saleOrderService.SaleOrder_sour(map);
 
         //获取总条数
-        int countTatol = saleOrderService.getCounts_mrp(map);
+        int countTatol = saleOrderService.getCounts(map);
 
         PageUtils<SaleOrder> pageUtils = new PageUtils<SaleOrder>(startpage, pagesize, countTatol, saleOrders);
         System.out.println(pageUtils);

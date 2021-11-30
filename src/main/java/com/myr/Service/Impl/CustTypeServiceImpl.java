@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustTypeServiceImpl implements CustTypeService {
@@ -27,13 +28,23 @@ public class CustTypeServiceImpl implements CustTypeService {
     }
 
     @Override
-    public List<CustType> custType_page(CustType custType) {
-        return custTypeMapper.custType_page(custType);
+    public int getCounts_page(Map<String, Object> map) {
+        return custTypeMapper.getCounts_page(map);
     }
 
     @Override
-    public List<CustType> SuppType_page(CustType custType) {
-        return custTypeMapper.SuppType_page(custType);
+    public List<CustType> custType_page(Map<String, Object> map) {
+        return custTypeMapper.custType_page(map);
+    }
+
+    @Override
+    public int getCounts_SuppType_page(Map<String, Object> map) {
+        return custTypeMapper.getCounts_SuppType_page(map);
+    }
+
+    @Override
+    public List<CustType> SuppType_page(Map<String, Object> map) {
+        return custTypeMapper.SuppType_page(map);
     }
 
     @Override

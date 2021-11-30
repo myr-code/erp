@@ -14,6 +14,16 @@
         select * from t_currency_type where fdisable = 0
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*) from t_currency_type where fdisable = 0 and (name like '%${str}%' or remark like '%${str}%')
+    </select>
+
+    <select id="CurrencyType_page" resultType="com.myr.Bean.CurrencyType">
+        select * from t_currency_type where fdisable = 0 and (name like '%${str}%' or remark like '%${str}%')
+            limit #{startpage},#{pagesize}
+    </select>
+
     <delete id="del_CurrencyType">
         delete from t_currency_type where fid = #{fid}
     </delete>

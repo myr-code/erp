@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UnitServiceImpl implements UnitService {
@@ -37,8 +38,13 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
-    public List<Unit> Unit_page(String str) {
-        return unitMapper.Unit_page(str);
+    public int getCounts_page(Map<String, Object> map) {
+        return unitMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<Unit> Unit_page(Map<String, Object> map) {
+        return unitMapper.Unit_page(map);
     }
 
     @Override

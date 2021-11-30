@@ -5,11 +5,16 @@ import com.myr.Bean.Store;
 import com.myr.Bean.Supplier;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SupplierService {
     Integer addSupplier(Supplier supplier);
 
     List<Supplier> Supplier_all(String str);
+
+    int getCounts_page(Map<String,Object> map);
+
+    List<Supplier> Supplier_page(Map<String,Object> map);
 
     Integer delSupp(int fid);
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -29,6 +30,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<Department> depart_all() {
         return departmentMapper.depart_all();
+    }
+
+    @Override
+    public int getCounts_page(Map<String, Object> map) {
+        return departmentMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<Department> Depat_page(Map<String, Object> map) {
+        return departmentMapper.Depat_page(map);
     }
 
     @Override

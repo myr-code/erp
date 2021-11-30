@@ -4,6 +4,7 @@ import com.myr.Bean.*;
 import com.myr.Service.CustTypeService;
 import com.myr.Service.StaffService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -53,10 +56,22 @@ public class StaffController {
 
     //序时簿分页
     @RequestMapping("/StaffIndex")
-    public String StaffIndex(Model model, HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
-        List<Staff> staff = staffService.Staff_page(AllQuery);
-        model.addAttribute("datas",staff);
+    public String StaffIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                             @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = staffService.getCounts_page(map);
+        //主数据
+        List<Staff> staff1 = staffService.Staff_page(map);
+        //封装数据
+        PageUtils<Staff> pageUtils = new PageUtils<Staff>(startpage, pagesize, countTatol, staff1);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "desktop/StaffIndex";
     }
 

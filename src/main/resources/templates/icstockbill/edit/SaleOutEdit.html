@@ -14,6 +14,40 @@
 
 		//除了表头（第一行）以外所有的行添加click事件.
 		//已选择item页面  除了表头（第一行）以外所有的行添加click事件.
+		$(document).on("click",".panel-infos tr",function(){
+			var chks = $("input[type='checkbox']",this);
+			var tag = $(this).attr("tag");
+			if(tag=="selected"){
+				// 之前已选中，设置为未选中
+				$(this).attr("tag","");
+				chks.prop("checked",false);
+				$(this).css("backgroundColor", "#fff");
+			}else{
+				// 之前未选中，设置为选中
+				$(this).attr("tag","selected");
+				chks.prop("checked",true);
+				$(this).css("backgroundColor", "#d0e9c6");
+			}
+		});
+
+		//选择item页面 行绑定复选框
+		$(document).on("click",".modal-body tr",function(){
+			var chks = $("input[type='checkbox']",this);
+			var tag = $(this).attr("tag");
+			if(tag=="selected"){
+				// 之前已选中，设置为未选中
+				$(this).attr("tag","");
+				chks.prop("checked",false);
+				$(this).css("backgroundColor", "#fff");
+			}else{
+				// 之前未选中，设置为选中
+				$(this).attr("tag","selected");
+				chks.prop("checked",true);
+				$(this).css("backgroundColor", "#d0e9c6");
+			}
+		});
+		/*//除了表头（第一行）以外所有的行添加click事件.
+		//已选择item页面  除了表头（第一行）以外所有的行添加click事件.
 		$(".panel-infos tr").slice(1).click(function () {
 			var chks = $("input[type='checkbox']",this);
 			var tag = $(this).attr("tag");
@@ -45,7 +79,7 @@
 				chks.prop("checked",true);
 				$(this).css("backgroundColor", "#d0e9c6");
 			}
-		});
+		});*/
 
 	});
 

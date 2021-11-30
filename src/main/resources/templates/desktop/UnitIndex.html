@@ -157,7 +157,8 @@
 
 	//查询
 	function querys(){
-		$("#AllQuery").submit();
+		getItemByPage('nowpage');
+		/*$("#AllQuery").submit();*/
 	}
 
 	//回车事件绑定
@@ -180,6 +181,44 @@
 			$("input[name='"+targ+"']").css("backgroundColor", "#fff");
 		}
 
+	}
+
+	//翻页
+	function getItemByPage(page){
+		var startpage = parseFloat($("#nowpage").text());//当前页数
+		var pagesize = parseFloat($("#pagesize").val());//每页条数
+		var pagecount = parseFloat($("#pagecount").text());//总页数
+		var AllQuery = $("input[name='AllQuery']").val();
+		AllQuery = AllQuery == null || AllQuery == ""?"":AllQuery;
+		var data = {};
+		//alert(startpage+"-"+pagesize+"-"+cnm);
+		if(page == 'first'){
+			data.startpage = 1;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'previous'){
+			data.startpage = (startpage-1)>0?(startpage-1):1;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'next'){
+			data.startpage = (startpage+1)>pagecount?pagecount:(startpage+1);
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'last'){
+			data.startpage = pagecount;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		if(page == 'nowpage'){
+			data.startpage = startpage;
+			data.pagesize = pagesize;
+			data.AllQuery = AllQuery;
+		}
+		//alert(data);
+		window.location.href="UnitIndex?startpage="+data.startpage+"&pagesize="+data.pagesize+"&AllQuery="+data.AllQuery;
 	}
 	</script>
 	
@@ -310,16 +349,32 @@
 				</ul>
 			</div>
 		</div>
+
+		<center style="float: right">
+	<a href="#" onclick="getItemByPage('first')">首页</a>
+	<a href="#" onclick="getItemByPage('previous')">上一页</a>
+	<span id="nowpage" th:text="${datas.startpage}">1</span>
+	<a href="#" onclick="getItemByPage('next')">下一页</a>
+	<a href="#" onclick="getItemByPage('last')">尾页</a>
+	[<span id="startpage" th:text="${datas.startpage}"></span>/<span id="pagecount" th:text="${datas.pagecount}"></span>]
+	共<span id="countTatol" th:text="${datas.countTatol}"></span>条
+	<select id="pagesize" onchange="getItemByPage('nowpage')" class="selectpicker" data-live-search="true" data-actions-box="true">
+		<option th:selected="${datas.pagesize==10}? 'selected'" value="10">10</option>
+		<option th:selected="${datas.pagesize==20}? 'selected'" value="20">20</option>
+		<option th:selected="${datas.pagesize==50}? 'selected'" value="50">50</option>
+		<option th:selected="${datas.pagesize==80}? 'selected'" value="80">80</option>
+	</select>
+</center>
 	</center>
 
 <div>
 	<form method="post" action="UnitIndex" id="AllQuery">
 		<div class="input-group input-group-sm">
 			<span class="input-group-addon" id="basic-addon1">模糊查询</span>
-			<input type="text" name="AllQuery" class="form-control" placeholder="编码、名称、型号、客户型号..." aria-describedby="basic-addon1">
+			<input type="text" name="AllQuery" th:value="${AllQuery}" class="form-control" placeholder="编码、名称、型号、客户型号..." aria-describedby="basic-addon1">
 		</div>
 	</form>
-	<!--<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>-->
+	<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>
 	<!--<button class="btn btn-default btn-sm query" onclick="getoption()" data-toggle="modal" data-target="#myModal">高级</button>-->
 	
 </div>
@@ -338,7 +393,7 @@
 		<th>是否禁用</th>
 	</tr>
 
-	<tr th:each="data,state:${datas}">
+	<tr th:each="data,state:${datas.data}">
 		<td><input type="checkbox" name="fid" th:value="${data.fid}"></td>
 		<td th:text="${state.index+1}">1</td>
 		<td th:text="${data.name}">ALISA</td>

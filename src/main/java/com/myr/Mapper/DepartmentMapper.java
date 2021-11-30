@@ -7,6 +7,7 @@ import com.myr.Bean.Store;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface DepartmentMapper {
@@ -15,6 +16,12 @@ public interface DepartmentMapper {
 
     //查询搜友部门信息
     List<Department> depart_all();
+
+    //获取总条数
+    int getCounts_page(Map<String,Object> map);
+
+    //02-序时簿
+    List<Department> Depat_page(Map<String,Object> map);
 
     //删除
     Integer delDepa(int fid);

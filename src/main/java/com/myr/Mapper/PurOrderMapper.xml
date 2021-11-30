@@ -202,8 +202,11 @@
     </resultMap>
 
     <delete id="PurOrder_del">
-        delete a,b from t_poorder a INNER JOIN t_poorderentry b on a.fid = b.mid
-        where a.fid = #{fid}
+        delete from t_poorder where fid = #{fid}
+    </delete>
+
+    <delete id="PurOrder_del_body">
+        delete from t_poorderentry where mid = #{fid}
     </delete>
 
     <select id="getPurById" resultType="com.myr.Bean.Poorder">

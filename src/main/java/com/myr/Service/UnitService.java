@@ -5,13 +5,16 @@ import com.myr.Bean.Unit;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UnitService {
     Integer addUnit(Unit unit);
 
     List<Unit> unit_all();
 
-    List<Unit> Unit_page(@Param("str") String str);
+    int getCounts_page(Map<String,Object> map);
+
+    List<Unit> Unit_page(Map<String,Object> map);
 
     Integer delUnit(Integer fid);
 

@@ -1,13 +1,11 @@
 package com.myr.Mapper;
 
-import com.myr.Bean.CustType;
-import com.myr.Bean.Customer;
-import com.myr.Bean.ItemType;
-import com.myr.Bean.SettlementMethod;
+import com.myr.Bean.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /*
 结算方式
@@ -20,8 +18,11 @@ public interface SettlementMethodMapper {
     //全部
     List<SettlementMethod> settMethod_all();
 
-    //序时簿
-    List<SettlementMethod> settMethod_index(@Param("str") String str);
+    //获取总条数
+    int getCounts_page(Map<String,Object> map);
+
+    //02-序时簿
+    List<SettlementMethod> settMethod_page(Map<String,Object> map);
 
     //删除
     Integer delSett(Integer fid);

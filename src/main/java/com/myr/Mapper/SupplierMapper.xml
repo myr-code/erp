@@ -31,6 +31,36 @@
         or a.`address` like '%${str}%' or a.`contact` like '%${str}%' or a.`phone` like '%${str}%')
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*)
+        from t_supplier a
+                 LEFT JOIN t_cust_type b on a.cust_type_id = b.fid
+                 LEFT JOIN t_department c on a.department_id = c.fid
+                 LEFT JOIN t_staff d on a.staff_id = d.fid
+                 LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0 and
+            (a.`name` like '%${str}%' or a.abb like '%${str}%' or a.`code` like '%${str}%'
+                or a.`address` like '%${str}%' or a.`contact` like '%${str}%' or a.`phone` like '%${str}%')
+    </select>
+
+    <select id="Supplier_page" resultType="com.myr.Bean.Supplier">
+        SELECT a.*,
+               b.`name` as 'cust_type_idName',
+               c.`name` as 'department_idName',
+               d.`name` as 'staff_idName',
+               e.`name` as 'settlement_method_idName'
+        from t_supplier a
+                 LEFT JOIN t_cust_type b on a.cust_type_id = b.fid
+                 LEFT JOIN t_department c on a.department_id = c.fid
+                 LEFT JOIN t_staff d on a.staff_id = d.fid
+                 LEFT JOIN t_settlement_method e on a.settlement_method_id = e.fid
+        WHERE a.fdisable = 0 and
+            (a.`name` like '%${str}%' or a.abb like '%${str}%' or a.`code` like '%${str}%'
+                or a.`address` like '%${str}%' or a.`contact` like '%${str}%' or a.`phone` like '%${str}%')
+            limit #{startpage},#{pagesize}
+    </select>
+
     <select id="Supplier_pageGj" resultType="com.myr.Bean.Supplier">
         SELECT a.*,
         b.`name` as 'cust_type_idName',

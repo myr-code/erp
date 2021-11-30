@@ -14,9 +14,16 @@
         select * from t_unit WHERE fdisable = 0
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*) from t_unit where fdisable = 0 and
+            (name like '%${str}%' or remark like '%${str}%')
+    </select>
+
     <select id="Unit_page" resultType="com.myr.Bean.Unit">
         select * from t_unit where fdisable = 0 and
         (name like '%${str}%' or remark like '%${str}%')
+            limit #{startpage},#{pagesize}
     </select>
 
     <delete id="delUnit">

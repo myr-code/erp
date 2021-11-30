@@ -7,16 +7,20 @@ import com.myr.Bean.Unit;
 import com.myr.Service.CustTypeService;
 import com.myr.Service.UnitService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -54,10 +58,22 @@ public class UnitController {
 
     //03-序时簿分页
     @RequestMapping("/UnitIndex")
-    public String UnitIndex(Model model, HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
-        List<Unit> units = unitService.Unit_page(AllQuery);
-        model.addAttribute("datas",units);
+    public String UnitIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                            @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = unitService.getCounts_page(map);
+        //主数据
+        List<Unit> units = unitService.Unit_page(map);
+        //封装数据
+        PageUtils<Unit> pageUtils = new PageUtils<Unit>(startpage, pagesize, countTatol, units);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "desktop/UnitIndex";
     }
 

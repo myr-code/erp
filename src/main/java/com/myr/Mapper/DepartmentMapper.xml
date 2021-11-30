@@ -15,6 +15,18 @@
         where a.fdisable = 0
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        select count(*) from t_department a LEFT JOIN t_staff b on a.staffId = b.fid
+        where a.fdisable = 0 and (a.name like '%${str}%' or b.name like '%${str}%' or a.remark like '%${str}%')
+    </select>
+
+    <select id="Depat_page" resultType="com.myr.Bean.Department">
+        select a.*,b.`name` as 'staffIdName' from t_department a LEFT JOIN t_staff b on a.staffId = b.fid
+        where a.fdisable = 0 and (a.name like '%${str}%' or b.name like '%${str}%' or a.remark like '%${str}%')
+            limit #{startpage},#{pagesize}
+    </select>
+
     <delete id="delDepa">
         delete from t_department where fid = #{fid}
     </delete>

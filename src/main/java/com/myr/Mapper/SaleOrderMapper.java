@@ -30,7 +30,8 @@ public interface SaleOrderMapper {
     //获取总条数-序时簿
     int getCounts_index(Map<String,Object> map);
 
-    //销售订单  选择来源
+
+    //销售订单  mrp
     List<SaleOrder> SaleOrder_mrp(Map<String,Object> map);
 
     //销售订单  选择来源

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SettMethodServiceImpl implements SettMethodService {
@@ -32,8 +33,13 @@ public class SettMethodServiceImpl implements SettMethodService {
     }
 
     @Override
-    public List<SettlementMethod> settMethod_index(String str) {
-        return settlementMethodMapper.settMethod_index(str);
+    public int getCounts_page(Map<String, Object> map) {
+        return settlementMethodMapper.getCounts_page(map);
+    }
+
+    @Override
+    public List<SettlementMethod> settMethod_page(Map<String, Object> map) {
+        return settlementMethodMapper.settMethod_page(map);
     }
 
     @Override

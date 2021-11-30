@@ -7,6 +7,7 @@ import com.myr.Bean.User;
 import com.myr.Service.CustTypeService;
 import com.myr.Service.UserService;
 import com.myr.utils.MessageRequest;
+import com.myr.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
@@ -59,25 +62,43 @@ public class CustomerTypeController {
 
     //03-序时簿分页 客户
     @RequestMapping("/CustTypeIndex")
-    public String CustTypeIndex(Model model,HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
-        CustType custType = new CustType();
-        custType.setName(AllQuery);
+    public String CustTypeIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
 
-        List<CustType> datas = custTypeService.custType_page(custType);
-        model.addAttribute("datas",datas);
+        //获取总条数
+        int countTatol = custTypeService.getCounts_page(map);
+        //主数据
+        List<CustType> custTypes = custTypeService.custType_page(map);
+        //封装数据
+        PageUtils<CustType> pageUtils = new PageUtils<CustType>(startpage, pagesize, countTatol, custTypes);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "/desktop/CustomerTypeIndex";
     }
 
     //03-序时簿分页 供应商
     @RequestMapping("/SuppTypeIndex")
-    public String SuppTypeIndex(Model model,HttpServletRequest request) {
-        String AllQuery = request.getParameter("AllQuery");
-        CustType custType = new CustType();
-        custType.setName(AllQuery);
+    public String SuppTypeIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                                @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
 
-        List<CustType> datas = custTypeService.SuppType_page(custType);
-        model.addAttribute("datas",datas);
+        //获取总条数
+        int countTatol = custTypeService.getCounts_SuppType_page(map);
+        //主数据
+        List<CustType> custTypes = custTypeService.SuppType_page(map);
+        //封装数据
+        PageUtils<CustType> pageUtils = new PageUtils<CustType>(startpage, pagesize, countTatol, custTypes);
+
+        model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "/desktop/SupTypeIndex";
     }
 

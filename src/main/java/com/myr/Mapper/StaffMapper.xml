@@ -16,12 +16,16 @@
         SELECT * from t_staff where fdisable = 0
     </select>
 
+    <!--合计总数-->
+    <select id="getCounts_page" resultType="int">
+        SELECT count(*) from t_staff
+        where fdisable = 0 and (name like '%${str}%' or phone like '%${str}%' or remark like '%${str}%')
+    </select>
+
     <select id="Staff_page" resultType="com.myr.Bean.Staff">
-        SELECT a.*,
-        b.`name` as 'departmentIdName'
-        from t_staff a LEFT JOIN t_department b on a.departmentId = b.fid
-        where a.fdisable = 0 and
-        (a.name like '%${str}%' or a.phone like '%${str}%' or b.name like '%${str}%')
+        SELECT * from t_staff
+            where fdisable = 0 and (name like '%${str}%' or phone like '%${str}%' or remark like '%${str}%')
+            limit #{startpage},#{pagesize}
     </select>
 
     <delete id="delStaff">
