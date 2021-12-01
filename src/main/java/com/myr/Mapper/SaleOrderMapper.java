@@ -43,6 +43,9 @@ public interface SaleOrderMapper {
     //销售订单序时簿 高级查询
     List<SaleOrder> SaleOrder_pageGj(DateOption dateOption);
 
+    //删除前判断是否存在单据
+    List<String> SaleOrder_isexits(Integer fid);
+
     //删除
     Integer delSaleOrder(Integer fid);
 

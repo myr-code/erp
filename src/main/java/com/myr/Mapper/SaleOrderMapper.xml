@@ -315,6 +315,12 @@
         </collection>
     </resultMap>
 
+    <select id="SaleOrder_isexits" resultType="String">
+        select distinct a.billNo from icstockbill a inner JOIN icstockbillentry b on a.fid = b.mid
+        inner JOIN t_saleorder c on b.sourFid = c.fid and b.sourType = '销售订单'
+        where c.fid = #{fid}
+    </select>
+
     <delete id="delSaleOrder">
         delete a,b from t_saleorder a INNER JOIN t_saleorderentry b on a.fid = b.mid
         where a.fid = #{fid}

@@ -168,7 +168,10 @@
 				dataType:"json",
 				success:function(result){
 					if(result.code==200){
-						alert("删除成功！");
+						alert("全部删除成功！");
+						location.href="SaleOrderIndex";
+					}else if(result.code==250){
+						alert("部分删除成功!");
 						location.href="SaleOrderIndex";
 					}else if(result.code==500){
 						alert("删除失败!");

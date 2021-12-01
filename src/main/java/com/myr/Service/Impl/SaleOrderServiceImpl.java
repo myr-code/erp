@@ -71,8 +71,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
+    @Transactional
     public Integer delSaleOrder(Integer fid) {
-        return saleOrderMapper.delSaleOrder(fid);
+        int count = 0;
+        List<String> strings = saleOrderMapper.SaleOrder_isexits(fid);
+        if(strings.size()>0){
+            count = strings.size()*-1;
+        }else{
+            count = saleOrderMapper.delSaleOrder(fid);
+        }
+        return count;
     }
 
     @Override

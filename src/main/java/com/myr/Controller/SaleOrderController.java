@@ -178,20 +178,30 @@ public class SaleOrderController {
     @ResponseBody
     public MessageRequest SaleOrder_del(HttpServletRequest request) {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
-        Integer count = 0;
+        Integer billnum = 0;//总单据数量
+        Integer quoted = 0;//单据被引用数量
+        Integer succ = 0;//成功删除单据数量
         for (String data : datas) {
-            count = saleOrderService.delSaleOrder(Integer.parseInt(data));
-            if(count<0){//有异常时
-                break;//跳出当前循环体，也称结束当前循环体
+            //删除成功为正数，单据被引用返回负数
+            Integer count = saleOrderService.delSaleOrder(Integer.parseInt(data));
+            if(count>=0){//删除成功
+                succ++;
             }
+            if(count<0){//删除失败 单据被引用
+                //共选择xx张单据，成功删除XX张，XX张单据被引用不可删除
+                quoted++;
+            }
+            billnum++;//处理完成一张单据
         }
 
         MessageRequest msg = null;
-        if(count > 0){
-            //登录成功
-            msg = new MessageRequest(200,"删除成功",null);
-        }else {
-            //登录失败
+        if(succ == billnum){
+            //删除成功单据的数量=总单据数量
+            msg = new MessageRequest(200,"全部删除成功",null);
+        }else if(succ>0){
+            //部分删除成功
+            msg = new MessageRequest(250,"部分删除成功",null);
+        }else{
             msg = new MessageRequest(500,"删除失败",null);
         }
         return msg;
