@@ -853,7 +853,6 @@
 			var endstock = $("#endstock").val();
 			//获取到当前行的仓库id
 			var itemIdNums = getClassTr("itemIdNum");//itemid+序号
-			alert(itemIdNums);
 			var nowstockid = null;//当前仓库id
 			for(itemIdNum in itemIdNums){
 				if(nowstock-1 == itemIdNum){//序号一致
@@ -862,6 +861,7 @@
 				}
 			}
 			var nowstockval = $("select[name='stockId0"+nowstockid+"']").val();//当前仓库id值
+			alert("当前仓库id="+nowstockval);
 			//批量赋予仓库id stockId01232
 			if(startstock>endstock){
 				var temp = endstock;
@@ -871,6 +871,7 @@
 
 			for(var i=startstock;i<=endstock;i++){
 				for(itemIdNum in itemIdNums){
+					alert(itemIdNums[itemIdNum]);
 					if(i-1 == itemIdNum){//序号一致
 						$("select[name='stockId0"+itemIdNums[itemIdNum]+"'] option[value='"+nowstockval+"']").attr("selected","selected");
 						break;
@@ -1045,6 +1046,7 @@
 								<th>来源</th>
 							</tr>
 							<tr th:each="d,state:${datas}">
+								<input type="hidden" class="itemIdNum" th:value="|${d.itemId.fid}${state.index+1}|">
 								<input type='hidden' class="itemId" th:name="|itemId0${d.itemId.fid}${state.index+1}|" th:value="${d.itemId.fid}" style='width:20px;'>
 								<td>
 									<span class='num' th:text="${state.index+1}"></span>
