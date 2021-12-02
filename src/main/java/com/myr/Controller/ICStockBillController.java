@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -313,11 +314,12 @@ public class ICStockBillController {
     //基于JDBC连接的方式展示PDF
     @RequestMapping("/ICStockBill_print/{fid}")
     public void report_javabean(@PathVariable("fid") String fid,HttpServletRequest request, HttpServletResponse response)throws Exception {
-
-        System.out.println("fid="+fid);
         //1、引入jasper文件
         org.springframework.core.io.Resource resource = new ClassPathResource("templates/report_template/so_out.jasper");
         FileInputStream fis = new FileInputStream(resource.getFile());
+
+        //存放图片的路径
+        String imgPath = new ClassPathResource("templates/report_template/img/").getFile().getAbsolutePath();
 
         //2、创建JasperPrint,向jasper文件中填充数据
         ServletOutputStream os = response.getOutputStream();
@@ -325,6 +327,7 @@ public class ICStockBillController {
         try {
             Map pars = new HashMap<>();
             pars.put("fid",fid);
+            pars.put("imgPath",imgPath);
             Connection conn = DBConn.getConnection();
             /*JasperPrint print = JasperFillManager.fillReport(fis, pars, new JREmptyDataSource());*/
             JasperPrint print = JasperFillManager.fillReport(fis, pars, conn);

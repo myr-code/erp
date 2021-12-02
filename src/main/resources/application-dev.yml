@@ -1,0 +1,33 @@
+server:
+  port: 9999 #启动端口
+  servlet:
+    context-path: /erp
+
+spring:
+  devtools:
+    restart:
+      enabled: true
+
+# 配置数据的连接信息
+  datasource:
+    url: jdbc:mysql://159.75.9.202:3306/myerp?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: erp2021
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+###显示SQL语句部分
+ logging:
+  level:
+   com:
+    myr:
+     Mapper: debug
+
+#Thymeleaf配置
+  thymeleaf:
+   cache: false
+   encoding: utf-8
+  #设置为LEGACYHTML5编码格式
+   mode: LEGACYHTML5
+   prefix: classpath:/templates/
+   suffix: .html

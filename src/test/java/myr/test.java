@@ -5,9 +5,12 @@ import com.myr.Bean.MrpProductpick;
 import com.myr.utils.GetClassValue;
 import com.myr.utils.ObjectUtils;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -43,8 +46,17 @@ public class test {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        System.out.println(System.currentTimeMillis());
+    public static void main(String[] args) throws Exception{
+
+        File file = new ClassPathResource("templates/report_template/img/").getFile();
+        String absolutePath = file.getAbsolutePath();
+        System.out.println(absolutePath);
+
+
+        //当前项目下路径
+        /*String filePath = new File("").getCanonicalPath()+"\\report_template\\img\\108.png";
+        System.out.println(filePath);*/
+
     }
 
 

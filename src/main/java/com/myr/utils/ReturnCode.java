@@ -10,9 +10,7 @@ import java.util.List;
 /*
 分页工具
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class ReturnCode<T> {
     /*
     *   2开头状态码；2xx (成功)表示成功处理了请求的状态代码；如：200 (成功) 服务器已成功处理了请求。
