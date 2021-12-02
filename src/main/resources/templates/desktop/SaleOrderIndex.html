@@ -170,6 +170,9 @@
 					if(result.code==200){
 						alert("全部删除成功！");
 						location.href="SaleOrderIndex";
+					}else if(result.code==251){
+						alert("部分删除成功,其余已被引用，不能删除!");
+						location.href="SaleOrderIndex";
 					}else if(result.code==250){
 						alert("部分删除成功!");
 						location.href="SaleOrderIndex";

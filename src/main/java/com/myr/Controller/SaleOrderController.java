@@ -177,6 +177,7 @@ public class SaleOrderController {
     @RequestMapping("/SaleOrder_del")
     @ResponseBody
     public MessageRequest SaleOrder_del(HttpServletRequest request) {
+        HashMap<Object, Object> bill_list = new HashMap<>();//被引用单据列表
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
         Integer billnum = 0;//总单据数量
         Integer quoted = 0;//单据被引用数量
@@ -194,15 +195,21 @@ public class SaleOrderController {
             billnum++;//处理完成一张单据
         }
 
+
         MessageRequest msg = null;
         if(succ == billnum){
             //删除成功单据的数量=总单据数量
-            msg = new MessageRequest(200,"全部删除成功",null);
+            msg = new MessageRequest(200,"全部删除成功!",null);
         }else if(succ>0){
             //部分删除成功
-            msg = new MessageRequest(250,"部分删除成功",null);
+            if(quoted>0){//被引用
+                msg = new MessageRequest(251,"部分删除成功,其余已被引用，不能删除!",bill_list);
+            }else{
+                msg = new MessageRequest(250,"部分删除成功",null);
+            }
+
         }else{
-            msg = new MessageRequest(500,"删除失败",null);
+            msg = new MessageRequest(500,"删除失败!",null);
         }
         return msg;
     }
