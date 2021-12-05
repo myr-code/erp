@@ -108,7 +108,7 @@ public class BomController {
     @RequestMapping("/BomIndex")
     public String BomIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                            @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize,
-                           @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model,HttpServletRequest request){
+                           @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model){
 
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startpage",(startpage - 1) * pagesize);
@@ -120,6 +120,7 @@ public class BomController {
         PageUtils<Bom> pageUtils = new PageUtils<Bom>(startpage, pagesize, countTatol, boms);
 
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         /*model.addAttribute("isgj","普通查询");*/
         return "desktop/BomIndex";
     }

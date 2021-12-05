@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ProductPlanServiceImpl implements ProductPlanService {
@@ -54,8 +55,24 @@ public class ProductPlanServiceImpl implements ProductPlanService {
     }
 
     @Override
+    public Set<String> Mrp_ProductPlan_isQuoted(String billNo) {
+        return productPlanMapper.Mrp_ProductPlan_isQuoted(billNo);
+    }
+
+    @Override
+    @Transactional
     public Integer delMrpProductPlan(String billNo) {
-        return productPlanMapper.delMrpProductPlan(billNo);
+        int count = 0;
+        Set<String> strings = productPlanMapper.Mrp_ProductPlan_isQuoted(billNo);
+        if(strings.size()>0){
+            //负数 单据被引用
+            count = strings.size()*-1;
+        }else{
+            //删除 正数 单据被删除
+            count = productPlanMapper.delMrpProductPlan(billNo);
+        }
+
+        return count;
     }
 
     @Override

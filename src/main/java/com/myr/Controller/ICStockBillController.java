@@ -126,7 +126,7 @@ public class ICStockBillController {
     @RequestMapping("/ICStockBillIndex")
     public String ICStockBillIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                                    @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
-                                   Model model,HttpServletRequest request){
+                                   Model model){
 
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
@@ -140,6 +140,7 @@ public class ICStockBillController {
         //封装数据
         PageUtils<Icstockbill> pageUtils = new PageUtils<Icstockbill>(startpage, pagesize, countTatol, icstockbills);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
 
         /*List<Icstockbill> icstockbills = icStockBillService.IcStockBill_page(map);
@@ -153,7 +154,7 @@ public class ICStockBillController {
     @RequestMapping("/SaleOutIndex")
     public String SaleOutIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                                @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
-                               Model model,HttpServletRequest request){
+                               Model model){
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
@@ -166,6 +167,7 @@ public class ICStockBillController {
         //封装数据
         PageUtils<Icstockbill> pageUtils = new PageUtils<Icstockbill>(startpage, pagesize, countTatol, icstockbills);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
         return "desktop/SaleOutIndex";
     }
 

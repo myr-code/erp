@@ -158,6 +158,13 @@
 		order by a.billno,entryId
 	</select>
 
+	<select id="Mrp_ProductPlan_isQuoted" resultType="String">
+        /*产品入库*/
+        select distinct billNo from mrp_productinstore
+        where sourType = '生产计划单' and sourBillNo = #{billNo}
+
+    </select>
+
 	<delete id="delMrpProductPlan">
 		DELETE from mrp_productplan
 		where billNo = #{billNo}

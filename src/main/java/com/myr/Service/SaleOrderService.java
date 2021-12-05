@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface SaleOrderService {
     Integer addSaleOrder(SaleOrder saleOrder);
@@ -29,6 +30,8 @@ public interface SaleOrderService {
     List<SaleOrder> SaleOrder_pageGj(DateOption dateOption);
 
     Integer delSaleOrder(Integer fid);
+
+    Set<String> SaleOrder_isQuoted(Integer fid);
 
     Integer SaleOrder_update(SaleOrder saleOrder);
 

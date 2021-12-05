@@ -7,6 +7,7 @@ import com.myr.utils.DateOption;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface ProductPlanService {
     Integer addMrp_ProductPlan(List<MrpProductplan> mrpProductplans);
@@ -24,6 +25,8 @@ public interface ProductPlanService {
     List<MrpProductplan> Mrp_ProductPlan_page(Map<String,Object> map);
 
     List<MrpProductplan> getMrp_ProductPlanById(Integer mid);
+
+    Set<String> Mrp_ProductPlan_isQuoted(String billNo);
 
     Integer delMrpProductPlan(String billNo);
 

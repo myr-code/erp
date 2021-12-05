@@ -158,6 +158,7 @@ public class SaleOrderController {
         //封装数据
         PageUtils<SaleOrder> pageUtils = new PageUtils<SaleOrder>(startpage, pagesize, countTatol, saleOrders);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
         /*List<SaleOrder> saleOrders = saleOrderService.SaleOrder_page(map);
         model.addAttribute("datas",saleOrders);*/
@@ -177,40 +178,45 @@ public class SaleOrderController {
     @RequestMapping("/SaleOrder_del")
     @ResponseBody
     public MessageRequest SaleOrder_del(HttpServletRequest request) {
-        HashMap<Object, Object> bill_list = new HashMap<>();//被引用单据列表
+        Set<String> bill_list = new HashSet<>();//被引用单据列表
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
         Integer billnum = 0;//总单据数量
         Integer quoted = 0;//单据被引用数量
         Integer succ = 0;//成功删除单据数量
-        for (String data : datas) {
-            //删除成功为正数，单据被引用返回负数
-            Integer count = saleOrderService.delSaleOrder(Integer.parseInt(data));
-            if(count>=0){//删除成功
-                succ++;
-            }
-            if(count<0){//删除失败 单据被引用
-                //共选择xx张单据，成功删除XX张，XX张单据被引用不可删除
-                quoted++;
-            }
-            billnum++;//处理完成一张单据
-        }
-
-
         MessageRequest msg = null;
-        if(succ == billnum){
-            //删除成功单据的数量=总单据数量
-            msg = new MessageRequest(200,"全部删除成功!",null);
-        }else if(succ>0){
-            //部分删除成功
-            if(quoted>0){//被引用
-                msg = new MessageRequest(251,"部分删除成功,其余已被引用，不能删除!",bill_list);
-            }else{
-                msg = new MessageRequest(250,"部分删除成功",null);
+
+        try {
+            //1、执行判断
+            for (String data : datas) {
+                //删除成功为正数，单据被引用返回负数
+                Integer count = saleOrderService.delSaleOrder(Integer.parseInt(data));
+                if(count>=0){//删除成功
+                    succ++;
+                }
+                if(count<0){//删除失败 单据被引用
+                    //共选择xx张单据，成功删除XX张，XX张单据被引用不可删除
+                    Set<String> strings = saleOrderService.SaleOrder_isQuoted(Integer.parseInt(data));
+                    bill_list.addAll(strings);
+                    quoted++;
+                }
+                billnum++;//处理完成一张单据
             }
 
-        }else{
-            msg = new MessageRequest(500,"删除失败!",null);
+            if(succ == billnum){
+                //删除成功单据的数量=总单据数量
+                msg = new MessageRequest(200,"全部删除成功!",bill_list);
+            }else if(quoted>0){
+                //部分删除成功
+                msg = new MessageRequest(250,"部分删除成功,其余已被引用，不能删除!",bill_list);
+            }else{
+                msg = new MessageRequest(500,"删除失败!",bill_list);
+            }
+        } catch (Exception e) {
+            //登录失败
+            msg = new MessageRequest(500,"删除失败",null);
         }
+
+
         return msg;
     }
 

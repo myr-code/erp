@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class SaleOrderServiceImpl implements SaleOrderService {
@@ -74,13 +75,22 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     @Transactional
     public Integer delSaleOrder(Integer fid) {
         int count = 0;
-        List<String> strings = saleOrderMapper.SaleOrder_isexits(fid);
+        Set<String> strings = saleOrderMapper.SaleOrder_isQuoted(fid);
         if(strings.size()>0){
             count = strings.size()*-1;
         }else{
-            count = saleOrderMapper.delSaleOrder(fid);
+            //先删订单体再删订单头
+            if(saleOrderMapper.SaleOrder_del_body(fid)>0){
+                count = saleOrderMapper.delSaleOrder(fid);
+            }
+
         }
         return count;
+    }
+
+    @Override
+    public Set<String> SaleOrder_isQuoted(Integer fid) {
+        return saleOrderMapper.SaleOrder_isQuoted(fid);
     }
 
     @Override

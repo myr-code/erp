@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Mapper
 public interface SaleOrderMapper {
@@ -44,9 +45,12 @@ public interface SaleOrderMapper {
     List<SaleOrder> SaleOrder_pageGj(DateOption dateOption);
 
     //删除前判断是否存在单据
-    List<String> SaleOrder_isexits(Integer fid);
+    Set<String> SaleOrder_isQuoted(Integer fid);
 
-    //删除
+    //删除单据体
+    Integer SaleOrder_del_body(int fid);
+
+    //删除单据头
     Integer delSaleOrder(Integer fid);
 
     //更新

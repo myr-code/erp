@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Mapper
 public interface Mrp_ProductPlanMapper {
@@ -33,6 +34,9 @@ public interface Mrp_ProductPlanMapper {
 
     //销售订单序时簿 高级查询
     List<MrpProductplan> Mrp_ProductPlan_pageGj(DateOption dateOption);
+
+    //删除前判断是否存在单据
+    Set<String> Mrp_ProductPlan_isQuoted(String billNo);
 
     //删除
     Integer delMrpProductPlan(String billNo);

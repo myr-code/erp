@@ -165,6 +165,7 @@ public class PurOrderController {
         //封装数据
         PageUtils<Poorder> pageUtils = new PageUtils<Poorder>(startpage, pagesize, countTatol, poorders);
         model.addAttribute("datas",pageUtils);
+        model.addAttribute("AllQuery",AllQuery);
 
         /*List<Poorder> poorders = purOrderService.PurOrder_page(map);
         model.addAttribute("datas",poorders);*/

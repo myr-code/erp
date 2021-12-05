@@ -71,8 +71,17 @@
 	</style>
 	
 	<script type="text/javascript">
+
+
 	//查询表格选择复选框监听
 	$(function () {
+		//页面主体高度(iframe高度)
+		var clientHeight = document.body.clientHeight-90;//可用页面高度-90(top84-底部预留6)
+
+		//iframe高度-iframe菜单栏高度90
+		var tableHeight = clientHeight-90;//菜单栏高度90(新增、基础、审核。。。搜索框、翻页)
+		/*alert(tableHeight+"--"+clientHeight);*/
+		$("#table_main").style.height=tableHeight;
 		//双击去到编辑页面
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
@@ -167,18 +176,16 @@
 				type:"post",
 				dataType:"json",
 				success:function(result){
+
 					if(result.code==200){
 						alert("全部删除成功！");
-						location.href="SaleOrderIndex";
-					}else if(result.code==251){
-						alert("部分删除成功,其余已被引用，不能删除!");
-						location.href="SaleOrderIndex";
+						querys();//提交
 					}else if(result.code==250){
-						alert("部分删除成功!");
-						location.href="SaleOrderIndex";
+						alert("部分删除成功!选择的单据已被引用，引用单据="+JSON.stringify(result.data));
+						querys();//提交
 					}else if(result.code==500){
-						alert("删除失败!");
-						location.href="SaleOrderIndex";
+						alert("删除失败!选择的单据已被引用，引用单据="+JSON.stringify(result.data));
+						querys();//提交
 					}
 					//alert(JSON.stringify(result));
 				}
@@ -252,7 +259,8 @@
 
 	//查询
 	function querys(){
-		$("#AllQuery").submit();
+		getItemByPage('nowpage');
+		/*$("#AllQuery").submit();*/
 	}
 
 	//回车事件绑定
@@ -284,7 +292,7 @@
 		var startpage = parseFloat($("#nowpage").text());//当前页数
 		var pagesize = parseFloat($("#pagesize").val());//每页条数
 		var pagecount = parseFloat($("#pagecount").text());//总页数
-		var AllQuery = $("input [name='AllQuery']").val();
+		var AllQuery = $("input[name='AllQuery']").val();
 		AllQuery = AllQuery == null || AllQuery == ""?"":AllQuery;
 		var data = {};
 		//alert(startpage+"-"+pagesize+"-"+cnm);
@@ -512,22 +520,22 @@
 		</center>
 	</center>
 
-<div>
+<div style="width: 100%;">
 	<form method="post" action="SaleOrderIndex" id="AllQuery">
 		<div class="input-group input-group-sm">
 			<span class="input-group-addon" id="basic-addon1">模糊查询</span>
-			<input type="text" name="AllQuery" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
+			<input type="text" name="AllQuery" th:value="${AllQuery}" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
 		</div>
 	</form>
-	<!--<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>-->
-	<button class="btn btn-default btn-sm query" onclick="getoption()" data-toggle="modal" data-target="#myModal">高级</button>
+	<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>
+	<!--<button class="btn btn-default btn-sm query" onclick="getoption()" data-toggle="modal" data-target="#myModal">高级</button>-->
 	
 </div>
 
-<div style="height:100%;overflow-x:auto;overflow-y:auto;">
-	<table class="table table-striped table-bordered table-condensed table-hover">
+<div style="height:500px;overflow-x:auto;overflow-y:auto;">
+	<table class="table table-striped table-bordered table-condensed table-hover" style="min-width:2500px;">
 	<tr>
-		<th style="width:60px;">
+		<th style="width: 80px;">
 			<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">
 			选中
 		</th>

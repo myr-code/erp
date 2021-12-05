@@ -236,7 +236,8 @@
 
 	//查询
 	function querys(){
-		$("#AllQuery").submit();
+		getItemByPage('nowpage');
+		/*$("#AllQuery").submit();*/
 	}
 
 	//回车事件绑定
@@ -280,7 +281,7 @@
 		var startpage = parseFloat($("#nowpage").text());//当前页数
 		var pagesize = parseFloat($("#pagesize").val());//每页条数
 		var pagecount = parseFloat($("#pagecount").text());//总页数
-		var AllQuery = $("input [name='AllQuery']").val();
+		var AllQuery = $("input[name='AllQuery']").val();
 		AllQuery = AllQuery == null || AllQuery == ""?"":AllQuery;
 		var data = {};
 		//alert(startpage+"-"+pagesize+"-"+cnm);
@@ -514,11 +515,11 @@
 	<form method="post" action="SaleOutIndex" id="AllQuery">
 		<div class="input-group input-group-sm">
 			<span class="input-group-addon" id="basic-addon1">模糊查询</span>
-			<input type="text" name="AllQuery" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
+			<input type="text" name="AllQuery" th:value="${AllQuery}" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
 		</div>
 	</form>
-	<!--<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>-->
-	<button class="btn btn-default btn-sm query" onclick="getoption()" data-toggle="modal" data-target="#myModal">高级</button>
+	<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>
+	<!--<button class="btn btn-default btn-sm query" onclick="getoption()" data-toggle="modal" data-target="#myModal">高级</button>-->
 	
 </div>
 

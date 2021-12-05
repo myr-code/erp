@@ -315,15 +315,30 @@
         </collection>
     </resultMap>
 
-    <select id="SaleOrder_isexits" resultType="String">
-        select distinct a.billNo from icstockbill a inner JOIN icstockbillentry b on a.fid = b.mid
-        inner JOIN t_saleorder c on b.sourFid = c.fid and b.sourType = '销售订单'
-        where c.fid = #{fid}
+    <select id="SaleOrder_isQuoted" resultType="String">
+        /*销售出库*/
+        select distinct a.billNo from icstockbill a
+        inner JOIN icstockbillentry b on a.fid = b.mid and b.sourType = '销售订单'
+        where b.sourFid = #{fid}
+
+        union all  /*生产计划单*/
+        select distinct billNo from	mrp_productplan where sourType = '销售订单' and sourFid = #{fid}
+
+        union all /*采购申请单*/
+        select distinct billNo from	mrp_pur_req where sourType = '销售订单' and sourFid = #{fid}
+
+        union all /*生产备料单*/
+        select distinct billNo from	mrp_backmater where sourType = '销售订单' and sourFid = #{fid}
     </select>
 
+    <delete id="SaleOrder_del_body">
+        delete from t_saleorderentry
+        where mid = #{fid}
+    </delete>
+
     <delete id="delSaleOrder">
-        delete a,b from t_saleorder a INNER JOIN t_saleorderentry b on a.fid = b.mid
-        where a.fid = #{fid}
+        delete from t_saleorder
+        where fid = #{fid}
     </delete>
 
     <update id="SaleOrder_update">
