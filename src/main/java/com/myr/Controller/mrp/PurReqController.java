@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @Scope("prototype")
@@ -279,23 +276,52 @@ public class PurReqController {
     @RequestMapping("/PurReq_del")
     @ResponseBody
     public MessageRequest PurReq_del(HttpServletRequest request) {
+        Set<String> bill_list = new HashSet<>();//被引用单据列表
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
-
+        Integer billnum = 0;//总单据数量
+        Integer quoted = 0;//单据被引用数量
+        Integer succ = 0;//成功删除单据数量
+        Integer isdel = 0;//单据不存在的数量
         MessageRequest msg = null;
+
         try {
             for (String data : datas) {
                 List<MrpPurReq> purReqById = purReqService.getPurReqById(Integer.parseInt(data));
                 if(purReqById.size()>0&&purReqById!=null){
                     String billNo = purReqById.get(0).getBillNo();
-                    purReqService.delPurReq(billNo);
+                    Integer count = purReqService.delPurReq(billNo);
+                    if(count>0){//删除成功
+                        succ++;
+                    }
+                    if(count==0){//已被删除或不存在
+                        isdel++;
+                    }
+                    if(count<0){//删除失败 单据被引用
+                        //共选择xx张单据，成功删除XX张，XX张单据被引用不可删除
+                        Set<String> strings = purReqService.PurReq_isQuoted(billNo);
+                        bill_list.addAll(strings);
+                        quoted++;
+                    }
+                    billnum++;//处理完成一张单据
                 }
             }
 
-            //登录成功
-            msg = new MessageRequest(200,"删除成功",null);
+            if(succ == billnum){
+                //删除成功单据的数量=总单据数量
+                msg = new MessageRequest(200,"全部删除成功!",bill_list);
+            }else if(quoted>0){
+                //部分删除成功
+                msg = new MessageRequest(250,"部分删除成功,其余已被引用，不能删除!",bill_list);
+            }else if(isdel==billnum){
+                //已被删除或不存在
+                msg = new MessageRequest(251,"单据已被删除或系统不存在选择的单据!",null);
+            }else{
+                msg = new MessageRequest(500,"删除失败!",bill_list);
+            }
+
         } catch (Exception e) {
             //登录失败
-            msg = new MessageRequest(500,"删除失败",null);
+            msg = new MessageRequest(500,"删除失败",bill_list);
         }
         return msg;
     }

@@ -161,6 +161,13 @@
 		order by a.billno,entryId
 	</select>
 
+	<select id="PurReq_isQuoted" resultType="String">
+        /*采购订单*/
+        select distinct a.billNo from t_poorder a inner join t_poorderentry b on a.fid = b.mid
+		where sourType = '采购申请单' and sourBillNo = #{billNo}
+
+    </select>
+
 	<delete id="delPurReq">
 		DELETE from mrp_pur_req
 		where billNo = #{billNo}

@@ -5,6 +5,7 @@ import com.myr.Bean.MrpPurReq;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface PurReqService {
     Integer add_PurReq(List<MrpPurReq> mrpPurReqs);
@@ -23,6 +24,9 @@ public interface PurReqService {
     List<MrpPurReq> PurReq_page(Map<String,Object> map);
 
     List<MrpPurReq> getPurReqById(Integer mid);
+
+    //删除前判断是否存在单据
+    Set<String> PurReq_isQuoted(String billNo);
 
     Integer delPurReq(String billNo);
 

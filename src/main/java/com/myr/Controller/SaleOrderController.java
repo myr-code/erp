@@ -183,6 +183,7 @@ public class SaleOrderController {
         Integer billnum = 0;//总单据数量
         Integer quoted = 0;//单据被引用数量
         Integer succ = 0;//成功删除单据数量
+        Integer isdel = 0;//单据不存在的数量
         MessageRequest msg = null;
 
         try {
@@ -190,8 +191,11 @@ public class SaleOrderController {
             for (String data : datas) {
                 //删除成功为正数，单据被引用返回负数
                 Integer count = saleOrderService.delSaleOrder(Integer.parseInt(data));
-                if(count>=0){//删除成功
+                if(count>0){//删除成功
                     succ++;
+                }
+                if(count==0){//已被删除或不存在
+                    isdel++;
                 }
                 if(count<0){//删除失败 单据被引用
                     //共选择xx张单据，成功删除XX张，XX张单据被引用不可删除
@@ -208,6 +212,9 @@ public class SaleOrderController {
             }else if(quoted>0){
                 //部分删除成功
                 msg = new MessageRequest(250,"部分删除成功,其余已被引用，不能删除!",bill_list);
+            }else if(isdel==billnum){
+                //已被删除或不存在
+                msg = new MessageRequest(251,"单据已被删除或系统不存在选择的单据!",null);
             }else{
                 msg = new MessageRequest(500,"删除失败!",bill_list);
             }
