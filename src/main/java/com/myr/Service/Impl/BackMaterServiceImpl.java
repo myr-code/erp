@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class BackMaterServiceImpl implements BackMaterService {
@@ -48,8 +49,23 @@ public class BackMaterServiceImpl implements BackMaterService {
     }
 
     @Override
+    public Set<String> BackMater_isQuoted(String billNo) {
+        return backMaterMapper.BackMater_isQuoted(billNo);
+    }
+
+    @Override
+    @Transactional
     public Integer delBackMater(String billNo) {
-        return backMaterMapper.delBackMater(billNo);
+        int count = 0;
+        Set<String> strings = backMaterMapper.BackMater_isQuoted(billNo);
+        if(strings.size()>0){
+            //负数 单据被引用
+            count = strings.size()*-1;
+        }else{
+            //删除 正数 单据被删除
+            count = backMaterMapper.delBackMater(billNo);
+        }
+        return count;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.myr.Bean.MrpProductplan;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface BackMaterService {
     Integer add_BackMater(List<MrpBackmater> mrpBackmater);
@@ -18,6 +19,8 @@ public interface BackMaterService {
     List<MrpBackmater> BackMater_page(Map<String,Object> map);
 
     List<MrpBackmater> getBackMaterById(Integer mid);
+
+    Set<String> BackMater_isQuoted(String billNo);
 
     Integer delBackMater(String billNo);
 

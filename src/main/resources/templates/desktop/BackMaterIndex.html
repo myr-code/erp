@@ -168,12 +168,19 @@
 				dataType:"json",
 				success:function(result){
 					if(result.code==200){
-						alert("删除成功！");
+						alert("全部删除成功！");
+						querys();//提交
+					}else if(result.code==250){
+						alert("部分删除成功!选择的单据已被引用，引用单据="+JSON.stringify(result.data));
+						querys();//提交
+					}else if(result.code==251){
+						alert("单据已被删除或系统不存在选择的单据!");
 						querys();//提交
 					}else if(result.code==500){
 						alert("删除失败!");
-						/*location.href="BackMaterIndex";*/
+						querys();//提交
 					}
+
 					//alert(JSON.stringify(result));
 				}
 			});

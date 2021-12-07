@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Mapper
 public interface BackMaterMapper {
@@ -27,6 +28,9 @@ public interface BackMaterMapper {
 
     //销售订单序时簿 高级查询
     List<MrpProductplan> Mrp_ProductPlan_pageGj(DateOption dateOption);
+
+    //删除前判断是否存在单据
+    Set<String> BackMater_isQuoted(String billNo);
 
     //删除
     Integer delBackMater(String billNo);

@@ -116,6 +116,13 @@
 		order by a.billno,entryId
 	</select>
 
+	<select id="BackMater_isQuoted" resultType="String">
+        /*产品入库*/
+        select distinct billNo from mrp_productpick
+        where sourType = '生产备料单' and sourBillNo = #{billNo}
+
+    </select>
+
 	<delete id="delBackMater">
 		DELETE from mrp_backmater
 		where billNo = #{billNo}
