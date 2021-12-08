@@ -29,7 +29,7 @@
 	}
 	
 	table{
-		/*margin-top:15px;*/
+		/*margin-top:15px;//table改造-1*/
 		cursor: pointer;
 	}
 	
@@ -127,6 +127,7 @@
 	var end = "";
 	var start = "";
 	window.onload = function(){
+		//table改造-2
 		var clientHeight = document.body.clientHeight-77;//可用页面高度-90(top84-底部预留6)
 		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
 
@@ -520,21 +521,22 @@
 	</center>
 
 <div style="width: 100%;">
-	<form method="post" action="SaleOrderIndex" id="AllQuery">
+	<form method="post" action="#" id="AllQuery">
 		<div class="input-group input-group-sm">
 			<span class="input-group-addon" id="basic-addon1">模糊查询</span>
 			<input type="text" name="AllQuery" th:value="${AllQuery}" class="form-control" placeholder="单号、客户、编码、型号" aria-describedby="basic-addon1">
 		</div>
-		<button class="btn btn-default btn-sm query" onclick="querys()">查询</button>
+		<button class="btn btn-default btn-sm query" onclick="querys()">查询</button><!--table改造-4-->
 		<!--<button class="btn btn-default btn-sm query" onclick="getoption()" data-toggle="modal" data-target="#myModal">高级</button>-->
 	</form>
 </div>
 
-<div id="table_main" style="overflow-x:auto;overflow-y:auto;">
-		<table id="table" class="table table-striped table-bordered table-condensed table-hover" style="min-width:2000px;">
+
+<div id="table_main" style="overflow-x:auto;overflow-y:auto;"><!--table改造-4-->
+		<table id="table" class="table table-striped table-bordered table-condensed table-hover" style="min-width:2000px;"><!--table改造-5-->
 			<!--<thead class="fixed-thead" id="head">-->
 			<tr>
-				<th style="width:10px;">
+				<th style="width:10px;"><!--table水平改造-1-->
 					<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">
 				</th>
 				<th style="width:10px;">序号</th>
@@ -590,6 +592,7 @@
 <script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.min.js"></script>
 <script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.zh-CN.js"></script>
 <script type="text/javascript">
+	//table 列框拉动改变列宽
 	var tTD;
 	var table = document.getElementById("table");
 	console.log(table.rows[0].cells)

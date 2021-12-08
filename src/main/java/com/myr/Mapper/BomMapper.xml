@@ -35,7 +35,7 @@
     </select>
 
     <select id="Bom_page" resultMap="BomMap">
-        select a.fid,a.billNo,a.muid,a.billDate,a.itemCode,a.itemName,a.itemModel,a.custItemCode,a.custItemModel,a.unitName,a.qty,a.DefCustId,c.`name` as 'DefCustIdName',allCost,
+        select a.fid,a.billNo,a.muid,a.billDate,a.itemCode,a.itemName,a.itemModel,a.custItemCode,a.custItemModel,a.unitName,a.qty,a.DefCustId,a.remark,c.`name` as 'DefCustIdName',allCost,
         b.fid as 'ffid',b.entryId,b.cuid,b.itemCode as 'miditemCode',b.itemName as 'miditemName',b.itemModel as 'miditemModel',b.custItemCode as 'midcustItemCode',b.custItemModel as 'midcustItemModel',b.unitName,
         b.qty as 'midQty',b.taxPrice,b.taxAmt,case when b.defSuppId>0 then b.defSuppId else 0 end as 'defSuppId',d.`name` as 'DefSuppIdName'
         from t_bom a INNER JOIN t_bomentry b on a.fid = b.mid
