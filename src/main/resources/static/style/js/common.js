@@ -1,11 +1,4 @@
-//主页的项目名
-var path = $(window.parent.document.body).find("#path").val();
 
-//页面主体高度(iframe高度)
-var clientHeight = document.body.clientHeight-90;//可用页面高度-90(top84-底部预留6)
-
-//iframe高度-iframe菜单栏高度90
-var tableHeight = clientHeight-90;//菜单栏高度90(新增、基础、审核。。。搜索框、翻页)
 
 //未开发提示 点击后提示
 function tips(){
