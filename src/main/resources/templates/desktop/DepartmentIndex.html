@@ -70,7 +70,7 @@
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
 			var fid = chks.val();
-			window.parent.topage('left1050203','部门-编辑','DepaEdit/'+fid);
+			window.parent.topage('left1050203','部门-编辑','DepaEdit/'+fid,0);
 		});
 
 		//除了表头（第一行）以外所有的行添加click事件.
@@ -160,7 +160,7 @@
 		}else{
 			var fid = $("input[type='checkbox']:checked").val();
 			/*location.href="CustomerEdit/"+fid;*/
-			window.parent.topage('left1050203','部门-编辑','DepaEdit/'+fid);
+			window.parent.topage('left1050203','部门-编辑','DepaEdit/'+fid,0);
 		}
 	}
 
@@ -308,7 +308,7 @@
 	<center>
 		<h4 style="float:left;color: #5bc0de;"><b>部门</b></h4>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left1050201','部门-new','base/page_DepartAdd');">新增</button>
+			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left1050201','部门-new','base/page_DepartAdd',0);">新增</button>
 
 			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -387,7 +387,7 @@
 </div>
 
 <div id="table_main" style="overflow-x:auto;overflow-y:auto;">
-	<table id="table" class="table table-striped table-bordered table-condensed table-hover" style="min-width:1000px;">
+	<table id="table" class="table table-striped table-bordered table-condensed table-hover" style="max-width:2000px;">
 	<tr>
 		<th width="10px"><!--table水平改造-1-->
 			<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">

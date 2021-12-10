@@ -88,7 +88,7 @@
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
 			var fid = chks.val();
-			window.parent.topage('left10603','BOM-编辑','ToBOMEdit/'+fid);
+			window.parent.topage('left10603','BOM-编辑','ToBOMEdit/'+fid,0);
 		});
 
 		//除了表头（第一行）以外所有的行添加click事件.
@@ -254,7 +254,7 @@
 		}else{
 			var fid = $("input[type='checkbox']:checked").val();
 			/*location.href="CustomerEdit/"+fid;*/
-			window.parent.topage('left10603','BOM-编辑','ToBOMEdit/'+fid);
+			window.parent.topage('left10603','BOM-编辑','ToBOMEdit/'+fid,0);
 		}
 	}
 
@@ -454,7 +454,7 @@
 	}
 
 	function tz(){
-		window.parent.topage('left120101','请求地址-new','other/page_GetHttpContent');
+		window.parent.topage('left120101','请求地址-new','other/page_GetHttpContent',0);
 	}
 	</script>
 	
@@ -585,7 +585,7 @@
 	<center>
 		<h4 style="float:left;color: #5bc0de;"><b>响应地址</b></h4>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="...">
-			<button type="button" th:if="${static=='jump'}" class="btn btn-default" onclick="javascript: window.parent.topage('left120101','请求地址-new','other/page_GetHttpContent');">新增</button>
+			<button type="button" th:if="${static=='jump'}" class="btn btn-default" onclick="javascript: window.parent.topage('left120101','请求地址-new','other/page_GetHttpContent',0);">新增</button>
 			<button type="button" th:if="${static!='jump'}" class="btn btn-default" onclick="javascript: window.open('other/page_GetHttpContent',target='_blank');">新增</button>
 
 			<div class="btn-group btn-group-sm" role="group">

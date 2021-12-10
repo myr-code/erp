@@ -111,11 +111,15 @@
 
 
 	// 显示或隐藏二级菜单
-	function menuClick( menuDiv ){
+	function menuClick(menuDiv){
 		// 当前显示的li个数
 		var num = $("#s"+menuDiv+	" li:visible").length;
 
+		//隐藏所有二级菜单
+		$("#leftmain"+" .list2").hide();
+
 		if(num>1){
+			//隐藏点击的一级菜单下单所有二级菜单
 			$("#s"+menuDiv+" .list2").hide();
 		}else{
 			$("#s"+menuDiv+" .list2").show();
@@ -163,7 +167,7 @@
 	}
 
 	//点击做列表显示 1.头模块 2.右下方主窗体
-	function topage(leftid,modelname,url){
+	function topage(leftid,modelname,url,add_ifr_hight){
 		var modellen = $("iframe[id^='main']").length;
 		if(modellen>10){
 			alert("已开10个模块，为了心情请关闭一些不必要的模块！");
@@ -182,11 +186,11 @@
 			return false;
 		}
 
-		addmodel(numid,modelname,url);
+		addmodel(numid,modelname,url,add_ifr_hight);
 	}
 
 	//添加主窗体
-	function addmodel(numid,modelname,url){
+	function addmodel(numid,modelname,url,add_ifr_hight){
 		//添加头部模块
 		var appendhtml = "<div class='menuchild'>"+
 			"<button id='top"+numid+"' class='btn btn-info' onclick='changemodel("+numid+");'>"+modelname+"</button>"+
@@ -194,7 +198,7 @@
 		"</div>";
 		$(".Head2_FunctionList").append(appendhtml);
 		//添加主窗体
-		$(".ifra").append("<iframe id='main"+numid+"' src='"+url+"' scrolling='no' width='100%' height='"+clientHeight+"' name='right"+numid+"' border='none'></iframe>");
+		$(".ifra").append("<iframe id='main"+numid+"' src='"+url+"' scrolling='no' width='100%' height='"+(clientHeight+add_ifr_hight)+"' name='right"+numid+"' border='none'></iframe>");
 
 		//隐藏其他主窗体
 		$("iframe[id!='main"+numid+"']").hide();
@@ -364,85 +368,85 @@
 	<div id="leftmainbody" style="float:left;width:150px;">
 		<ul class="list-group" id="s1">
 		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(1);">基础设置</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left101','参数设置','other/page_NullHtml');">
+		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left101','参数设置','other/page_NullHtml',0);">
 			&nbsp;&nbsp;&nbsp; 参数设置
 		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left102','基础信息','MeunList/page_BaseInfoList');">
+		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left102','基础信息','MeunList/page_BaseInfoList',0);">
 			&nbsp;&nbsp;&nbsp; 基础信息
 		</li>
-		<!--<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left103','计量单位','base/page_UnitAdd');">
+		<!--<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left103','计量单位','base/page_UnitAdd',0);">
 			&nbsp;&nbsp;&nbsp; 计量单位
 		</li>-->
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left105','辅助资料','MeunList/page_HelpInfoList');">
+		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left105','辅助资料','MeunList/page_HelpInfoList',0);">
 			&nbsp;&nbsp;&nbsp; 辅助资料
 		</li>
-		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left106','BOM','BomIndex');">
+		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left106','BOM','BomIndex',0);">
 			&nbsp;&nbsp;&nbsp; BOM
 		</li>
 	</ul>
 		<ul class="list-group" id="s2">
 			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(2);">用户管理</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left201','用户','other/page_NullHtml');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left201','用户','other/page_NullHtml',0);">
 				&nbsp;&nbsp;&nbsp; 用户
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left202','角色','other/page_NullHtml');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left202','角色','other/page_NullHtml',0);">
 				&nbsp;&nbsp;&nbsp; 角色
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left203','权限分配','other/page_NullHtml');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left203','权限分配','other/page_NullHtml',0);">
 				&nbsp;&nbsp;&nbsp; 权限分配
 			</li>
 		</ul>
 		<ul class="list-group" id="s3">
 			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(3);">销售与出库</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left302','销售订单','SaleOrderIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left302','销售订单','SaleOrderIndex',0);">
 				&nbsp;&nbsp;&nbsp; 销售订单
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left303','销售出库','SaleOutIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left303','销售出库','SaleOutIndex',0);">
 				&nbsp;&nbsp;&nbsp; 销售出库
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left304','其他出库','other/page_NullHtml');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left304','其他出库','other/page_NullHtml',0);">
 				&nbsp;&nbsp;&nbsp; 其他出库
 			</li>
 		</ul>
 		<ul class="list-group" id="s4">
 			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(4);">MRP统筹</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left401','计划统筹','desktop/page_MRPIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left401','计划统筹','desktop/page_MRPIndex',500);">
 				&nbsp;&nbsp;&nbsp; 计划统筹
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left402','生产计划','ProductPlanIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left402','生产计划','ProductPlanIndex',0);">
 				&nbsp;&nbsp;&nbsp; 生产计划
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left403','生产备料','BackMaterIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left403','生产备料','BackMaterIndex',0);">
 				&nbsp;&nbsp;&nbsp; 生产备料
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left404','生产领料','ProductPickIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left404','生产领料','ProductPickIndex',0);">
 				&nbsp;&nbsp;&nbsp; 生产领料
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left405','成品入库','ProductInStoreIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left405','成品入库','ProductInStoreIndex',0);">
 				&nbsp;&nbsp;&nbsp; 成品入库
 			</li>
 		</ul>
 		<ul class="list-group" id="s5">
 			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(5);">采购与入库</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left501','采购申请单','PurReqIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left501','采购申请单','PurReqIndex',0);">
 				&nbsp;&nbsp;&nbsp; 采购申请单
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left502','采购订单','PurOrderIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left502','采购订单','PurOrderIndex',0);">
 				&nbsp;&nbsp;&nbsp; 采购订单
 			</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left503','采购入库','ICStockBillIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left503','采购入库','ICStockBillIndex',0);">
 				&nbsp;&nbsp;&nbsp; 采购入库
 			</li>
 		</ul>
 		<ul class="list-group" id="s6">
 			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(6);">库存管理</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left601','产品库存','ItemStockIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left601','产品库存','ItemStockIndex',0);">
 				&nbsp;&nbsp;&nbsp; 产品库存
 			</li>
 		</ul>
 		<ul class="list-group" id="s12">
 			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(12);">特殊模块</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1201','响应地址','OtherModelIndex');">
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1201','响应地址','OtherModelIndex',0);">
 				&nbsp;&nbsp;&nbsp; 响应地址
 			</li>
 		</ul>
