@@ -18,9 +18,9 @@
 			var tag = $(this).attr("tag");
 			if(tag=="selected"){
 				// 之前已选中，设置为未选中
-				$(this).attr("tag","");
 				chks.prop("checked",false);
 				$(this).css("backgroundColor", "#fff");
+				$(this).attr("tag","");
 			}else{
 				// 之前未选中，设置为选中
 				$(this).attr("tag","selected");
@@ -33,11 +33,12 @@
 		$(document).on("click",".modal-body tr",function(){
 			var chks = $("input[type='checkbox']",this);
 			var tag = $(this).attr("tag");
+
 			if(tag=="selected"){
 				// 之前已选中，设置为未选中
-				$(this).attr("tag","");
 				chks.prop("checked",false);
 				$(this).css("backgroundColor", "#fff");
+				$(this).attr("tag","");
 			}else{
 				// 之前未选中，设置为选中
 				$(this).attr("tag","selected");
@@ -46,6 +47,10 @@
 			}
 		});
 
+		/*$("tr").bind("click",function(){
+			$("input:radio").attr("checked",false);
+			$(this).find("td").find("input:radio").attr("checked",true)
+		});*/
 	});
 
 	//日期获取
@@ -278,7 +283,7 @@
 					var sourBillNo = '';
 					var sourEntryId = 0;
 					var apphtml = "<tr>" +
-							"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
+							"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"'></td>" +
 							"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+code+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+name+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+model+"</td>\n" +
@@ -385,8 +390,8 @@
 					var sourFid = 0;
 					var sourBillNo = '';
 					var sourEntryId = 0;
-					var apphtml = "<tr>" +
-							"<td id='mfid"+fid+"'><input type='radio' name='mItemFid' value='"+fid+"' ></td>" +
+					var apphtml = "<tr onclick='rowclick("+fid+")' ondblclick='rowdbclick_radio("+fid+")'>" +
+							"<td id='mfid"+fid+"'><input type='radio' name='mItemFid' value='"+fid+"' id='rad"+fid+"'></td>" +
 							"\t\t\t\t\t\t\t\t<td id='mcode"+fid+"'>"+code+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='mname"+fid+"'>"+name+"</td>\n" +
 							"\t\t\t\t\t\t\t\t<td id='mmodel"+fid+"'>"+model+"</td>\n" +
@@ -770,6 +775,16 @@
 		upd_clientheight('close');
 	}
 
+	function rowclick(id){
+		$("input:radio:checked").prop("checked",false);
+		$("#rad"+id).prop("checked",true);
+	}
+
+	function rowdbclick_radio(id){
+		rowclick(id);
+		appendMainItem();
+	}
+
 </script>
 
 <style type="text/css">
@@ -847,9 +862,9 @@
 		<B>BOM-新增</B>
 		<!--<b style="margin-left:30px;">SO-201025001</b>-->
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;margin-top: -7px;">
-			<button type="button" onclick="fromcheck()" class="btn btn-info">提交</button>
+			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
 			<div class="btn-group btn-group-sm" role="group">
-				<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Other
 					<span class="caret"></span>
 				</button>
@@ -878,7 +893,7 @@
 						<button class="btn btn-default" type="button">主件编码</button>
 				  </span>
 				<input type="text" name="itemCode" class="form-control" placeholder="CODE" readonly aria-describedby="basic-addon1">
-				<span class="input-group-addon glyphicon glyphicon-search" onclick="getMainItem('nowpage')" data-toggle="modal" data-target="#mainItem"></span>
+				<span class="input-group-addon glyphicon glyphicon-search" onclick="getMainItem('nowpage')" data-toggle="modal" data-target="#mainItem" style="top: 0px;"></span>
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">

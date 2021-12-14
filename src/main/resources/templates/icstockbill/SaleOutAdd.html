@@ -469,7 +469,7 @@
 			data.pagesize = pagesize;
 			data.cnm = cnm;
 		}else{//默认没有
-			data.startpage = 1;
+			data.startpage = startpage;
 			data.pagesize = pagesize;
 			data.cnm = cnm;
 		}
@@ -566,14 +566,14 @@
 					"<td>"+saleUnitIdName+"<input type='hidden' name='unitName0"+fid+trlen+"' value='"+saleUnitIdName+"' style='width:20px;'></td>"+
 					"<td><input type='text' name='custOrderNum0"+fid+trlen+"' value='"+custOrderNum+"' style='width:100px;'></td>"+
 					"<td><input type='text' id='qty_"+trlen+"' name='qty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
-					"<td><select id='stockId_"+trlen+"' name='stockId0"+fid+trlen+"' class='selectpicker show-tick form-control' data-live-search='true' data-actions-box='true'>" +
+					"<td><select id='stockId_"+trlen+"' name='stockId0"+fid+trlen+"' class='selectpicker show-tick form-control' data-live-search='true' data-actions-box='true'> style='width:100px;'" +
 					"	<option value='-1'></option>" +
 					"</select></td>"+
-						"<td><input type='text' name='batchNumber0"+fid+trlen+"' value='"+batchNumber+"' style='width:60px;'></td>"+
-						"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:80px;'></td>"+
-						"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:80px;'></td>"+
+						"<td><input type='text' name='batchNumber0"+fid+trlen+"' value='"+batchNumber+"' style='width:100px;'></td>"+
+						"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:50px;'></td>"+
+						"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:50px;'></td>"+
 					"<td id='taxamt"+trlen+"'>"+amt+"</td>"+
-					"<td><input type='text' name='rowRemark0"+fid+trlen+"' style='width:40px;'></td>"+
+					"<td><input type='text' name='rowRemark0"+fid+trlen+"' style='width:100px;'></td>"+
 					"<td>"+sourcetype+"<input type='hidden' id='sourType"+trlen+"' name='sourType0"+fid+trlen+"' value='"+sourcetype+"'></td>"+
 					"<input type='hidden' name='sourFid0"+fid+trlen+"' value='"+sourFid+"' >"+
 					"<input type='hidden' name='sourBillNo0"+fid+trlen+"' value='"+sourBillNo+"' >"+
@@ -825,6 +825,29 @@
 		closemodal("ModalBatchStock","hide");//关闭拟态框
     }
 
+	function upd_clientheight(type){
+		if(type == 'show'){
+			var clientHeight = document.body.clientHeight-290;//可用页面高度-90(top84-底部预留6)
+		}else if(type == 'close'){
+			var clientHeight = document.body.clientHeight-170;//可用页面高度-90(top84-底部预留6)
+		}
+
+		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
+	}
+
+	function page_close(){
+		$("#open").show();
+		$("#close").hide();
+		$("#panel-body-header").hide();
+		upd_clientheight('close');
+	}
+
+	function page_show(){
+		$("#close").show();
+		$("#open").hide();
+		$("#panel-body-header").show();
+		upd_clientheight('show');
+	}
 
 	
 </script>
@@ -841,7 +864,7 @@
 	
 	.panel-body .input-group{
 		margin-right:20px;
-		margin-top:15px;
+		margin-top:5px;
 		width:200px;
 		float:left;
 	}
@@ -862,7 +885,10 @@
 	
 	tr td,th{
 		text-align:center;
-		font-size:15px;
+		font-size:12px;
+		overflow: hidden; /*超过区域就隐藏*/
+		white-space: nowrap; /*规定段落中的文本不进行换行*/
+		text-overflow: ellipsis; /*显示省略符号来代表被修剪的文本。*/
 	}
 	
 	.glyphicon-minus{
@@ -895,7 +921,7 @@
 	<div class="panel-heading">
 		<b>销售出库-新增</b>
 		<!--<b style="margin-left:30px;">SO-201025001</b>-->
-		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;">
+		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;margin-top: -7px;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
 			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -907,6 +933,12 @@
 					<li><a href="#">提交并新建</a></li>
 				</ul>
 			</div>
+			<div style="float:right;margin-top: 7px;margin-left: 15px;">
+				<button class="btn btn-info btn-xs">
+					<span class="glyphicon glyphicon-resize-small" id="close" onclick="page_close()"></span>
+					<span class="glyphicon glyphicon-resize-full" id="open" onclick="page_show()"></span>
+				</button>
+			</div>
 		</div>
 		
 	</div>
@@ -914,11 +946,11 @@
 	<form method="post" action="CustType_add" id="f1">
 		<input type="hidden" name="billType" value="销售出库">
 		<input type="hidden" name="stockType" value="-1">
-		<div class="panel-body">
+		<div class="panel-body" id="panel-body-header">
 
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
-					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:red;"></span>客户</button>
+					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:#ff0000;"></span>客户</button>
 				 </span>
 				<select name="suppId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
 				　　<option value="-1">-- --</option>
@@ -1009,10 +1041,10 @@
 				</ul>
 				
 				<div class="panel-infos" id="contact">
-					<div style="height:230px;overflow-x:auto;overflow-y:auto;">
-						<table id="mainTable" class="table table-striped table-bordered table-condensed table-hover" >
+					<div id="table_main" style="overflow-x:auto;overflow-y:auto;">
+						<table id="mainTable" class="table table-striped table-bordered table-condensed table-hover" style="max-width:2000px;min-width: 1200px;">
 							<tr>
-								<th style="width:50px;">行号</th>
+								<th width="10px">行号</th>
 								<th>产品编码</th>
 								<th>名称</th>
 								<th>型号</th>
@@ -1102,7 +1134,7 @@
 <!-- 模态框声明 -->
 	<div class="modal fade" id="myModal" style="height:600px;">
 		<!-- 窗口声明 -->
-		<div class="modal-dialog" style="width:100%;">
+		<div class="modal-dialog" style="width:95%;">
 			<!-- 内容声明 -->
 			<div class="modal-content">
 			
@@ -1131,9 +1163,9 @@
 							</select>
 						</form>
 
-						<div style="height:300px;overflow-x:auto;overflow-y:auto;">
-							<table id="items" class="table table-striped table-bordered table-condensed table-hover" >
-								<!--<tr>
+						<div id="table_main_item" style="max-height:300px;overflow-x:auto;overflow-y:auto;">
+							<table id="items" class="table table-striped table-bordered table-condensed table-hover" style="max-width:2000px;">
+								<tr>
 									<th style="width:60px">选中</th>
 									<th>编码</th>
 									<th>名称</th>
@@ -1147,7 +1179,7 @@
 									<th>默认客户</th>
 									<th>默认仓库</th>
 									<th>负责人</th>
-								</tr>-->
+								</tr>
 							</table>
 						</div>
 						<center>
@@ -1158,7 +1190,7 @@
 							<a href="#" onclick="getitem('last')">尾页</a>
 							[<span id="startpage"></span>/<span id="pagecount"></span>]
 							共<span id="countTatol"></span>条
-							<select id="pagesize" class="selectpicker" data-live-search="true" data-actions-box="true">
+							<select id="pagesize" onchange="getitem(0)" class="selectpicker" data-live-search="true" data-actions-box="true">
 								<option value="10">10</option>
 								<option value="20">20</option>
 								<option value="50">50</option>
@@ -1216,6 +1248,60 @@
 <script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.min.js"></script>
 <script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.zh-CN.js"></script>
 <script type="text/javascript">
+	//来源 table
+	/*window.onload = function(){
+		var clientHeight = document.body.clientHeight-77;//可用页面高度-90(top84-底部预留6)
+		alert(clientHeight);
+		/!*document.getElementById("table_main_item").style.maxHeight = clientHeight+"px";*!/
+	}*/
+
+	//选择后端item table
+	window.onload = function(){
+		var clientHeight = document.body.clientHeight-290;//可用页面高度-90(top84-底部预留6)
+		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
+	}
+
+	//table 列框拉动改变列宽
+	var tTD;
+	var table = document.getElementById("mainTable");
+	console.log(table.rows[0].cells)
+	for (i = 0; i < table.rows[0].cells.length; i++) {
+		table.rows[0].cells[i].onmousedown = function() {
+			tTD = this;
+			if (event.offsetX > tTD.offsetWidth - 10) {
+				tTD.mouseDown = true;
+				tTD.oldX = event.x;
+				tTD.oldWidth = tTD.offsetWidth;
+			}
+		};
+		table.rows[0].cells[i].onmouseup = function() {
+			if (tTD == undefined) tTD = this;
+			tTD.mouseDown = false;
+			tTD.style.cursor = 'default';
+		};
+		table.rows[0].cells[i].onmousemove = function() {
+			if (event.offsetX > this.offsetWidth - 10)
+				this.style.cursor = 'col-resize';
+			else
+				this.style.cursor = 'default';
+			if (tTD == undefined) tTD = this;
+			if (tTD.mouseDown != null && tTD.mouseDown == true) {
+				tTD.style.cursor = 'default';
+				if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+					tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+				tTD.style.width = tTD.width;
+				tTD.style.cursor = 'col-resize';
+				table = tTD;
+				while (table.tagName != 'TABLE') table = table.parentElement;
+				for (j = 0; j < table.rows.length; j++) {
+					table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+				}
+			}
+		};
+	}
+
+	//加载默认隐藏扩展
+	$("#open").hide();
 
 	$('.form_datetime').datetimepicker({
 		language : 'zh-CN',
@@ -1255,7 +1341,48 @@
 	});
 	</script>
 
+<!--table 列框拉动改变列宽  来源items-->
+<script type="text/javascript">
+	//table 列框拉动改变列宽 来源items
+	var tTD;
+	var table = document.getElementById("items");
+	console.log(table.rows[0].cells);
+	for (i = 0; i < table.rows[0].cells.length; i++) {
+		table.rows[0].cells[i].onmousedown = function() {
+			tTD = this;
+			if (event.offsetX > tTD.offsetWidth - 10) {
+				tTD.mouseDown = true;
+				tTD.oldX = event.x;
+				tTD.oldWidth = tTD.offsetWidth;
+			}
+		};
+		table.rows[0].cells[i].onmouseup = function() {
+			if (tTD == undefined) tTD = this;
+			tTD.mouseDown = false;
+			tTD.style.cursor = 'default';
+		};
+		table.rows[0].cells[i].onmousemove = function() {
+			if (event.offsetX > this.offsetWidth - 10)
+				this.style.cursor = 'col-resize';
+			else
+				this.style.cursor = 'default';
+			if (tTD == undefined) tTD = this;
+			if (tTD.mouseDown != null && tTD.mouseDown == true) {
+				tTD.style.cursor = 'default';
+				if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+					tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+				tTD.style.width = tTD.width;
+				tTD.style.cursor = 'col-resize';
+				table = tTD;
+				while (table.tagName != 'TABLE') table = table.parentElement;
+				for (j = 0; j < table.rows.length; j++) {
+					table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+				}
+			}
+		};
+	}
 
+</script>
 
 </body>
 </html>
