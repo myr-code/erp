@@ -767,6 +767,7 @@
 				$("#contact_bill").val(custJOSN[i].contact);
 				$("#phone_bill").val(custJOSN[i].phone);
 				$("#address_bill").val(custJOSN[i].address);
+				$("#selected_cust").val(custJOSN[i].name);
 			}
 		}
 	}
@@ -1162,6 +1163,7 @@
 							<option value="库存产品">库存产品</option>
 						</select>
 					</h6>
+					<input type="text" id="selected_cust" readonly class="form-control" style="width:200px;height: 30px;">
 				</div>
 				<div class="modal-body">
 					<div class="container-fluid">
