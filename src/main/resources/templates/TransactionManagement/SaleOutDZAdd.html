@@ -71,6 +71,23 @@
 		//document.getElementById('date_start').value = start;
 	}
 
+	$(function () {
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		if (month < 10) {
+			month = "0" + month + ""
+		}
+		if (day < 10) {
+			day = "0" + day
+		}
+		end = year + "-" + month + "-" + day;
+		start = year + "-" + month + "-01";
+		//$(".form_date").val(start);
+		$("input[name='billDate']").val(end);
+	});
+
 	//页签切换
 	function navcut(obj,infoid){
 		//1.移除活动 隐藏模块

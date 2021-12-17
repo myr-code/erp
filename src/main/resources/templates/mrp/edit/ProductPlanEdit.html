@@ -69,6 +69,23 @@
 		//document.getElementById('date_start').value = start;
 	}
 
+	$(function () {
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		if (month < 10) {
+			month = "0" + month + ""
+		}
+		if (day < 10) {
+			day = "0" + day
+		}
+		end = year + "-" + month + "-" + day;
+		start = year + "-" + month + "-01";
+		//$(".form_date").val(start);
+		$("input[name='billDate']").val(end);
+	});
+
 	//页签切换
 	function navcut(obj,infoid){
 		//1.移除活动 隐藏模块
@@ -555,9 +572,9 @@
 	//更新table高度
 	function upd_clientheight(type){
 		if(type == 'show'){
-			var clientHeight = document.body.clientHeight-290;//可用页面高度-90(top84-底部预留6)
+			var clientHeight = document.body.clientHeight-220;//可用页面高度-90(top84-底部预留6)
 		}else if(type == 'close'){
-			var clientHeight = document.body.clientHeight-170;//可用页面高度-90(top84-底部预留6)
+			var clientHeight = document.body.clientHeight-180;//可用页面高度-90(top84-底部预留6)
 		}
 
 		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
@@ -699,13 +716,12 @@
 				 <input type="text" name="remark" th:value="${data.remark}" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
 			</div>
 
-
 		</div>
 		
 		
 		<div class="panel panel-default">
 			<div class="panel-heading">单据信息</div>
-			<div class="panel-body">
+			<div class="panel-body" style="padding-left: 0;">
 				<ul class="nav nav-tabs">
 					<li role="presentation" onclick="navcut(this,'contact')" class="active"><a href="#">产品</a></li>
 					<!-- <li role="presentation" onclick="navcut(this,'currency')"><a href="#">货币信息</a></li> -->
@@ -925,7 +941,7 @@
 <script type="text/javascript">
 	//选择后端item table
 	window.onload = function(){
-		var clientHeight = document.body.clientHeight-290;//可用页面高度-90(top84-底部预留6)
+		var clientHeight = document.body.clientHeight-220;//可用页面高度-90(top84-底部预留6)
 		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
 	}
 
@@ -967,8 +983,6 @@
 			}
 		};
 	}
-
-	//加载选择的客户到来源列表头
 
 	//加载默认隐藏扩展
 	$("#open").hide();
