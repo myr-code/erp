@@ -82,4 +82,14 @@ public class IcStockBillServiceImpl implements IcStockBillService {
         }
         return 1;
     }
+
+    @Override
+    public int getCounts_SaleOut_dz_sour(Map<String, Object> map) {
+        return icstockbillMapper.getCounts_SaleOut_dz_sour(map);
+    }
+
+    @Override
+    public List<Icstockbill> SaleOut_dz_sour(Map<String, Object> map) {
+        return icstockbillMapper.SaleOut_dz_sour(map);
+    }
 }

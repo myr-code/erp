@@ -40,4 +40,10 @@ public interface IcstockbillMapper {
 
     //修改
     Integer IcStockBill_update(Icstockbill icstockbill);
+
+    //销售出库  对账单选择来源 条数合计
+    int getCounts_SaleOut_dz_sour(Map<String,Object> map);
+
+    //销售出库  对账单选择来源
+    List<Icstockbill> SaleOut_dz_sour(Map<String,Object> map);
 }

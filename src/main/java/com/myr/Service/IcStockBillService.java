@@ -30,4 +30,8 @@ public interface IcStockBillService {
     Icstockbill getIcStockBillById(int fid);
 
     Integer IcStockBill_update(Icstockbill icstockbill, List<Icstockbillentry> icstockbillentryList);
+
+    int getCounts_SaleOut_dz_sour(Map<String,Object> map);
+
+    List<Icstockbill> SaleOut_dz_sour(Map<String,Object> map);
 }

@@ -163,6 +163,8 @@
         <collection property="suppIdFid" javaType="com.myr.Bean.Supplier">
             <id column="fid" property="fid"/>
             <result column="suppIdName" property="name"/>
+            <result column="soQty" property="cust_type_id"/>
+            <result column="saleOutQty" property="department_id"/>
         </collection>
 
         <!--结算方式-->
@@ -193,5 +195,28 @@
         WHERE `fid` = #{fid};
     </update>
 
+    <select id="getCounts_SaleOut_dz_sour" resultType="int">
+        select
+        count(*)
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_customer c on a.suppId = c.fid
+        LEFT JOIN t_staff g on a.billStaf = g.fid
+        LEFT JOIN t_dz i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId
+        where 1=1 and a.billType = '销售出库'
+    </select>
+
+    <select id="SaleOut_dz_sour" resultMap="IcStockBillMap">
+        select
+        a.*,b.fid as 'ffid',
+        b.mid,b.entryid,b.itemId,b.itemcode,b.itemname,b.itemmodel,b.custitemcode,b.custitemmodel
+        ,b.qty,b.unitName,b.custOrderNum,b.batchNumber,b.taxPrice,b.taxPriceNo,b.fcess,b.taxAmt,b.taxAmtNo,b.fcessAmt,
+		b.rowRemark,c.`name` as 'suppIdName',sa.qty as 'soQty',i.saleOutQty
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_customer c on a.suppId = c.fid
+        LEFT JOIN t_staff g on a.billStaf = g.fid
+				left join t_saleorderentry sa on b.sourFid = sa.mid and b.sourEntryId = sa.entryId and b.itemId = sa.itemId
+        LEFT JOIN t_dz i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId
+        where 1=1 and a.billType = '销售出库'
+    </select>
 
 </mapper>

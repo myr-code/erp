@@ -148,8 +148,6 @@ public class ICStockBillController {
         return "desktop/ICStockBillIndex";
     }
 
-
-
     //序时簿 销售出库
     @RequestMapping("/SaleOutIndex")
     public String SaleOutIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
@@ -342,4 +340,23 @@ public class ICStockBillController {
 
     }
 
+    //销售出库  对账单选择来源
+    @RequestMapping("/SaleOut_dz_sour")
+    @ResponseBody
+    public PageUtils SaleOut_dz_sour(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
+                               Model model){
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("str",AllQuery);
+
+        //获取总条数
+        int countTatol = icStockBillService.getCounts_SaleOut_dz_sour(map);
+        //主数据
+        List<Icstockbill> icstockbills = icStockBillService.SaleOut_dz_sour(map);
+        //封装数据
+        PageUtils<Icstockbill> pageUtils = new PageUtils<Icstockbill>(startpage, pagesize, countTatol, icstockbills);
+        return pageUtils;
+    }
 }

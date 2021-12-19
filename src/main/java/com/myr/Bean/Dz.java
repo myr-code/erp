@@ -35,9 +35,10 @@ public class Dz {
   private double wkpAmt;
   private double yjsAmt;
   private double wjsAmt;
+  private int isDZ;
   private int sourFid;
   private String sourBillNo;
-  private int sourEntry;
+  private int sourEntryId;
   private String sourType;
   private int dzCheckId;
   private String dzCheckDate;
