@@ -201,6 +201,7 @@
         from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
         LEFT JOIN t_customer c on a.suppId = c.fid
         LEFT JOIN t_staff g on a.billStaf = g.fid
+				left join t_saleorderentry sa on b.sourFid = sa.mid and b.sourEntryId = sa.entryId and b.itemId = sa.itemId
         LEFT JOIN t_dz i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId
         where 1=1 and a.billType = '销售出库'
     </select>
