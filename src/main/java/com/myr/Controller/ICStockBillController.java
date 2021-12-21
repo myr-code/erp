@@ -344,12 +344,17 @@ public class ICStockBillController {
     @RequestMapping("/SaleOut_dz_sour")
     @ResponseBody
     public PageUtils SaleOut_dz_sour(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
-                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,
-                               Model model){
+                               @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "cnm",defaultValue = "")String cnm,
+            HttpServletRequest request){
+        int range = Integer.parseInt(request.getParameter("range")==null?"0":request.getParameter("range"));//是否选中已入库的数据
+        int suppId = Integer.parseInt(request.getParameter("suppId")==null?"0":request.getParameter("suppId"));//主体组织
+
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
-        map.put("str",AllQuery);
+        map.put("suppId",suppId);
+        map.put("range",range);
+        map.put("cnm",cnm);
 
         //获取总条数
         int countTatol = icStockBillService.getCounts_SaleOut_dz_sour(map);
