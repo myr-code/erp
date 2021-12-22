@@ -33,9 +33,11 @@ public class SaleOutDZController {
 
             //添加头 客户、日期、备注、业务员
             String billPeriod = request.getParameter("billYearandPeriod");//期间
-            if("".equals(billPeriod)&&billPeriod.length()==7){
-                dz.setBillYear(Integer.parseInt(billPeriod.substring(0,3)));
-                dz.setBillPeriod(Integer.parseInt(billPeriod.substring(5,6)));
+            Integer isDZ = Integer.parseInt(request.getParameter("isDZ"));//item ID
+
+            if(!"".equals(billPeriod)&&billPeriod.length()==7){
+                dz.setBillYear(Integer.parseInt(billPeriod.substring(0,4)));
+                dz.setBillPeriod(Integer.parseInt(billPeriod.substring(5,7)));
             }
             String billNo_saleOutDZ = saleOutDZService.getBillNo_SaleOutDZ(dz.getBillDate());
             dz.setBillNo(saleOutDZService.getBillNo_SaleOutDZ(dz.getBillDate()));
@@ -47,7 +49,6 @@ public class SaleOutDZController {
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
                 Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//item ID
-                Integer isDZ = Integer.parseInt(request.getParameter("isDZ" + num));//item ID
                 String unitName = request.getParameter("unitName" + num);//单位
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
