@@ -366,7 +366,7 @@
 						var sourFid = result.data[i].mid.fid;
 						var sourEntryId = result.data[i].mid.entryId;
 						var soQty = result.data[i].suppIdFid.cust_type_id;//订单数量
-						var saleOutQty = result.data[i].suppIdFid.department_id;//已对账数量
+						var ydzQty = result.data[i].suppIdFid.department_id;//已对账数量
 						var apphtml = "<tr>" +
 								"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
 								"\t\t\t\t\t\t\t\t<td>"+billNo+"</td>\n" +
@@ -382,7 +382,8 @@
 								"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+unitName+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td>"+soQty+"</td>\n" +
 								/*"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +*/
-								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+qty+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td>"+qty+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-ydzQty)+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='custOrderNum"+fid+"'>"+custOrderNum+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='batchNumber"+fid+"'>"+batchNumber+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+taxPrice+"</td>\n" +
@@ -443,6 +444,7 @@
 				"<th>单位</th>"+
 				"<th>订单数量</th>"+
 				"<th>送货数量</th>"+
+				"<th>未对账数量</th>"+
 				"<th>客户订单号</th>"+
 				"<th>批号</th>"+
 				"<th>含税价格</th>"+
