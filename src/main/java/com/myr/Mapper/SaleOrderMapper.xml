@@ -135,7 +135,7 @@
         select
         a.*,b.fid as 'ffid',
         b.mid,b.entryid,b.itemId,b.itemcode,b.itemname,b.itemmodel,b.custitemcode,b.custitemmodel
-        ,b.qty,b.custOrderNum,b.finishDate,b.batchNumber,b.taxPrice,b.taxPriceNo,b.fcess,b.taxAmt,b.taxAmtNo,b.fcessAmt,b.rowRemark as 'midRemark',b.source,
+        ,b.unitName,b.qty,b.custOrderNum,b.finishDate,b.batchNumber,b.taxPrice,b.taxPriceNo,b.fcess,b.taxAmt,b.taxAmtNo,b.fcessAmt,b.rowRemark as 'midRemark',b.source,
         c.`name` as 'custIdName',d.`name` as 'settleIdName',e.`name` as 'depIdName',
         g.`name` as 'billStaffIdName',f.`name` as 'depStaffIdName',b.qty as 'icsQty',
         h.defaultStorehouseId as 'stockId', h.name as 'stockName'
@@ -258,6 +258,7 @@
             <result column="itemModel" property="itemModel"/>
             <result column="custItemCode" property="custItemCode"/>
             <result column="custItemModel" property="custItemModel"/>
+            <result column="unitName" property="unitName"/>
             <result column="qty" property="qty"/>
             <result column="custOrderNum" property="custOrderNum"/>
             <result column="finishDate" property="finishDate"/>

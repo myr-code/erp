@@ -1,14 +1,13 @@
 package com.myr.Controller.wlManagement;
 
 import com.myr.Bean.*;
-import com.myr.Service.ProductPlanService;
+import com.myr.Service.wlManagement.SaleOutDZService;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
 import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,80 +20,83 @@ import java.util.*;
 @Scope("prototype")
 public class SaleOutDZController {
     @Resource
-    ProductPlanService productPlanService;
+    SaleOutDZService saleOutDZService;
 
-    /*//01-添加
-    @RequestMapping("/MrpProductplan_add")
+    //01-添加
+    @RequestMapping("/SaleOurtDZ_add")
     @ResponseBody
-    public MessageRequest MrpProductplan_add(Icstockbill icstockbill, HttpServletRequest request) {
+    public MessageRequest MrpProductplan_add(Dz dz, HttpServletRequest request) {
         MessageRequest msg = null;
         try {
-            List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<String> nums = GetParValues.GetParValuesNum(request, "saleOutQty");//获取item后面的num
+            List<Dz> dzList = new ArrayList<>();//单据体集合
 
             //添加头 客户、日期、备注、业务员
-            Integer custId = Integer.parseInt(request.getParameter("custId"));
-            Customer customer = new Customer();
-            customer.setFid(custId);
-            String billDate = request.getParameter("billDate");
-            String remark = request.getParameter("remark");
-            String billNo = productPlanService.getBillNo(billDate);
-            Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
+            String billPeriod = request.getParameter("billYearandPeriod");//期间
+            if("".equals(billPeriod)&&billPeriod.length()==7){
+                dz.setBillYear(Integer.parseInt(billPeriod.substring(0,3)));
+                dz.setBillPeriod(Integer.parseInt(billPeriod.substring(5,6)));
+            }
+            String billNo_saleOutDZ = saleOutDZService.getBillNo_SaleOutDZ(dz.getBillDate());
+            dz.setBillNo(saleOutDZService.getBillNo_SaleOutDZ(dz.getBillDate()));
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                Dz dz1 = new Dz();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
-                *//*String itemName = request.getParameter("itemName" + num);//item name
-                String itemCode = request.getParameter("itemCode" + num);//item name
-                String itemModel = request.getParameter("itemModel" + num);//item model
-                String custItemCode = request.getParameter("custItemCode" + num);//custitem code
-                String custItemModel = request.getParameter("custItemModel" + num);//custitem model
-                String unitName = request.getParameter("unitName" + num);//单位*//*
+                Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//item ID
+                Integer isDZ = Integer.parseInt(request.getParameter("isDZ" + num));//item ID
+                String unitName = request.getParameter("unitName" + num);//单位
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
-                *//*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*//*
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
+                String saleOrderBillNo = request.getParameter("saleOrderBillNo" + num);//item name
+                double saleOrderQty = Double.parseDouble(request.getParameter("saleOrderQty" + num));//含税单价
+                double saleOutQty = Double.parseDouble(request.getParameter("saleOutQty" + num));//含税单价
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
-                *//*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*//*
+                double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价
+
                 String rowRemark = request.getParameter("rowRemark" + num);//行备注
-                String finishDate = request.getParameter("finishDate" + num);//完成日期
                 int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
                 String sourBillNo = request.getParameter("sourBillNo" + num);//源单单号
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
-                Item item = new Item();
-                item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourBillNo(sourBillNo);
-                MrpProductplan.setSourFid(sourFid);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(depStaffId);
+                dz1.setIsDZ(isDZ);
+                dz1.setBillNo(dz.getBillNo());
+                dz1.setBillDate(dz.getBillDate());
+                dz1.setCustId(dz.getCustId());
+                dz1.setCurrencyName(dz.getCurrencyName());
+                dz1.setAddress(dz.getAddress());
+                dz1.setContact(dz.getContact());
+                dz1.setPhone(dz.getPhone());
+                dz1.setSettleName(dz.getSettleName());
+                dz1.setRemark(dz.getRemark());
+                dz1.setBillYear(dz.getBillYear());
+                dz1.setBillPeriod(dz.getBillPeriod());
+                dz1.setEntryId(entry);
+                dz1.setItemId(itemId);
+                dz1.setStockId(stockId);
+                dz1.setCustOrderNum(custOrderNum);
+                dz1.setBatchNumber(batchNumber);
+                dz1.setSaleOrderBillNo(saleOrderBillNo);
+                dz1.setSaleOrderQty(saleOrderQty);
+                dz1.setSaleOutQty(saleOutQty);
+                dz1.setTaxPrice(taxPrice);
+                dz1.setTaxPriceNo(taxPriceNo);
+                dz1.setRowRemark(rowRemark);
+                dz1.setSourFid(sourFid);
+                dz1.setSourBillNo(sourBillNo);
+                dz1.setSourEntryId(sourEntryId);
+                dz1.setSourType(sourType);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+
+                dzList.add(dz1);
                 entry++;//分录号自增
             }
 
-
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);
+            Integer count = saleOutDZService.addSaleOutDZ(dzList);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -110,7 +112,7 @@ public class SaleOutDZController {
         return msg;
     }
 
-    //选择来源
+    /*//选择来源
     @RequestMapping("/Sour_ProductPlan")
     @ResponseBody
     public PageUtils Sour_ProductPick(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,

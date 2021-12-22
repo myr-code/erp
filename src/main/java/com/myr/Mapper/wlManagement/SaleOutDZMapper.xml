@@ -1,26 +1,32 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.myr.Mapper.IcstockbillMapper">
+<mapper namespace="com.myr.Mapper.wlManagement.SaleOutDZMapper">
 
     <!--1.添加-->
-    <insert id="addIcStockBill" useGeneratedKeys="true" keyProperty="fid">
-        INSERT INTO `icstockbill`(`fid`, `billNo`, `billDate`, `suppId`, `billType`, `type`, `settId`, `currName`,
-         `rate`, `address`, `contact`, `phone`, `remark`, `depaId`, `saleStaf`, `billStaf`, `editStaf`,
-          `checkStaf`, `createDate`, `checkDate`, `state`)
-          VALUES
-          (null, #{billNo}, #{billDate}, #{suppId}, #{billType}, #{type}, #{settId}, #{currName},
-          #{rate}, #{address}, #{contact}, #{phone}, #{remark}, #{depaId}, #{saleStaf}, #{billStaf}, #{editStaf},
-           #{checkStaf}, now(), #{checkDate}, #{state});
+    <insert id="addSaleOutDZ" useGeneratedKeys="true" keyProperty="fid">
+        INSERT INTO `t_dz`(`fid`, `billNo`, `billDate`, `mrpNo`, `custId`, `currencyName`,
+        `address`, `contact`, `phone`, `settleName`, `remark`, `bill_year`, `bill_period`,
+        `EntryId`,`itemId`, `stockId`, `unitName`, `custOrderNum`,`batchNumber`,`saleOrderBillNo`, `saleOrderQty`, `saleOutQty`,
+        `taxAmt`,`taxAmtNo`,`taxPrice`, `taxPriceNo`, `skph`, `voucheNumber`, `ykpAmt`, `wkpAmt`, `yjsAmt`,
+        `wjsAmt`,`isDZ`,`rowRemark`, `sourFid`, `sourBillNo`, `sourEntryId`, `sourType`, `dzCheckId`,
+        `dzCheckDate`, `billStaffId`, `billCheckId`, `createDate`, `editDate`)
+        VALUES
+        (NULL, #{billNo}, #{billDate}, #{mrpNo}, #{custId}, #{currencyName},
+         #{address}, #{contact}, #{phone}, #{settleName}, #{remark}, #{billYear}, #{billPeriod},
+         #{EntryId},#{itemId}, #{stockId}, #{unitName}, #{custOrderNum},#{batchNumber},#{saleOrderBillNo}, #{saleOrderQty}, #{saleOutQty},
+         (#{taxPrice}*#{saleOutQty}),(#{taxPriceNo}*#{saleOutQty}),#{taxPrice}, #{taxPriceNo}, #{skph}, #{voucheNumber}, #{ykpAmt}, #{wkpAmt}, #{yjsAmt},
+         #{wjsAmt},#{isDZ}, #{rowRemark},#{sourFid}, #{sourBillNo}, #{sourEntryId}, #{sourType}, #{dzCheckId},
+         #{dzCheckDate}, #{billStaffId}, #{billCheckId}, now(), #{editDate});
     </insert>
 
     <!--1 是规则表中的 销售订单规则-->
-    <select id="getICBillNo" resultType="String">
-        SELECT GetBillNo(3,#{dates});
+    <select id="getBillNo_SaleOutDZ" resultType="String">
+        SELECT GetBillNo(10,#{dates});
     </select>
 
     <!--合计总数-->
-    <select id="getCounts" resultType="int">
+    <!--<select id="getCounts" resultType="int">
         select count(*)
         from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
         LEFT JOIN t_supplier c on a.suppId = c.fid
@@ -50,7 +56,7 @@
         limit #{startpage},#{pagesize}
     </select>
 
-    <!--合计总数-->
+    &lt;!&ndash;合计总数&ndash;&gt;
     <select id="getCounts_saleout" resultType="int">
         select count(*)
         from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
@@ -132,7 +138,7 @@
         <result column="createDate" property="createDate"/>
         <result column="editDate" property="editDate"/>
 
-        <!--订单体-->
+        &lt;!&ndash;订单体&ndash;&gt;
         <collection property="mid" javaType="com.myr.Bean.Icstockbillentry">
             <id column="mid" property="fid"/>
             <result column="entryid" property="entryId"/>
@@ -161,7 +167,7 @@
 
         </collection>
 
-        <!--供应商-->
+        &lt;!&ndash;供应商&ndash;&gt;
         <collection property="suppIdFid" javaType="com.myr.Bean.Supplier">
             <id column="fid" property="fid"/>
             <result column="suppIdName" property="name"/>
@@ -171,13 +177,13 @@
             <result column="so_billNo" property="address"/>
         </collection>
 
-        <!--结算方式-->
+        &lt;!&ndash;结算方式&ndash;&gt;
         <collection property="settIdFid" javaType="com.myr.Bean.SettlementMethod">
             <id column="fid" property="fid"/>
             <result column="settIdName" property="name"/>
         </collection>
 
-        <!--部门-->
+        &lt;!&ndash;部门&ndash;&gt;
         <collection property="depaIdFid" javaType="com.myr.Bean.Department">
             <id column="fid" property="fid"/>
             <result column="depaIdName" property="name"/>
@@ -258,6 +264,6 @@
         </if>
         order by b.mid desc,b.entryid asc
         limit #{startpage},#{pagesize}
-    </select>
+    </select>-->
 
 </mapper>

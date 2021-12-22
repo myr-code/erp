@@ -120,8 +120,14 @@
 
 	//表单效验
 	function fromcheck(){
+		//检测期间 billYearandPeriod
+		if($("input[name='billYearandPeriod']").val() == ""){
+			alert("请选择期间！");
+			return false;
+		}
+
 		//检测名称
-		if($("select[name='suppId']").val() == -1){
+		if($("select[name='custId']").val() == -1){
 			alert("请选择客户！");
 			return false;
 		}
@@ -150,14 +156,14 @@
 		//items.push(f);
 		//alert(f);
 		$.ajax({
-			url:"/erp/ICStockBill_add",
+			url:"/erp/SaleOurtDZ_add",
 			data:f,
 			type:"post",
 			dataType:"json",
 			success:function(result){
 				if(result.code==200){
 					alert("添加成功！");
-					location.href="/erp/icstockbill/page_SaleOutAdd";
+					location.href="/erp/TransactionManagement/page_SaleOutDZAdd";
 				}else if(result.code==500){
 					alert("添加失败!");
 				}
@@ -180,7 +186,7 @@
 			success:function (result) {
 				//alert(JSON.stringify(result));
 				for(var i=0;i<result.length;i++){
-					$("select[name='suppId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					$("select[name='custId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
 				}
 				custJOSN = result;//预存 选择后填写地址
 
@@ -223,7 +229,7 @@
 			success:function (result) {
 				//alert(JSON.stringify(result));
 				for(var i=0;i<result.length;i++){
-					$("select[name='settId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					$("select[name='settleName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
 				}
 
 			}
@@ -247,7 +253,7 @@
 			success:function (result) {
 				//alert(JSON.stringify(result));
 				for(var i=0;i<result.length;i++){
-					$("select[name='currName']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					$("select[name='currencyName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
 				}
 
 			}
@@ -350,7 +356,7 @@
 						var suppIdFidName = result.data[i].suppIdFid.name;
 						/*var settIdFidName = result.data[i].settleIdFid.name;*/
 						var rate = result.data[i].rate;
-						var entryId = result.data[i].mid.entryId;
+						var entryId = result.data[i].mid.entryId;//分录号
 						var itemCode = result.data[i].mid.itemCode;
 						var itemName = result.data[i].mid.itemName;
 						var itemModel = result.data[i].mid.itemModel;
@@ -358,11 +364,13 @@
 						var custItemModel = result.data[i].mid.custItemModel;
 						var unitName = result.data[i].mid.unitName;
 						var qty = result.data[i].mid.qty;//送货数量
-						/*var stockId = result.data[i].stockId.fid;
-						var stockName = result.data[i].stockId.name;*/
+						var saleOrderBillNo = result.data[i].suppIdFid.address;
+						var stockId = result.data[i].mid.stockId;
+						var stockName = result.data[i].suppIdFid.abb;
 						var custOrderNum = result.data[i].mid.custOrderNum;
 						var batchNumber = result.data[i].mid.batchNumber;
 						var taxPrice = result.data[i].mid.taxPrice;
+						var taxPriceNo = result.data[i].mid.taxPriceNo;
 						var sourFid = result.data[i].mid.fid;
 						var sourEntryId = result.data[i].mid.entryId;
 						var soQty = result.data[i].suppIdFid.cust_type_id;//订单数量
@@ -380,17 +388,20 @@
 								"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+unitName+"</td>\n" +
-								"\t\t\t\t\t\t\t\t<td>"+soQty+"</td>\n" +
-								/*"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +*/
+								"\t\t\t\t\t\t\t\t<td id='saleOrderBillNo"+fid+"'>"+saleOrderBillNo+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='saleOrderQty"+fid+"'>"+soQty+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td>"+qty+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='stockName"+fid+"'>"+stockName+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'>"+(qty-ydzQty)+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='custOrderNum"+fid+"'>"+custOrderNum+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='batchNumber"+fid+"'>"+batchNumber+"</td>\n" +
 								"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+taxPrice+"</td>\n" +
+								"\t\t\t\t\t\t\t\t<td id='salePriceNo"+fid+"'>"+taxPriceNo+"</td>\n" +
 								"<input type='hidden' id='itemId"+fid+"' value='"+itemId+"' >"+
 								"<input type='hidden' id='sourFid"+fid+"' value='"+sourFid+"' >"+
 								"<input type='hidden' id='sourBillNo"+fid+"' value='"+billNo+"' >"+
 								"<input type='hidden' id='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
+								"<input type='hidden' id='stockId"+fid+"' value='"+stockId+"' >"+
 								"\t\t\t\t\t\t\t</tr>";
 						$("table[id='items']").append(apphtml);
 						var startpage = result.startpage;
@@ -442,12 +453,15 @@
 				"<th>客户编码</th>"+
 				"<th>客户型号</th>"+
 				"<th>单位</th>"+
+				"<th>订单单号</th>"+
 				"<th>订单数量</th>"+
 				"<th>送货数量</th>"+
+				"<th>出货仓库</th>"+
 				"<th>未对账数量</th>"+
 				"<th>客户订单号</th>"+
 				"<th>批号</th>"+
 				"<th>含税价格</th>"+
+				"<th>不含税价格</th>"+
 				"</tr>";
 		var sourcetype = $("#sourcetype").val();//选择的来源
 		if(sourcetype == "库存产品"){
@@ -467,10 +481,10 @@
 		var pagecount = parseFloat($("#pagecount").text());//总页数
 		var range = $("#range").val();//选择的范围
 		var cnm = $("input[name='cnm']").val();
-		var suppId = $("select[name='suppId']").val();//单据组织
+		var custId = $("select[name='custId']").val();//单据组织
 		cnm = cnm == null || cnm == ""?"":cnm;
 
-		var data = {range:range,suppId:suppId};
+		var data = {range:range,suppId:custId};
 		//alert(range);
 		if(page == 'first'){
 			data.startpage = 1;
@@ -555,16 +569,19 @@
 			var custItemCode = $("#custItemCode"+ids[j]).text();
 			var custItemModel = $("#custItemModel"+ids[j]).text();
 			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
+			var saleOrderBillNo = $("#saleOrderBillNo"+ids[j]).text();
+			var saleOrderQty = $("#saleOrderQty"+ids[j]).text();
 			var qty = $("#qty"+ids[j]).text();
 			if(qty <= 0){
 				qty = 1;
 			}
 			var stockId = $("#stockId"+ids[j]).val();
-			var stockName = $("#stockName"+ids[j]).val();
+			var stockName = $("#stockName"+ids[j]).text();
+			var custOrderNum = $("#custOrderNum"+ids[j]).text();
 			var salePrice = $("#salePrice"+ids[j]).text();
+			var salePriceNo = $("#salePriceNo"+ids[j]).text();
 			var amt = qty*salePrice;
-			var custOrderNum = $("#custOrderNum"+ids[j]).val();
-			var batchNumber = $("#batchNumber"+ids[j]).val();
+			var batchNumber = $("#batchNumber"+ids[j]).text();
 			var sourFid = $("#sourFid"+ids[j]).val();
 			var sourBillNo = $("#sourBillNo"+ids[j]).val();
 			var sourEntryId = $("#sourEntryId"+ids[j]).val();
@@ -584,14 +601,17 @@
 					"<td>"+custItemCode+"<input type='hidden' name='custItemCode0"+fid+trlen+"' value='"+custItemCode+"' style='width:20px;'></td>"+
 					"<td>"+custItemModel+"<input type='hidden' name='custItemModel0"+fid+trlen+"' value='"+custItemModel+"' style='width:20px;'></td>"+
 					"<td>"+saleUnitIdName+"<input type='hidden' name='unitName0"+fid+trlen+"' value='"+saleUnitIdName+"' style='width:20px;'></td>"+
-					"<td><input type='text' name='custOrderNum0"+fid+trlen+"' value='"+custOrderNum+"' style='width:100px;'></td>"+
-					"<td><input type='text' id='qty_"+trlen+"' name='qty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
-					"<td><select id='stockId_"+trlen+"' name='stockId0"+fid+trlen+"' class='selectpicker show-tick form-control' data-live-search='true' data-actions-box='true'> style='width:100px;'" +
+					"<td>"+custOrderNum+"<input type='hidden' name='custOrderNum0"+fid+trlen+"' value='"+custOrderNum+"' style='width:100px;'></td>"+
+					"<td>"+saleOrderBillNo+"<input type='hidden' name='saleOrderBillNo0"+fid+trlen+"' value='"+saleOrderBillNo+"' style='width:100px;'></td>"+
+					"<td>"+saleOrderQty+"<input type='hidden' name='saleOrderQty0"+fid+trlen+"' value='"+saleOrderQty+"' class='checkNum4' readonly style='width:60px;'></td>"+
+					"<td><input type='text' id='qty_"+trlen+"' name='saleOutQty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
+					"<td>"+stockName+"<input type='hidden' name='stockId0"+fid+trlen+"' value='"+stockId+"'></td>"+
+					/*"<td><select id='stockId_"+trlen+"' name='stockId0"+fid+trlen+"' class='selectpicker show-tick form-control' data-live-search='true' data-actions-box='true'> style='width:100px;'" +
 					"	<option value='-1'></option>" +
-					"</select></td>"+
-						"<td><input type='text' name='batchNumber0"+fid+trlen+"' value='"+batchNumber+"' style='width:100px;'></td>"+
-						"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:50px;'></td>"+
-						"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:50px;'></td>"+
+					"</select></td>"+*/
+					"<td>"+batchNumber+"<input type='hidden' name='batchNumber0"+fid+trlen+"' value='"+batchNumber+"' style='width:100px;'></td>"+
+					"<td>"+salePrice+"<input type='hidden' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:50px;'></td>"+
+					"<td>"+salePriceNo+"<input type='hidden' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePriceNo+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:50px;'></td>"+
 					"<td id='taxamt"+trlen+"'>"+amt+"</td>"+
 					"<td><input type='text' name='rowRemark0"+fid+trlen+"' style='width:100px;'></td>"+
 					"<td>"+sourcetype+"<input type='hidden' id='sourType"+trlen+"' name='sourType0"+fid+trlen+"' value='"+sourcetype+"'></td>"+
@@ -616,13 +636,13 @@
 			});
 			$("input[name='finishDate0"+fid+trlen+"']").val(end);//时间赋予
 			//仓库赋予
-			for(var i=0;i<stockJOSN.length;i++){
+			/*for(var i=0;i<stockJOSN.length;i++){
 				if(stockId == stockJOSN[i].fid){
 					$("select[name='stockId0"+fid+trlen+"']").append("<option selected value='"+stockJOSN[i].fid+"'>"+stockJOSN[i].name+"</option>");
 				}else{
 					$("select[name='stockId0"+fid+trlen+"']").append("<option value='"+stockJOSN[i].fid+"'>"+stockJOSN[i].name+"</option>");
 				}
-			}
+			}*/
 
 		}
 		//window.alert("你选了" + $('input[type=checkbox]:checked').length + "个,其中有" + ids);
@@ -757,11 +777,11 @@
 			}
 		}
 
-		var suppId = $("select[name='suppId']").val();
+		var custId = $("select[name='custId']").val();
 		/*alert(custId);
 		alert(custJOSN.length);*/
 		for(var i=0;i<custJOSN.length;i++){
-			if(custJOSN[i].fid == suppId){
+			if(custJOSN[i].fid == custId){
 				var rate = custJOSN[i].vat_rate;
 				if(rate!=null){
 					$("#rate").val(rate);
@@ -936,14 +956,14 @@
 	
 </style>
 
-<title>销售订单-新增</title>
+<title>销售出库对账</title>
 </head>
 <body>
 
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>销售出库-新增</b>
+		<b>销售出库对账</b>
 		<!--<b style="margin-left:30px;">SO-201025001</b>-->
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;margin-top: -7px;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
@@ -976,7 +996,7 @@
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:#ff0000;"></span>客户</button>
 				 </span>
-				<select name="suppId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+				<select name="custId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
 				　　<option value="-1">-- --</option>
 				</select>
 			</div>
@@ -984,7 +1004,7 @@
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">月份期间</button>
 				 </span>
-				<input name="billPeriod" class="form-control form_date_yearmonth" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
+				<input name="billYearandPeriod" class="form-control form_date_yearmonth" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
@@ -992,20 +1012,11 @@
 				 </span>
 				 <input name="billDate" class="form-control form_date" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
 			</div>
-			<!--<div class="input-group input-group-sm">
-				<span class="input-group-btn">
-					<button class="btn btn-info" type="button">出库类型</button>
-				 </span>
-				 <select name="type" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option value="1">销售出库</option>
-				　　<option value="2">其他出库</option>
-				</select>
-			</div>-->
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">结算方式</button>
 				 </span>
-				 <select name="settId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+				 <select name="settleName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
 					<option value="-1">-- --</option>
 				</select>
 			</div>
@@ -1013,7 +1024,7 @@
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">币别</button>
 				 </span>
-				 <select name="currName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+				 <select name="currencyName" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
 					 <option value="-1">-- --</option>
 				</select>
 			</div>
@@ -1089,8 +1100,10 @@
 								<th>客户产品型号</th>
 								<th>单位</th>
 								<th>客户订单号</th>
-								<th>数量</th>
-								<th>仓库  <a onclick="getstocks()">批</a>  </th>
+								<th>销售订单单号</th>
+								<th>销售订单数量</th>
+								<th>实发数量</th>
+								<th>仓库<!--  <a onclick="getstocks()">批</a>  --></th>
 								<th>批号</th>
 								<th>单价(含税)</th>
 								<th>单价(不含税)</th>
@@ -1130,12 +1143,12 @@
 				
 				<div class="panel-infos" id="otherinfo" hidden>
 					<div class="panel-body"><!--style="padding:0;margin-top:-20px;"-->
-						<div class="input-group input-group-sm">
+						<!--<div class="input-group input-group-sm">
 						<span class="input-group-btn">
 							<button class="btn btn-info" type="button">部门</button>
 						 </span>
 							<select name="depaId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-								<option value="-1">-- --</option>
+								<option value="-1">&#45;&#45; &#45;&#45;</option>
 							</select>
 						</div>
 						<div class="input-group input-group-sm">
@@ -1143,9 +1156,9 @@
 							<button class="btn btn-info" type="button">业务员</button>
 						 </span>
 							<select name="saleStaf" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-								<option value="-1">-- --</option>
+								<option value="-1">&#45;&#45; &#45;&#45;</option>
 							</select>
-						</div>
+						</div>-->
 						<div class="input-group input-group-sm">
 						<span class="input-group-btn">
 							<button class="btn btn-info" type="button">制单</button>

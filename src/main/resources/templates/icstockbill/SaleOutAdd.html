@@ -576,8 +576,8 @@
 			var stockName = $("#stockName"+ids[j]).val();
 			var salePrice = $("#salePrice"+ids[j]).text();
 			var amt = qty*salePrice;
-			var custOrderNum = $("#custOrderNum"+ids[j]).val();
-			var batchNumber = $("#batchNumber"+ids[j]).val();
+			var custOrderNum = $("#custOrderNum"+ids[j]).text();
+			var batchNumber = $("#batchNumber"+ids[j]).text();
 			var sourFid = $("#sourFid"+ids[j]).val();
 			var sourBillNo = $("#sourBillNo"+ids[j]).val();
 			var sourEntryId = $("#sourEntryId"+ids[j]).val();
@@ -597,12 +597,12 @@
 					"<td>"+custItemCode+"<input type='hidden' name='custItemCode0"+fid+trlen+"' value='"+custItemCode+"' style='width:20px;'></td>"+
 					"<td>"+custItemModel+"<input type='hidden' name='custItemModel0"+fid+trlen+"' value='"+custItemModel+"' style='width:20px;'></td>"+
 					"<td>"+saleUnitIdName+"<input type='hidden' name='unitName0"+fid+trlen+"' value='"+saleUnitIdName+"' style='width:20px;'></td>"+
-					"<td><input type='text' name='custOrderNum0"+fid+trlen+"' value='"+custOrderNum+"' style='width:100px;'></td>"+
+					"<td>"+custOrderNum+"<input type='hidden' name='custOrderNum0"+fid+trlen+"' value='"+custOrderNum+"' style='width:100px;'></td>"+
 					"<td><input type='text' id='qty_"+trlen+"' name='qty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
 					"<td><select id='stockId_"+trlen+"' name='stockId0"+fid+trlen+"' class='selectpicker show-tick form-control' data-live-search='true' data-actions-box='true'> style='width:100px;'" +
 					"	<option value='-1'></option>" +
 					"</select></td>"+
-						"<td><input type='text' name='batchNumber0"+fid+trlen+"' value='"+batchNumber+"' style='width:100px;'></td>"+
+						"<td>"+batchNumber+"<input type='hidden' name='batchNumber0"+fid+trlen+"' value='"+batchNumber+"' style='width:100px;'></td>"+
 						"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:50px;'></td>"+
 						"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:50px;'></td>"+
 					"<td id='taxamt"+trlen+"'>"+amt+"</td>"+

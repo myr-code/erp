@@ -22,13 +22,19 @@ public class Dz {
   private String remark;
   private int billYear;
   private int billPeriod;
+  private int EntryId;
   private int itemId;
   private int stockId;
   private String unitName;
+  private String custOrderNum;
+  private String batchNumber;
   private String saleOrderBillNo;
   private double saleOrderQty;
   private double saleOutQty;
+  private double taxPrice;
   private double taxPriceNo;
+  private double taxAmt;
+  private double taxAmtNo;
   private String skph;
   private String voucheNumber;
   private double ykpAmt;
@@ -36,6 +42,7 @@ public class Dz {
   private double yjsAmt;
   private double wjsAmt;
   private int isDZ;
+  private String rowRemark;
   private int sourFid;
   private String sourBillNo;
   private int sourEntryId;
