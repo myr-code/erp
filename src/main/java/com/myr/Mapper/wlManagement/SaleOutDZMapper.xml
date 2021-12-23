@@ -25,38 +25,96 @@
         SELECT GetBillNo(10,#{dates});
     </select>
 
-    <!--合计总数-->
-    <!--<select id="getCounts" resultType="int">
+    <!--合计总数 index-->
+    <select id="getCounts_index" resultType="int">
         select count(*)
-        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
-        LEFT JOIN t_supplier c on a.suppId = c.fid
-        LEFT JOIN t_settlement_method d on a.settId = d.fid
-        LEFT JOIN t_department e on a.depaId = e.fid
-        where a.billtype = '采购入库'
+        from t_dz a left join t_customer b on a.custId = b.fid
+        left join t_store c on a.stockId = c.fid
+        left join t_item d on a.itemId = d.fid
+        left join t_unit e on d.saleUnitId = e.fid
+        where 1=1
         <if test="str != null or str != ''">
-            and (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
+            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or d.code like '%${str}%' or d.name like '%${str}%' or d.model like '%${str}%' or d.custItemCode like '%${str}%' or d.custItemName like '%${str}%' or d.custItemModel like '%${str}%')
         </if>
 	</select>
 
-    <select id="IcStockBill_page" resultMap="IcStockBillMap">
-        select
-        a.*,b.fid as 'ffid',
-        b.mid,b.itemId,b.itemCode,b.itemName,b.itemModel,b.custItemCode,b.custItemModel,b.unitName,b.custOrderNum,b.qty,b.batchNumber,
-        b.taxPrice,b.taxPriceNo,b.taxAmt,b.taxAmtNo,fcessAmt,b.rowRemark,b.sourFid,b.sourBillNo,b.sourEntryId,b.sourType,
-        c.`name` as 'suppIdName' ,d.`name` as 'settIdName',e.name as 'depaIdName'
-        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
-        LEFT JOIN t_supplier c on a.suppId = c.fid
-        LEFT JOIN t_settlement_method d on a.settId = d.fid
-        LEFT JOIN t_department e on a.depaId = e.fid
-        where a.billtype = '采购入库'
+    <!--序时簿 index-->
+    <select id="SaleOutDZ_index" resultMap="SaleOutDZ_index_map">
+        select a.*,b.`name` as 'custName',c.`name` as 'stockIdName',d.`code` as 'itemCode',d.`name` as 'itemName',
+        d.model as 'itemModel',d.custItemCode,d.custItemName,d.custItemModel,e.name as 'saleUnitName'
+        from t_dz a left join t_customer b on a.custId = b.fid
+        left join t_store c on a.stockId = c.fid
+        left join t_item d on a.itemId = d.fid
+        left join t_unit e on d.saleUnitId = e.fid
+        where 1=1
         <if test="str != null or str != ''">
-            and (a.billNo like '%${str}%' or c.`name` like '%${str}%' or b.itemCode like '%${str}%' or b.itemModel like '%${str}%')
+            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or d.code like '%${str}%' or d.name like '%${str}%' or d.model like '%${str}%' or d.custItemCode like '%${str}%' or d.custItemName like '%${str}%' or d.custItemModel like '%${str}%')
         </if>
-        order by a.billDate desc,a.billNo desc,b.entryId
+        order by a.billDate desc,a.billNo desc,a.entryId
         limit #{startpage},#{pagesize}
     </select>
 
-    &lt;!&ndash;合计总数&ndash;&gt;
+    <resultMap id="SaleOutDZ_index_map" type="com.myr.Bean.Dz">
+        <id column="fid" property="fid"/>
+        <result column="billNo" property="billNo"/>
+        <result column="billDate" property="billDate"/>
+        <result column="mrpNo" property="mrpNo"/>
+        <result column="custId" property="custId"/>
+        <result column="currencyName" property="currencyName"/>
+        <result column="address" property="address"/>
+        <result column="contact" property="contact"/>
+        <result column="phone" property="phone"/>
+        <result column="settleName" property="settleName"/>
+        <result column="remark" property="remark"/>
+        <result column="bill_year" property="billYear"/>
+        <result column="bill_period" property="billPeriod"/>
+        <result column="EntryId" property="EntryId"/>
+        <result column="stockId" property="stockId"/>
+        <result column="unitName" property="unitName"/>
+        <result column="custOrderNum" property="custOrderNum"/>
+        <result column="batchNumber" property="batchNumber"/>
+        <result column="saleOrderBillNo" property="saleOrderBillNo"/>
+        <result column="saleOrderQty" property="saleOrderQty"/>
+        <result column="saleOutQty" property="saleOutQty"/>
+        <result column="taxPrice" property="taxPrice"/>
+        <result column="taxPriceNo" property="taxPriceNo"/>
+        <result column="taxAmt" property="taxAmt"/>
+        <result column="taxAmtNo" property="taxAmtNo"/>
+        <result column="skph" property="skph"/>
+        <result column="voucheNumber" property="voucheNumber"/>
+        <result column="ykpAmt" property="ykpAmt"/>
+        <result column="wkpAmt" property="wkpAmt"/>
+        <result column="yjsAmt" property="yjsAmt"/>
+        <result column="wjsAmt" property="wjsAmt"/>
+        <result column="isDZ" property="isDZ"/>
+        <result column="rowRemark" property="rowRemark"/>
+
+        <!--客户-->
+        <collection property="custIds" javaType="com.myr.Bean.Customer">
+            <id column="custId" property="fid"/>
+            <result column="custName" property="name"/>
+        </collection>
+
+        <!--产品-->
+        <collection property="itemIds" javaType="com.myr.Bean.Item">
+            <id column="itemId" property="fid"/>
+            <result column="itemCode" property="code"/>
+            <result column="itemName" property="name"/>
+            <result column="itemModel" property="model"/>
+            <result column="custItemCode" property="custItemCode"/>
+            <result column="custItemName" property="custItemName"/>
+            <result column="custItemModel" property="custItemModel"/>
+            <result column="saleUnitName" property="saleUnitIdName"/>
+        </collection>
+
+        <!--仓库-->
+        <collection property="stockIds" javaType="com.myr.Bean.Store">
+            <id column="stockId" property="fid"/>
+            <result column="stockIdName" property="name"/>
+        </collection>
+    </resultMap>
+
+    <!--&lt;!&ndash;合计总数&ndash;&gt;
     <select id="getCounts_saleout" resultType="int">
         select count(*)
         from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid

@@ -13,11 +13,12 @@ public interface SaleOutDZService {
 
     String getBillNo_SaleOutDZ(String dates);
 
-    /*int getCounts(Map<String,Object> map);
 
-    List<Icstockbill> IcStockBill_page(Map<String,Object> map);
+    int getCounts_index(Map<String,Object> map);
 
-    int getCounts_saleout(Map<String,Object> map);
+    List<Dz> SaleOutDZ_index(Map<String,Object> map);
+
+    /*int getCounts_saleout(Map<String,Object> map);
 
     List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map);
 

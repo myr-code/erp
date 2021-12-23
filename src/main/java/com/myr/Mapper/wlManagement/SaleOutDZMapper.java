@@ -17,13 +17,13 @@ public interface SaleOutDZMapper {
     String getBillNo_SaleOutDZ(String dates);
 
     //获取总条数
-    /*int getCounts(Map<String,Object> map);
+    int getCounts_index(Map<String,Object> map);
 
     //销售订单序时簿
-    List<Icstockbill> IcStockBill_page(Map<String,Object> map);
+    List<Dz> SaleOutDZ_index(Map<String,Object> map);
 
     //获取总条数
-    int getCounts_saleout(Map<String,Object> map);
+    /*int getCounts_saleout(Map<String,Object> map);
 
     //销售订单序时簿
     List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map);

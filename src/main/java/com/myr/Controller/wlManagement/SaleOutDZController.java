@@ -151,19 +151,19 @@ public class SaleOutDZController {
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
         map.put("pagesize", pagesize);
-        map.put("cnm",AllQuery);
+        map.put("str",AllQuery);
 
 
         //获取总条数
-        /*int countTatol = productPlanService.getCounts(map);
+        int countTatol = saleOutDZService.getCounts_index(map);
         //主数据
-        List<MrpProductplan> mrpProductplans = productPlanService.Mrp_ProductPlan_page(map);*/
+        List<Dz> dzList = saleOutDZService.SaleOutDZ_index(map);
+
         //封装数据
-        PageUtils<MrpProductplan> pageUtils = new PageUtils<MrpProductplan>(startpage, pagesize, 0, null);
+        PageUtils<Dz> pageUtils = new PageUtils<Dz>(startpage, pagesize, countTatol, dzList);
         model.addAttribute("datas",pageUtils);
         model.addAttribute("AllQuery",AllQuery);
 
-        System.out.println(pageUtils.getPagecount());
         return "TransactionManagement/SaleOutDZIndex";
     }
 

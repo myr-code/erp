@@ -54,5 +54,8 @@ public class Dz {
   private String createDate;
   private String editDate;
 
-
+  //外键
+  private Customer custIds;//客户
+  private Item itemIds;//产品
+  private Store stockIds;//仓库
 }

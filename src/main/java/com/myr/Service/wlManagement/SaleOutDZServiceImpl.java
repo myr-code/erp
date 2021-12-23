@@ -41,6 +41,16 @@ public class SaleOutDZServiceImpl implements SaleOutDZService {
     public String getBillNo_SaleOutDZ(String dates) {
         return saleOutDZMapper.getBillNo_SaleOutDZ(dates);
     }
+
+    @Override
+    public int getCounts_index(Map<String, Object> map) {
+        return saleOutDZMapper.getCounts_index(map);
+    }
+
+    @Override
+    public List<Dz> SaleOutDZ_index(Map<String, Object> map) {
+        return saleOutDZMapper.SaleOutDZ_index(map);
+    }
 /*
     @Override
     public Integer addIcStockBill(Icstockbill icstockbill) {

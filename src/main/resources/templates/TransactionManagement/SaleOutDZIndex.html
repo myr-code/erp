@@ -535,42 +535,64 @@
 			<input type='checkbox' onchange="AllChecked(this,'fid')" value="-1">
 		</th>
 		<th>序号</th>
+		<th>期间</th>
 		<th>公司单号</th>
 		<th>单据日期</th>
 		<th>客户名称</th>
 		<th>结算方式</th>
 		<th>币别</th>
+		<th>地址</th>
+		<th>联系人</th>
+		<th>联系电话</th>
+		<th>分录号</th>
 		<th>产品编码</th>
 		<th>产品型号</th>
 		<th>客户编码</th>
 		<th>客户型号</th>
-		<th>数量</th>
-		<th>含税价格</th>
-		<th>不含税价格</th>
+		<th>单位</th>
+		<th>仓库</th>
+		<th>客户订单号</th>
+		<th>销售订单号</th>
+		<th>销售订单数量</th>
+		<th>送货单数量</th>
+		<th>含税单价</th>
+		<th>不含税单价</th>
 		<th>含税金额</th>
 		<th>不含税金额</th>
-		<th>税额</th>
+		<th>税控票号</th>
+		<th>行备注</th>
 	</tr>
 
-	<!--<tr th:each="data,state:${datas.data}">
-		<td><input type="checkbox" name="fid" th:value="${data.mid.fid}"></td>
+	<tr th:each="data,state:${datas.data}">
+		<td><input type="checkbox" name="fid" th:value="${data.fid}"></td>
 		<td th:text="${state.index+1}">1</td>
+		<td th:text="${data.billYear}">ALISA</td>
 		<td th:text="${data.billNo}">ALISA</td>
 		<td th:text="${data.billDate}">女</td>
-		<td th:text="${data.suppIdFid.name}">18</td>
-		<td th:text="${data.settIdFid.name}">18</td>
-		<td th:text="${data.currName}">18</td>
-		<td th:text="${data.mid.itemCode}">18</td>
-		<td th:text="${data.mid.itemModel}">18</td>
-		<td th:text="${data.mid.custItemCode}">18</td>
-		<td th:text="${data.mid.custItemModel}">18</td>
-		<td th:text="${data.mid.qty}">18</td>
-		<td th:text="${data.mid.taxPrice}">18</td>
-		<td th:text="${data.mid.taxPriceNo}">18</td>
-		<td th:text="${data.mid.taxAmt}">18</td>
-		<td th:text="${data.mid.taxAmtNo}">18</td>
-		<td th:text="${data.mid.fcessAmt}">18</td>
-	</tr>-->
+		<td th:text="${data.custIds.name}">18</td>
+		<td th:text="${data.settleName}">18</td>
+		<td th:text="${data.currencyName}">18</td>
+		<td th:text="${data.address}">18</td>
+		<td th:text="${data.contact}">18</td>
+		<td th:text="${data.phone}">18</td>
+		<td th:text="${data.EntryId}">18</td>
+		<td th:text="${data.itemIds.code}">18</td>
+		<td th:text="${data.itemIds.model}">18</td>
+		<td th:text="${data.itemIds.custItemCode}">18</td>
+		<td th:text="${data.itemIds.custItemModel}">18</td>
+		<td th:text="${data.itemIds.saleUnitIdName}">18</td>
+		<td th:text="${data.stockIds.name}">18</td>
+		<td th:text="${data.custOrderNum}">18</td>
+		<td th:text="${data.saleOrderBillNo}">18</td>
+		<td th:text="${data.saleOrderQty}">18</td>
+		<td th:text="${data.saleOutQty}">18</td>
+		<td th:text="${data.taxPrice}">18</td>
+		<td th:text="${data.taxPriceNo}">18</td>
+		<td th:text="${data.taxAmt}">18</td>
+		<td th:text="${data.taxAmtNo}">18</td>
+		<td th:text="${data.skph}">18</td>
+		<td th:text="${data.rowRemark}">18</td>
+	</tr>
 
 </table>
 </div>
