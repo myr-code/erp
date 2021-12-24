@@ -22,6 +22,9 @@ public interface SaleOutDZMapper {
     //销售订单序时簿
     List<Dz> SaleOutDZ_index(Map<String,Object> map);
 
+    //get一个对象
+    List<Dz> getSaleOutDZById(int fid);
+
     //获取总条数
     /*int getCounts_saleout(Map<String,Object> map);
 
@@ -33,9 +36,6 @@ public interface SaleOutDZMapper {
 
     //删除
     Integer IcStockBill_del(int fid);
-
-    //get一个对象
-    Icstockbill getIcStockBillById(int fid);
 
     //修改
     Integer IcStockBill_update(Icstockbill icstockbill);

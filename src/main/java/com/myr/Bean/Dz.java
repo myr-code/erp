@@ -19,6 +19,7 @@ public class Dz {
   private String contact;
   private String phone;
   private String settleName;
+  private int rate;
   private String remark;
   private int billYear;
   private int billPeriod;

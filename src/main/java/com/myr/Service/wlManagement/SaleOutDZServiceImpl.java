@@ -51,26 +51,13 @@ public class SaleOutDZServiceImpl implements SaleOutDZService {
     public List<Dz> SaleOutDZ_index(Map<String, Object> map) {
         return saleOutDZMapper.SaleOutDZ_index(map);
     }
+
+    @Override
+    public List<Dz> getSaleOutDZById(int fid) {
+        return saleOutDZMapper.getSaleOutDZById(fid);
+    }
 /*
-    @Override
-    public Integer addIcStockBill(Icstockbill icstockbill) {
-        return icstockbillMapper.addIcStockBill(icstockbill);
-    }
 
-    @Override
-    public String getICBillNo(String dates) {
-        return icstockbillMapper.getICBillNo(dates);
-    }
-
-    @Override
-    public int getCounts(Map<String, Object> map) {
-        return icstockbillMapper.getCounts(map);
-    }
-
-    @Override
-    public List<Icstockbill> IcStockBill_page(Map<String,Object> map) {
-        return icstockbillMapper.IcStockBill_page(map);
-    }
 
     @Override
     public int getCounts_saleout(Map<String, Object> map) {

@@ -8,6 +8,7 @@ import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -73,6 +74,7 @@ public class SaleOutDZController {
                 dz1.setContact(dz.getContact());
                 dz1.setPhone(dz.getPhone());
                 dz1.setSettleName(dz.getSettleName());
+                dz1.setRate(dz.getRate());
                 dz1.setRemark(dz.getRemark());
                 dz1.setBillYear(dz.getBillYear());
                 dz1.setBillPeriod(dz.getBillPeriod());
@@ -167,19 +169,18 @@ public class SaleOutDZController {
         return "TransactionManagement/SaleOutDZIndex";
     }
 
-    /*//去到编辑页面
-    @RequestMapping("/ProductPlanEdit/{fid}")
-    public String ProductPlanEdit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
-        List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(fid);
-        MrpProductplan mrpProductplan =null;
-        if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-            mrpProductplan = mrp_productPlanById.get(0);
+    //去到编辑页面
+    @RequestMapping("/TO_SaleOutDZ_Edit/{fid}")
+    public String TO_SaleOutDZ_Edit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
+        List<Dz> saleOutDZById = saleOutDZService.getSaleOutDZById(fid);
+        Dz dz =null;
+        if(saleOutDZById.size()>0&&saleOutDZById!=null){
+            dz = saleOutDZById.get(0);
         }
-        System.out.println("mrpProductplan="+mrpProductplan);
-        model.addAttribute("data",mrpProductplan);
-        model.addAttribute("datas",mrp_productPlanById);
-        return "/mrp/edit/ProductPlanEdit";
-    }*/
+        model.addAttribute("data",dz);
+        model.addAttribute("datas",saleOutDZById);
+        return "/TransactionManagement/edit/SaleOutDZEdit";
+    }
 
     /*//更新
     @RequestMapping("/ProductPlan_update")

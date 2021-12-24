@@ -18,6 +18,8 @@ public interface SaleOutDZService {
 
     List<Dz> SaleOutDZ_index(Map<String,Object> map);
 
+    List<Dz> getSaleOutDZById(int fid);
+
     /*int getCounts_saleout(Map<String,Object> map);
 
     List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map);
@@ -25,8 +27,6 @@ public interface SaleOutDZService {
     List<Icstockbill> IcStockBill_pageGj(DateOption dateOption);
 
     Integer IcStockBill_del(int fid);
-
-    Icstockbill getIcStockBillById(int fid);
 
     Integer IcStockBill_update(Icstockbill icstockbill, List<Icstockbillentry> icstockbillentryList);
 

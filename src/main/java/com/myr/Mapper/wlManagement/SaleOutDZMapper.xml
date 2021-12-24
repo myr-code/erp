@@ -6,14 +6,14 @@
     <!--1.添加-->
     <insert id="addSaleOutDZ" useGeneratedKeys="true" keyProperty="fid">
         INSERT INTO `t_dz`(`fid`, `billNo`, `billDate`, `mrpNo`, `custId`, `currencyName`,
-        `address`, `contact`, `phone`, `settleName`, `remark`, `bill_year`, `bill_period`,
+        `address`, `contact`, `phone`, `settleName`,`rate`, `remark`, `bill_year`, `bill_period`,
         `EntryId`,`itemId`, `stockId`, `unitName`, `custOrderNum`,`batchNumber`,`saleOrderBillNo`, `saleOrderQty`, `saleOutQty`,
         `taxAmt`,`taxAmtNo`,`taxPrice`, `taxPriceNo`, `skph`, `voucheNumber`, `ykpAmt`, `wkpAmt`, `yjsAmt`,
         `wjsAmt`,`isDZ`,`rowRemark`, `sourFid`, `sourBillNo`, `sourEntryId`, `sourType`, `dzCheckId`,
         `dzCheckDate`, `billStaffId`, `billCheckId`, `createDate`, `editDate`)
         VALUES
         (NULL, #{billNo}, #{billDate}, #{mrpNo}, #{custId}, #{currencyName},
-         #{address}, #{contact}, #{phone}, #{settleName}, #{remark}, #{billYear}, #{billPeriod},
+         #{address}, #{contact}, #{phone}, #{settleName}, #{rate}, #{remark}, #{billYear}, #{billPeriod},
          #{EntryId},#{itemId}, #{stockId}, #{unitName}, #{custOrderNum},#{batchNumber},#{saleOrderBillNo}, #{saleOrderQty}, #{saleOutQty},
          (#{taxPrice}*#{saleOutQty}),(#{taxPriceNo}*#{saleOutQty}),#{taxPrice}, #{taxPriceNo}, #{skph}, #{voucheNumber}, #{ykpAmt}, #{wkpAmt}, #{yjsAmt},
          #{wjsAmt},#{isDZ}, #{rowRemark},#{sourFid}, #{sourBillNo}, #{sourEntryId}, #{sourType}, #{dzCheckId},
@@ -54,6 +54,7 @@
         limit #{startpage},#{pagesize}
     </select>
 
+    <!--map-->
     <resultMap id="SaleOutDZ_index_map" type="com.myr.Bean.Dz">
         <id column="fid" property="fid"/>
         <result column="billNo" property="billNo"/>
@@ -113,6 +114,18 @@
             <result column="stockIdName" property="name"/>
         </collection>
     </resultMap>
+
+    <!--获取一个销售对账单-->
+    <select id="getSaleOutDZById" resultMap="SaleOutDZ_index_map">
+        select a.*,b.`name` as 'custName',c.`name` as 'stockIdName',d.`code` as 'itemCode',d.`name` as 'itemName',
+               d.model as 'itemModel',d.custItemCode,d.custItemName,d.custItemModel,e.name as 'saleUnitName'
+        from t_dz a left join t_customer b on a.custId = b.fid
+                    left join t_store c on a.stockId = c.fid
+                    left join t_item d on a.itemId = d.fid
+                    left join t_unit e on d.saleUnitId = e.fid
+        where a.billNo = (select billNo from t_dz where fid = #{fid})
+        order by a.entryid
+    </select>
 
     <!--&lt;!&ndash;合计总数&ndash;&gt;
     <select id="getCounts_saleout" resultType="int">
@@ -253,10 +266,6 @@
         delete a,b from icstockbill a inner JOIN icstockbillentry b on a.fid = b.mid
         where a.fid = #{fid}
     </delete>
-
-    <select id="getIcStockBillById" resultType="com.myr.Bean.Icstockbill">
-        select * from icstockbill where fid = #{fid}
-    </select>
 
     <update id="IcStockBill_update">
         UPDATE `icstockbill` SET `billDate` = #{billDate}, `suppId` = #{suppId}, `type` = #{type}, `settId` = #{settId}, `currName` = #{currName}, `rate` = #{rate}, `address` = #{address}, `contact` = #{contact}, `phone` = #{phone}, `remark` = #{remark}, `depaId` = #{depaId}, `saleStaf` = #{saleStaf}, `billStaf` = #{billStaf}, `editStaf` = #{editStaf}, `checkStaf` = #{checkStaf}, `editDate` = now(), `state` = #{state}
