@@ -3,6 +3,7 @@ package com.myr.Service.wlManagement;
 import com.myr.Bean.Dz;
 import com.myr.Bean.Icstockbill;
 import com.myr.Bean.Icstockbillentry;
+import com.myr.Bean.MrpProductpick;
 import com.myr.Mapper.ICStockBillEntryMapper;
 import com.myr.Mapper.IcstockbillMapper;
 import com.myr.Mapper.wlManagement.SaleOutDZMapper;
@@ -55,6 +56,30 @@ public class SaleOutDZServiceImpl implements SaleOutDZService {
     @Override
     public List<Dz> getSaleOutDZById(int fid) {
         return saleOutDZMapper.getSaleOutDZById(fid);
+    }
+
+    @Override
+    public Integer SaleOutDZ_del(String billNo) {
+        return saleOutDZMapper.SaleOutDZ_del(billNo);
+    }
+
+    @Override
+    @Transactional
+    public Integer SaleOutDZ_update(List<Dz> dzList) {
+        int rs = 0;
+        Dz dz = new Dz();
+        if(dzList.size()>0&&dzList!=null){
+            dz = dzList.get(0);
+
+            if(saleOutDZMapper.SaleOutDZ_del(dz.getBillNo())>0){
+                for (Dz dz1 : dzList) {
+                    saleOutDZMapper.addSaleOutDZ(dz1);
+                }
+                rs = 1;
+            }
+        }
+
+        return rs;
     }
 /*
 

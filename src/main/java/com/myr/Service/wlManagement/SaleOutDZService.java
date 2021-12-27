@@ -20,15 +20,15 @@ public interface SaleOutDZService {
 
     List<Dz> getSaleOutDZById(int fid);
 
+    Integer SaleOutDZ_del(String billNo);
+
+    Integer SaleOutDZ_update(List<Dz> dzList);
+
     /*int getCounts_saleout(Map<String,Object> map);
 
     List<Icstockbill> IcStockBill_saleout_page(Map<String,Object> map);
 
     List<Icstockbill> IcStockBill_pageGj(DateOption dateOption);
-
-    Integer IcStockBill_del(int fid);
-
-    Integer IcStockBill_update(Icstockbill icstockbill, List<Icstockbillentry> icstockbillentryList);
 
     int getCounts_SaleOut_dz_sour(Map<String,Object> map);
 

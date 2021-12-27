@@ -182,82 +182,84 @@ public class SaleOutDZController {
         return "/TransactionManagement/edit/SaleOutDZEdit";
     }
 
-    /*//更新
-    @RequestMapping("/ProductPlan_update")
+    //更新
+    @RequestMapping("/SaleOutDZ_update")
     @ResponseBody
-    public MessageRequest ProductPlan_update(Poorder poorder, HttpServletRequest request) {
+    public MessageRequest ProductPlan_update(Dz dz, HttpServletRequest request) {
+        System.out.println(dz);
         MessageRequest msg = null;
         try {
-            List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpProductplan> MrpProductplans = new ArrayList<>();//item集合
+            List<String> nums = GetParValues.GetParValuesNum(request, "saleOutQty");//获取item后面的num
+            List<Dz> dzList = new ArrayList<>();//单据体集合
 
             //添加头 客户、日期、备注、业务员
-            Integer custId = Integer.parseInt(request.getParameter("custId"));
-            Customer customer = new Customer();
-            customer.setFid(custId);
-            String billDate = request.getParameter("billDate");
-            String remark = request.getParameter("remark");
-            String billNo = request.getParameter("billNo");
-            Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
+            String billPeriod = request.getParameter("billYearandPeriod");//期间
+            Integer isDZ = Integer.parseInt(request.getParameter("isDZ"));//item ID
+
+            if(!"".equals(billPeriod)&&billPeriod.length()==7){
+                dz.setBillYear(Integer.parseInt(billPeriod.substring(0,4)));
+                dz.setBillPeriod(Integer.parseInt(billPeriod.substring(5,7)));
+            }
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpProductplan MrpProductplan = new MrpProductplan();
+                Dz dz1 = new Dz();
 
                 Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
-                *//*String itemName = request.getParameter("itemName" + num);//item name
-                String itemCode = request.getParameter("itemCode" + num);//item name
-                String itemModel = request.getParameter("itemModel" + num);//item model
-                String custItemCode = request.getParameter("custItemCode" + num);//custitem code
-                String custItemModel = request.getParameter("custItemModel" + num);//custitem model
-                String unitName = request.getParameter("unitName" + num);//单位*//*
+                Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//item ID
+                String unitName = request.getParameter("unitName" + num);//单位
                 String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
-                double qty = Double.parseDouble(request.getParameter("qty" + num));//数量
-                *//*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*//*
                 String batchNumber = request.getParameter("batchNumber" + num);//批号
+                String saleOrderBillNo = request.getParameter("saleOrderBillNo" + num);//item name
+                double saleOrderQty = Double.parseDouble(request.getParameter("saleOrderQty" + num));//含税单价
+                double saleOutQty = Double.parseDouble(request.getParameter("saleOutQty" + num));//含税单价
                 double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
-                *//*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*//*
+                double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价
+
                 String rowRemark = request.getParameter("rowRemark" + num);//行备注
-                String finishDate = request.getParameter("finishDate" + num);//完成日期
                 int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
                 String sourBillNo = request.getParameter("sourBillNo" + num);//源单单号
                 int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
                 String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpProductplan.setBillNo(billNo);
-                MrpProductplan.setBillDate(billDate);
-                MrpProductplan.setCustId(customer);
-                MrpProductplan.setEntryId(entry);
-                Item item = new Item();
-                item.setFid(itemId);
-                MrpProductplan.setItemId(item);
-                MrpProductplan.setCustOrderNum(custOrderNum);
-                MrpProductplan.setFinishDate(finishDate);
-                MrpProductplan.setQty(qty);
-                MrpProductplan.setBatchNumber(batchNumber);
-                MrpProductplan.setTaxPrice(taxPrice);
-                MrpProductplan.setTaxPriceNo(taxPrice);
-                MrpProductplan.setFcess(0);
-                MrpProductplan.setRemark(remark);
-                MrpProductplan.setRowRemark(rowRemark);
-                MrpProductplan.setSourBillNo(sourBillNo);
-                MrpProductplan.setSourFid(sourFid);
-                MrpProductplan.setSourEntryId(sourEntryId);
-                MrpProductplan.setSourType(sourType);
-                MrpProductplan.setBillStaf(depStaffId);
+                dz1.setIsDZ(isDZ);
+                dz1.setBillNo(dz.getBillNo());
+                dz1.setBillDate(dz.getBillDate());
+                dz1.setCustId(dz.getCustId());
+                dz1.setCurrencyName(dz.getCurrencyName());
+                dz1.setAddress(dz.getAddress());
+                dz1.setContact(dz.getContact());
+                dz1.setPhone(dz.getPhone());
+                dz1.setSettleName(dz.getSettleName());
+                dz1.setRate(dz.getRate());
+                dz1.setRemark(dz.getRemark());
+                dz1.setBillYear(dz.getBillYear());
+                dz1.setBillPeriod(dz.getBillPeriod());
+                dz1.setEntryId(entry);
+                dz1.setItemId(itemId);
+                dz1.setStockId(stockId);
+                dz1.setCustOrderNum(custOrderNum);
+                dz1.setBatchNumber(batchNumber);
+                dz1.setSaleOrderBillNo(saleOrderBillNo);
+                dz1.setSaleOrderQty(saleOrderQty);
+                dz1.setSaleOutQty(saleOutQty);
+                dz1.setTaxPrice(taxPrice);
+                dz1.setTaxPriceNo(taxPriceNo);
+                dz1.setRowRemark(rowRemark);
+                dz1.setSourFid(sourFid);
+                dz1.setSourBillNo(sourBillNo);
+                dz1.setSourEntryId(sourEntryId);
+                dz1.setSourType(sourType);
 
-                MrpProductplans.add(MrpProductplan);
-                System.out.println("item="+MrpProductplan);
+
+                dzList.add(dz1);
                 entry++;//分录号自增
             }
 
-            *//*///删除计划单
-            productPlanService.delMrpProductPlan(billNo);
-            //添加计划单
-            Integer count = productPlanService.addMrp_ProductPlan(MrpProductplans);*//*
-            Integer count = productPlanService.Mrp_ProductPlan_update(MrpProductplans);
+            Integer count = saleOutDZService.SaleOutDZ_update(dzList);
 
+            msg = null;
             if(count > 0){
                 //登录成功
                 msg = new MessageRequest(200,"更新成功",null);
@@ -266,62 +268,33 @@ public class SaleOutDZController {
                 msg = new MessageRequest(500,"更新失败",null);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             msg = new MessageRequest(500,"更新失败",null);
         }
         return msg;
-    }*/
+    }
 
-    /*//删除
-    @RequestMapping("/ProductPlan_del")
+    //删除
+    @RequestMapping("/SaleOutDZ_del")
     @ResponseBody
     public MessageRequest ProductPlan_del(HttpServletRequest request) {
-        Set<String> bill_list = new HashSet<>();//被引用单据列表
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
-        Integer billnum = 0;//总单据数量
-        Integer quoted = 0;//单据被引用数量
-        Integer succ = 0;//成功删除单据数量
-        Integer isdel = 0;//单据不存在的数量
-        MessageRequest msg = null;
 
+        MessageRequest msg = null;
         try {
             for (String data : datas) {
-                List<MrpProductplan> mrp_productPlanById = productPlanService.getMrp_ProductPlanById(Integer.parseInt(data));
-                if(mrp_productPlanById.size()>0&&mrp_productPlanById!=null){
-                    String billNo = mrp_productPlanById.get(0).getBillNo();
-                    Integer count = productPlanService.delMrpProductPlan(billNo);
-                    if(count>0){//删除成功
-                        succ++;
-                    }
-                    if(count==0){//已被删除或不存在
-                        isdel++;
-                    }
-                    if(count<0){//删除失败 单据被引用
-                        //共选择xx张单据，成功删除XX张，XX张单据被引用不可删除
-                        Set<String> strings = productPlanService.Mrp_ProductPlan_isQuoted(billNo);
-                        bill_list.addAll(strings);
-                        quoted++;
-                    }
-                    billnum++;//处理完成一张单据
+                List<Dz> saleOutDZById = saleOutDZService.getSaleOutDZById(Integer.parseInt(data));
+                if(saleOutDZById.size()>0&&saleOutDZById!=null){
+                    saleOutDZService.SaleOutDZ_del(saleOutDZById.get(0).getBillNo());
                 }
             }
 
-            if(succ == billnum){
-                //删除成功单据的数量=总单据数量
-                msg = new MessageRequest(200,"全部删除成功!",bill_list);
-            }else if(quoted>0){
-                //部分删除成功
-                msg = new MessageRequest(250,"部分删除成功,其余已被引用，不能删除!",bill_list);
-            }else if(isdel==billnum){
-                //已被删除或不存在
-                msg = new MessageRequest(251,"单据已被删除或系统不存在选择的单据!",null);
-            }else{
-                msg = new MessageRequest(500,"删除失败!",bill_list);
-            }
-
+            //登录成功
+            msg = new MessageRequest(200,"删除成功",null);
         } catch (Exception e) {
             //登录失败
-            msg = new MessageRequest(500,"删除失败",bill_list);
+            msg = new MessageRequest(500,"删除失败",null);
         }
         return msg;
-    }*/
+    }
 }

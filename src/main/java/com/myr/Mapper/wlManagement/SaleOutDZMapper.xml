@@ -70,6 +70,7 @@
         <result column="bill_year" property="billYear"/>
         <result column="bill_period" property="billPeriod"/>
         <result column="EntryId" property="EntryId"/>
+        <result column="itemId" property="itemId"/>
         <result column="stockId" property="stockId"/>
         <result column="unitName" property="unitName"/>
         <result column="custOrderNum" property="custOrderNum"/>
@@ -89,6 +90,10 @@
         <result column="wjsAmt" property="wjsAmt"/>
         <result column="isDZ" property="isDZ"/>
         <result column="rowRemark" property="rowRemark"/>
+        <result column="sourFid" property="sourFid"/>
+        <result column="sourBillNo" property="sourBillNo"/>
+        <result column="sourEntryId" property="sourEntryId"/>
+        <result column="sourType" property="sourType"/>
 
         <!--客户-->
         <collection property="custIds" javaType="com.myr.Bean.Customer">
@@ -126,6 +131,10 @@
         where a.billNo = (select billNo from t_dz where fid = #{fid})
         order by a.entryid
     </select>
+
+    <delete id="SaleOutDZ_del">
+        delete from t_dz where billNo = #{billNo}
+    </delete>
 
     <!--&lt;!&ndash;合计总数&ndash;&gt;
     <select id="getCounts_saleout" resultType="int">
@@ -261,11 +270,6 @@
         </collection>
 
     </resultMap>
-
-    <delete id="IcStockBill_del">
-        delete a,b from icstockbill a inner JOIN icstockbillentry b on a.fid = b.mid
-        where a.fid = #{fid}
-    </delete>
 
     <update id="IcStockBill_update">
         UPDATE `icstockbill` SET `billDate` = #{billDate}, `suppId` = #{suppId}, `type` = #{type}, `settId` = #{settId}, `currName` = #{currName}, `rate` = #{rate}, `address` = #{address}, `contact` = #{contact}, `phone` = #{phone}, `remark` = #{remark}, `depaId` = #{depaId}, `saleStaf` = #{saleStaf}, `billStaf` = #{billStaf}, `editStaf` = #{editStaf}, `checkStaf` = #{checkStaf}, `editDate` = now(), `state` = #{state}
