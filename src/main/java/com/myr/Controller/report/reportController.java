@@ -93,7 +93,7 @@ public class reportController {
     //连接数据库
     public Connection getConnection() throws Exception{
         Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1/myerp", "root", "123456");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1/myerp", "root", "erp2021");
         return conn;
     }
 }

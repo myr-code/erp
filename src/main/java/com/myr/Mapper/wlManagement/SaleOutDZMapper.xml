@@ -66,6 +66,7 @@
         <result column="contact" property="contact"/>
         <result column="phone" property="phone"/>
         <result column="settleName" property="settleName"/>
+        <result column="rate" property="rate"/>
         <result column="remark" property="remark"/>
         <result column="bill_year" property="billYear"/>
         <result column="bill_period" property="billPeriod"/>
