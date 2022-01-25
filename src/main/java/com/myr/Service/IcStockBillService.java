@@ -34,4 +34,8 @@ public interface IcStockBillService {
     int getCounts_SaleOut_dz_sour(Map<String,Object> map);
 
     List<Icstockbill> SaleOut_dz_sour(Map<String,Object> map);
+
+    int getCounts_PurIn_dz_sour(Map<String,Object> map);
+
+    List<Icstockbill> PurIn_dz_sour(Map<String,Object> map);
 }

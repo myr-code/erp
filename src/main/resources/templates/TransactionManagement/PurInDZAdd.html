@@ -5,13 +5,13 @@
 <script src="/erp/style/js/bootstrap.min.js"></script>
 <link href="/erp/style/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
-<script type="text/javascript" th:inline="javascript">
+<script type="text/javascript">
 	//主页的项目名
 	var path = $(window.parent.document.body).find("#path").val();
 
 	//查询表格选择复选框监听
 	$(function () {
-		//除了表头（第一行）以外所有的行添加click事件.
+        //除了表头（第一行）以外所有的行添加click事件.
 		//已选择item页面  除了表头（第一行）以外所有的行添加click事件.
 		$(document).on("click",".panel-infos tr",function(){
 			var chks = $("input[type='checkbox']",this);
@@ -99,7 +99,7 @@
 		//2.显示对象 显示模块
 		$(obj).addClass('active');
 		$("#"+infoid).show();
-
+		
 		if(infoid=="contact"){
 			$("#btn-row").show();
 		}else{
@@ -112,7 +112,7 @@
 		$(obj).parent().parent().remove();
 		total();
 	}
-
+	
 	//关闭拟态框 show hide
 	function closemodal(modalid,kg){
 		$("#"+modalid).modal(kg);
@@ -128,7 +128,7 @@
 
 		//检测名称
 		if($("select[name='custId']").val() == -1){
-			alert("请选择客户！");
+			alert("请选择供应商！");
 			return false;
 		}
 		//是否有选择行检测
@@ -156,16 +156,16 @@
 		//items.push(f);
 		//alert(f);
 		$.ajax({
-			url:"/erp/SaleOutDZ_update",
+			url:"/erp/PurInDZ_add",
 			data:f,
 			type:"post",
 			dataType:"json",
 			success:function(result){
 				if(result.code==200){
-					alert("更新成功！");
-					location.href="/erp/TransactionManagement/page_SaleOutDZAdd";
+					alert("添加成功！");
+					location.href="/erp/TransactionManagement/page_PurInDZAdd";
 				}else if(result.code==500){
-					alert("更新失败!");
+					alert("添加失败!");
 				}
 				//alert(JSON.stringify(result));
 			}
@@ -179,20 +179,29 @@
 	$(function (){
 		//select name="" custId settleId depId depStaffId
 		//客户
-		$.ajax({
+		/*$.ajax({
 			url:"/erp/Customer_all",
 			type:"post",
 			dataType:"json",
 			success:function (result) {
 				//alert(JSON.stringify(result));
-				var custId = [[${data.custId}]];
 				for(var i=0;i<result.length;i++){
-					if(custId == result[i].fid){
-						$("select[name='custId']").append("<option selected value='"+result[i].fid+"'>"+result[i].name+"</option>");
-						$("#modal-header").append("<input type='text' id='selected_cust' value='"+result[i].name+"' readonly class='form-control' style='width:200px;height: 30px;''>");
-					}else{
-						$("select[name='custId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
-					}
+					$("select[name='custId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+				custJOSN = result;//预存 选择后填写地址
+
+			}
+		});*/
+
+		//供应商
+		$.ajax({
+			url:"/erp/Supplier_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='custId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
 				}
 				custJOSN = result;//预存 选择后填写地址
 
@@ -234,19 +243,9 @@
 			dataType:"json",
 			success:function (result) {
 				//alert(JSON.stringify(result));
-				var json={};
-				json.settleName = [[${data.settleName}]];
 				for(var i=0;i<result.length;i++){
-					if(json.settleName == result[i].name){
-						$("select[name='settleName']").append("<option selected value='"+result[i].name+"'>"+result[i].name+"</option>");
-					}else{
-						$("select[name='settleName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
-					}
-				}
-
-				/*for(var i=0;i<result.length;i++){
 					$("select[name='settleName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
-				}*/
+				}
 
 			}
 		});
@@ -268,19 +267,9 @@
 			dataType:"json",
 			success:function (result) {
 				//alert(JSON.stringify(result));
-				var json={};
-				json.currencyName = [[${data.currencyName}]];
 				for(var i=0;i<result.length;i++){
-					if(json.currencyName == result[i].name){
-						$("select[name='currencyName']").append("<option selected value='"+result[i].name+"'>"+result[i].name+"</option>");
-					}else{
-						$("select[name='currencyName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
-					}
-				}
-
-				/*for(var i=0;i<result.length;i++){
 					$("select[name='currencyName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
-				}*/
+				}
 
 			}
 		});
@@ -366,10 +355,10 @@
 				}
 			});
 		}
-		if(sourcetype == "销售出库"){
+		if(sourcetype == "采购入库"){
 			//请求并插入
 			$.ajax({
-				url:"/erp/SaleOut_dz_sour?id="+new Date(),
+				url:"/erp/PurIn_dz_sour?id="+new Date(),
 				data: data,
 				type:"post",
 				dataType:"json",
@@ -465,11 +454,11 @@
 				"<th>默认仓库</th>"+
 				"<th>负责人</th>"+
 				"</tr>";
-		//销售出库
+		//采购入库
 		var cgdd = "<tr>"+
 				"<th style='width:60px'>选中</th>"+
 				"<th>单号</th>"+
-				"<th>客户</th>"+
+				"<th>供应商</th>"+
 				/*"<th>结算方式</th>"+*/
 				"<th>税率</th>"+
 				"<th>分录号</th>"+
@@ -481,8 +470,8 @@
 				"<th>单位</th>"+
 				"<th>订单单号</th>"+
 				"<th>订单数量</th>"+
-				"<th>送货数量</th>"+
-				"<th>出货仓库</th>"+
+				"<th>入库数量</th>"+
+				"<th>入库仓库</th>"+
 				"<th>未对账数量</th>"+
 				"<th>客户订单号</th>"+
 				"<th>批号</th>"+
@@ -493,7 +482,7 @@
 		if(sourcetype == "库存产品"){
 			$("table[id='items']").append(kccp);
 		}
-		if(sourcetype == "销售出库"){
+		if(sourcetype == "采购入库"){
 			$("table[id='items']").append(cgdd);
 		}
 
@@ -540,7 +529,7 @@
 	//判断是否显示范围 未入库 已入库
 	function showtext(){
 		var sourcetype = $("#sourcetype").val();
-		if(sourcetype == "销售出库"){
+		if(sourcetype == "采购入库"){
 			$("#range").show();
 		}else{
 			$("#range").hide();
@@ -570,7 +559,7 @@
 	}
 
 	//获取checkbox选中的value数据
-	var trlen = [[${datas.size()}]];//行号累计 已存在的行
+	var trlen = 0;//行号累计
 	var arr = new Array();
 	function getHabit() {
 		//$('input:checkbox:checked') 等同于 $('input[type=checkbox]:checked')
@@ -731,6 +720,7 @@
 			alert("请输入正确数值！(4位小数点)");
 		}
 
+
 		//2、计算
 		ratejs(type,fid);
 
@@ -770,7 +760,7 @@
 		var qty = $("#qty_"+fid+"").val();//当前数量
 		var rate = $("input[name='rate']").val();//当前税率
 		var amt = $("#taxamt"+fid+"").text();//当前含税金额
-		/*alert(taxPrice+"=="+qty);*/
+		//alert(taxPrice+"=="+qty);
 
 		var taxPriceNoup = taxPrice/(1+(rate/100));
 		var taxPriceup = taxPriceNo*(1+(rate/100));
@@ -822,7 +812,7 @@
 	}
 
 	//更新当前仓库情况
-	function getstocks(){
+    function getstocks(){
 		//每次选择清空选项
 		$("#nowstock").empty();
 		$("#startstock").empty();
@@ -856,14 +846,14 @@
 			alert("行数不足，请先增加行数再批量复制！");
 		}
 
-	}
+    }
 
 	//批量更新仓库
 	function batchStock(){
-		var nowstock = $("#nowstock").val();
-		var startstock = $("#startstock").val();
-		var endstock = $("#endstock").val();
-		//获取到当前行的仓库id
+        var nowstock = $("#nowstock").val();
+        var startstock = $("#startstock").val();
+        var endstock = $("#endstock").val();
+        //获取到当前行的仓库id
 		var itemIdNums = getClassTr("itemIdNum");//itemid+序号
 		var nowstockid = null;//当前仓库id
 		for(itemIdNum in itemIdNums){
@@ -874,10 +864,10 @@
 		}
 		var nowstockval = $("select[name='stockId0"+nowstockid+"']").val();//当前仓库id值
 		//批量赋予仓库id stockId01232
-		if(startstock>endstock){
-			var temp = endstock;
-			endstock = startstock;
-			startstock = temp;
+        if(startstock>endstock){
+        	var temp = endstock;
+        	endstock = startstock;
+        	startstock = temp;
 		}
 
 		for(var i=startstock;i<=endstock;i++){
@@ -889,7 +879,7 @@
 			}
 		}
 		closemodal("ModalBatchStock","hide");//关闭拟态框
-	}
+    }
 
 	//更新table高度
 	function upd_clientheight(type){
@@ -918,78 +908,78 @@
 		upd_clientheight('show');
 	}
 
-
+	
 </script>
 
 <style type="text/css">
 
-body{
-	background-color:#FCFCFC;
-}
+	body{
+		background-color:#FCFCFC;
+	}
+	
+	.panel-body{
+		padding-top:0px;
+	}
+	
+	.panel-body .input-group{
+		margin-right:20px;
+		margin-top:5px;
+		width:200px;
+		float:left;
+	}
+	
+	.list-group-item{
+		padding:5px 10px;
+	}
+	
+	.list-group{
+		float:left;
+		margin-right:100px;
+	}
+	
+	.table{
+		float:left;
+		margin-top:1px;
+	}
+	
+	tr td,th{
+		text-align:center;
+		font-size:12px;
+		overflow: hidden; /*超过区域就隐藏*/
+		white-space: nowrap; /*规定段落中的文本不进行换行*/
+		text-overflow: ellipsis; /*显示省略符号来代表被修剪的文本。*/
+	}
+	
+	.glyphicon-minus{
+		display:none;
+	}
+	
+	tr td:hover .glyphicon-minus{
+		display:block;
+	}
+	
+	tr td:hover .num{
+		display:none;
+	}
 
-.panel-body{
-	padding-top:0px;
-}
-
-.panel-body .input-group{
-	margin-right:20px;
-	margin-top:5px;
-	width:200px;
-	float:left;
-}
-
-.list-group-item{
-	padding:5px 10px;
-}
-
-.list-group{
-	float:left;
-	margin-right:100px;
-}
-
-.table{
-	float:left;
-	margin-top:1px;
-}
-
-tr td,th{
-	text-align:center;
-	font-size:12px;
-	overflow: hidden; /*超过区域就隐藏*/
-	white-space: nowrap; /*规定段落中的文本不进行换行*/
-	text-overflow: ellipsis; /*显示省略符号来代表被修剪的文本。*/
-}
-
-.glyphicon-minus{
-	display:none;
-}
-
-tr td:hover .glyphicon-minus{
-	display:block;
-}
-
-tr td:hover .num{
-	display:none;
-}
-
-.diylabel{
-	margin-top:10px;
-	margin-left:20px;
-	float:left;
-}
-
-
+	.diylabel{
+		margin-top:10px;
+		margin-left:20px;
+		float:left;
+	}
+	
+	
 </style>
 
-<title>销售出库对账</title>
+<title>采购入库对账</title>
 </head>
 <body>
 
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>销售出库对账-编辑</b>
-		<b style="margin-left:30px;" th:text="${data.billNo}">SO-201025001</b>
+		<b>采购入库对账</b>
+		<!--<b style="margin-left:30px;">SO-201025001</b>-->
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;margin-top: -7px;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
 			<div class="btn-group btn-group-sm" role="group">
@@ -1013,14 +1003,13 @@ tr td:hover .num{
 	</div>
 
 	<form method="post" action="#" id="f1">
-		<input type="hidden" name="billType" value="销售出库对账">
+		<input type="hidden" name="billType" value="采购入库对账">
 		<input type="hidden" name="stockType" value="-1">
-		<input type="hidden" name="billNo" th:value="${data.billNo}">
 		<div class="panel-body" id="panel-body-header">
 
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
-					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:#ff0000;"></span>客户</button>
+					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:#ff0000;"></span>供应商</button>
 				 </span>
 				<select name="custId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
 				　　<option value="-1">-- --</option>
@@ -1030,13 +1019,13 @@ tr td:hover .num{
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">月份期间</button>
 				 </span>
-				<input name="billYearandPeriod" th:value="${data.billYear}+'-'+${data.billPeriod}" class="form-control form_date_yearmonth" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
+				<input name="billYearandPeriod" class="form-control form_date_yearmonth" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">单据日期</button>
 				 </span>
-				 <input name="billDate" th:value="${data.billDate}" class="form-control form_date" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
+				 <input name="billDate" class="form-control form_date" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
@@ -1058,40 +1047,40 @@ tr td:hover .num{
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">税率</button>
 				 </span>
-				 <input type="text" th:value="${data.rate}" id="rate" name="rate" onchange="checkNum(this,'rate',-1)" class="form-control" placeholder="DATE" aria-describedby="basic-addon1">
+				 <input type="text" id="rate" name="rate" value="0" onchange="checkNum(this,'rate',-1)" class="form-control" placeholder="DATE" aria-describedby="basic-addon1">
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">是否对账</button>
 				 </span>
 				<select name="isDZ" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-					<option th:selected="${data.isDZ==1}? 'selected'" value="1">是</option>
-					<option th:selected="${data.isDZ==0}? 'selected'" value="0">否</option>
+					<option value="1">是</option>
+					<option value="0">否</option>
 				</select>
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">收货地址</button>
 				 </span>
-				<input type="text" th:value="${data.address}" name="address" id="address_bill" class="form-control" aria-describedby="basic-addon1" readonly>
+				<input type="text" name="address" id="address_bill" class="form-control" aria-describedby="basic-addon1" readonly>
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">联系人</button>
 				 </span>
-				 <input type="text" th:value="${data.contact}" name="contact" id="contact_bill" class="form-control" aria-describedby="basic-addon1" readonly>
+				 <input type="text" name="contact" id="contact_bill" class="form-control" aria-describedby="basic-addon1" readonly>
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">电话</button>
 				 </span>
-				 <input type="text" th:value="${data.phone}" name="phone" id="phone_bill" class="form-control" aria-describedby="basic-addon1" readonly>
+				 <input type="text" name="phone" id="phone_bill" class="form-control" aria-describedby="basic-addon1" readonly>
 			</div>
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
 					<button class="btn btn-info" type="button">摘要</button>
 				 </span>
-				 <input type="text" th:value="${data.remark}" name="remark" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
+				 <input type="text" name="remark" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
 			</div>
 
 		</div>
@@ -1126,9 +1115,9 @@ tr td:hover .num{
 								<th>客户产品型号</th>
 								<th>单位</th>
 								<th>客户订单号</th>
-								<th>销售订单单号</th>
-								<th>销售订单数量</th>
-								<th>实发数量</th>
+								<th>采购订单单号</th>
+								<th>采购订单数量</th>
+								<th>入库数量</th>
 								<th>仓库<!--  <a onclick="getstocks()">批</a>  --></th>
 								<th>批号</th>
 								<th>单价(含税)</th>
@@ -1136,43 +1125,6 @@ tr td:hover .num{
 								<th>金额</th>
 								<th>备注</th>
 								<th>来源</th>
-							</tr>
-							<tr th:each="d,state:${datas}">
-								<input type='hidden' class='itemIdNum' th:value="|${d.itemId}${state.index+1}|">
-								<input type='hidden' class='itemId' th:name="|itemId0${d.itemId}${state.index+1}|" th:value="${d.itemId}" style='width:20px;'>
-								<td>
-								<span class='num' th:text="${state.index+1}"></span>
-								<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>
-								</td>
-								<td th:text="${d.itemIds.code}"></td>
-								<td th:text="${d.itemIds.name}"></td>
-								<td th:text="${d.itemIds.model}"></td>
-								<td th:text="${d.itemIds.custItemCode}"></td>
-								<td th:text="${d.itemIds.custItemModel}"></td>
-								<td th:text="${d.itemIds.saleUnitIdName}"></td>
-								<td th:text="${d.custOrderNum}"></td>
-								<td th:text="${d.saleOrderBillNo}"></td>
-								<td th:text="${d.saleOrderQty}"></td>
-								<td><input type='text' th:id="|qty_${state.index+1}|" th:name="|saleOutQty0${d.itemId}${state.index+1}|" th:value="${d.saleOutQty}" class='checkNum4' th:onchange="|checkNum(this,'qty','${state.index+1}')|" style='width:60px;'></td>
-								<td th:text="${d.stockIds.name}"></td>
-								<td th:text="${d.batchNumber}"></td>
-								<td th:text="${d.taxPrice}"></td>
-								<td th:text="${d.taxPriceNo}"></td>
-								<td th:id="|taxamt${state.index+1}|" th:text="${d.taxAmt}"></td>
-								<td><input type='text' th:name="|rowRemark0${d.itemId}${state.index+1}|" th:value="${d.rowRemark}" style='width:100px;'></td>
-								<td th:text="${d.sourType}"></td>
-								<input type='hidden' th:name="|unitName0${d.itemId}${state.index+1}|" th:value="${d.itemIds.saleUnitIdName}">
-								<input type='hidden' th:name="|custOrderNum0${d.itemId}${state.index+1}|" th:value="${d.custOrderNum}">
-								<input type='hidden' th:name="|saleOrderBillNo0${d.itemId}${state.index+1}|" th:value="${d.saleOrderBillNo}">
-								<input type='hidden' th:name="|saleOrderQty0${d.itemId}${state.index+1}|" th:value="${d.saleOrderQty}" class='checkNum4' readonly style='width:60px;'>
-								<input type='hidden' th:name="|stockId0${d.itemId}${state.index+1}|" th:value="${d.stockId}">
-								<input type='hidden' th:name="|batchNumber0${d.itemId}${state.index+1}|" th:value="${d.batchNumber}">
-								<input type='hidden' th:id="|taxPrice_${state.index+1}|" th:name="|taxPrice0${d.itemId}${state.index+1}|" th:value="${d.taxPrice}" class='checkNum4'>
-								<input type='hidden' th:id="|taxPriceNo_${state.index+1}|" th:name="|taxPriceNo0${d.itemId}${state.index+1}|" th:value="${d.taxPriceNo}" class='checkNum4'>
-								<input type='hidden' th:name="|sourFid0${d.itemId}${state.index+1}|" th:value="${d.sourFid}">
-								<input type='hidden' th:name="|sourBillNo0${d.itemId}${state.index+1}|" th:value="${d.sourBillNo}">
-								<input type='hidden' th:name="|sourEntryId0${d.itemId}${state.index+1}|" th:value="${d.sourEntryId}">
-								<input type='hidden' th:id="|sourType${state.index+1}|" th:name="|sourType0${d.itemId}${state.index+1}|" th:value="${d.sourType}">
 							</tr>
 						</table>
 					</div>
@@ -1255,7 +1207,7 @@ tr td:hover .num{
 					<button class="close" data-dismiss="modal"><span>&times;</span></button>
 					<h6 class="modal-title">
 						<select id="sourcetype" onchange="getitem('切换')" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-							<option value="销售出库">销售出库</option>
+							<option value="采购入库">采购入库</option>
 							<!--<option value="库存产品">库存产品</option>-->
 						</select>
 					</h6>
@@ -1457,8 +1409,6 @@ tr td:hover .num{
 
 		forceParse: 0//强制解析
 	});
-
-	total();//加载后合计
 	</script>
 
 <!--table 列框拉动改变列宽  来源items-->

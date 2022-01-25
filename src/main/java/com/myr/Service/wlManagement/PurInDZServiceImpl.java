@@ -1,12 +1,7 @@
-package com.myr.Service.Impl;
+package com.myr.Service.wlManagement;
 
-import com.myr.Bean.Icstockbill;
-import com.myr.Bean.Icstockbillentry;
-import com.myr.Bean.Poorderentry;
-import com.myr.Mapper.ICStockBillEntryMapper;
-import com.myr.Mapper.IcstockbillMapper;
-import com.myr.Service.IcStockBillService;
-import com.myr.utils.DateOption;
+import com.myr.Bean.Dz;
+import com.myr.Mapper.wlManagement.PurInDZMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,32 +10,69 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class IcStockBillServiceImpl implements IcStockBillService {
+public class PurInDZServiceImpl implements PurInDZService {
     @Resource
-    IcstockbillMapper icstockbillMapper;
-
-    @Resource
-    ICStockBillEntryMapper icStockBillEntryMapper;
+    PurInDZMapper purInDZMapper;
 
     @Override
-    public Integer addIcStockBill(Icstockbill icstockbill) {
-        return icstockbillMapper.addIcStockBill(icstockbill);
+    @Transactional
+    public Integer addPurInDZ(List<Dz> dzList) {
+        int count = 0;
+        for (Dz dz : dzList) {
+            if(purInDZMapper.addPurInDZ(dz)>0){
+                count++;
+            }else{
+                return  -1;//有至少一条不成功
+            }
+        }
+        return count;
     }
 
     @Override
-    public String getICBillNo(String dates) {
-        return icstockbillMapper.getICBillNo(dates);
+    public String getBillNo_PurInDZ(String dates) {
+        return purInDZMapper.getBillNo_PurInDZ(dates);
     }
 
     @Override
-    public int getCounts(Map<String, Object> map) {
-        return icstockbillMapper.getCounts(map);
+    public int getCounts_index(Map<String, Object> map) {
+        return purInDZMapper.getCounts_index(map);
     }
 
     @Override
-    public List<Icstockbill> IcStockBill_page(Map<String,Object> map) {
-        return icstockbillMapper.IcStockBill_page(map);
+    public List<Dz> PurInDZ_index(Map<String, Object> map) {
+        return purInDZMapper.PurInDZ_index(map);
     }
+
+    @Override
+    public List<Dz> getPurInDZById(int fid) {
+        return purInDZMapper.getPurInDZById(fid);
+    }
+
+    @Override
+    public Integer PurInDZ_del(String billNo) {
+        return purInDZMapper.PurInDZ_del(billNo);
+    }
+
+    @Override
+    @Transactional
+    public Integer PurInDZ_update(List<Dz> dzList) {
+        int rs = 0;
+        Dz dz = new Dz();
+        if(dzList.size()>0&&dzList!=null){
+            dz = dzList.get(0);
+
+            if(purInDZMapper.PurInDZ_del(dz.getBillNo())>0){
+                for (Dz dz1 : dzList) {
+                    purInDZMapper.addPurInDZ(dz1);
+                }
+                rs = 1;
+            }
+        }
+
+        return rs;
+    }
+/*
+
 
     @Override
     public int getCounts_saleout(Map<String, Object> map) {
@@ -91,15 +123,5 @@ public class IcStockBillServiceImpl implements IcStockBillService {
     @Override
     public List<Icstockbill> SaleOut_dz_sour(Map<String, Object> map) {
         return icstockbillMapper.SaleOut_dz_sour(map);
-    }
-
-    @Override
-    public int getCounts_PurIn_dz_sour(Map<String, Object> map) {
-        return icstockbillMapper.getCounts_PurIn_dz_sour(map);
-    }
-
-    @Override
-    public List<Icstockbill> PurIn_dz_sour(Map<String, Object> map) {
-        return icstockbillMapper.PurIn_dz_sour(map);
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ public class Dz {
 
   private int fid;
   private String billNo;
+  private String billType;
   private String billDate;
   private String mrpNo;
   private int custId;

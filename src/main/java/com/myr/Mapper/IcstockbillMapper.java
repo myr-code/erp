@@ -46,4 +46,10 @@ public interface IcstockbillMapper {
 
     //销售出库  对账单选择来源
     List<Icstockbill> SaleOut_dz_sour(Map<String,Object> map);
+
+    //销售出库  对账单选择来源 条数合计
+    int getCounts_PurIn_dz_sour(Map<String,Object> map);
+
+    //采购入库  对账单选择来源
+    List<Icstockbill> PurIn_dz_sour(Map<String,Object> map);
 }

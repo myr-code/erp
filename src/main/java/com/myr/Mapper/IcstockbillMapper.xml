@@ -260,4 +260,65 @@
         limit #{startpage},#{pagesize}
     </select>
 
+    <select id="getCounts_PurIn_dz_sour" resultType="int">
+        select
+        count(*)
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_supplier c on a.suppId = c.fid
+        LEFT JOIN t_staff g on a.billStaf = g.fid
+        left join t_store st on b.stockId = st.fid
+        left join t_poorderentry sa on b.sourFid = sa.mid and b.sourEntryId = sa.entryId and b.itemId = sa.itemId
+        left join t_poorder so on so.fid = sa.mid
+        LEFT JOIN t_dz i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId
+        where a.billType = '采购入库'
+        <if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+            and a.billDate between #{date_start} and #{date_end}
+        </if>
+        <if test="suppId != null and suppId > 0">
+            and a.suppId = #{suppId}
+        </if>
+        <if test="cnm != null or cnm != ''">
+            and (a.billNo like '%${cnm}%' or b.itemname like '%${cnm}%' or b.itemcode like '%${cnm}%' or b.itemmodel like '%${cnm}%')
+        </if>
+        <if test="range != null and range == 1">
+            and b.qty-IfNULL(i.saleOutQty,0) > 0
+        </if>
+        <if test="range != null and range == 2">
+            and b.qty-i.saleOutQty&lt;=0
+        </if>
+    </select>
+
+    <select id="PurIn_dz_sour" resultMap="IcStockBillMap">
+        select
+        a.*,b.fid as 'ffid',
+        b.mid,b.entryid,b.itemId,b.itemcode,b.itemname,b.itemmodel,b.custitemcode,b.custitemmodel
+        ,b.qty,b.stockId,b.unitName,b.custOrderNum,b.batchNumber,b.taxPrice,b.taxPriceNo,b.fcess,b.taxAmt,b.taxAmtNo,b.fcessAmt,
+        b.rowRemark,c.`name` as 'suppIdName',sa.qty as 'soQty',i.saleOutQty as 'ydzQty',st.`name` as 'stockName',so.billNo as 'so_billNo'
+        from icstockbill a LEFT JOIN icstockbillentry b on a.fid = b.mid
+        LEFT JOIN t_supplier c on a.suppId = c.fid
+        LEFT JOIN t_staff g on a.billStaf = g.fid
+        left join t_store st on b.stockId = st.fid
+        left join t_poorderentry sa on b.sourFid = sa.mid and b.sourEntryId = sa.entryId and b.itemId = sa.itemId
+        left join t_poorder so on so.fid = sa.mid
+        LEFT JOIN t_dz i on b.mid = i.sourFid and b.entryId = i.sourEntryId and b.itemId = i.itemId
+        where a.billType = '采购入库'
+        <if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+            and a.billDate between #{date_start} and #{date_end}
+        </if>
+        <if test="suppId != null and suppId > 0">
+            and a.suppId = #{suppId}
+        </if>
+        <if test="cnm != null or cnm != ''">
+            and (a.billNo like '%${cnm}%' or b.itemname like '%${cnm}%' or b.itemcode like '%${cnm}%' or b.itemmodel like '%${cnm}%')
+        </if>
+        <if test="range != null and range == 1">
+            and b.qty-IfNULL(i.saleOutQty,0) > 0
+        </if>
+        <if test="range != null and range == 2">
+            and b.qty-i.saleOutQty&lt;=0
+        </if>
+        order by b.mid desc,b.entryid asc
+        limit #{startpage},#{pagesize}
+    </select>
+
 </mapper>

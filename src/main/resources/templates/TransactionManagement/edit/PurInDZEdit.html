@@ -128,7 +128,7 @@
 
 		//检测名称
 		if($("select[name='custId']").val() == -1){
-			alert("请选择客户！");
+			alert("请选择供应商！");
 			return false;
 		}
 		//是否有选择行检测
@@ -156,14 +156,14 @@
 		//items.push(f);
 		//alert(f);
 		$.ajax({
-			url:"/erp/SaleOutDZ_update",
+			url:"/erp/PurInDZ_update",
 			data:f,
 			type:"post",
 			dataType:"json",
 			success:function(result){
 				if(result.code==200){
 					alert("更新成功！");
-					location.href="/erp/TransactionManagement/page_SaleOutDZAdd";
+					location.href="/erp/TransactionManagement/page_PurInDZAdd";
 				}else if(result.code==500){
 					alert("更新失败!");
 				}
@@ -179,7 +179,7 @@
 	$(function (){
 		//select name="" custId settleId depId depStaffId
 		//客户
-		$.ajax({
+		/*$.ajax({
 			url:"/erp/Customer_all",
 			type:"post",
 			dataType:"json",
@@ -197,7 +197,28 @@
 				custJOSN = result;//预存 选择后填写地址
 
 			}
-		});
+		});*/
+
+        //供应商
+        $.ajax({
+            url:"/erp/Supplier_all",
+            type:"post",
+            dataType:"json",
+            success:function (result) {
+                //alert(JSON.stringify(result));
+                var custId = [[${data.custId}]];
+                for(var i=0;i<result.length;i++){
+                    if(custId == result[i].fid){
+                        $("select[name='custId']").append("<option selected value='"+result[i].fid+"'>"+result[i].name+"</option>");
+                        $("#modal-header").append("<input type='text' id='selected_cust' value='"+result[i].name+"' readonly class='form-control' style='width:200px;height: 30px;''>");
+                    }else{
+                        $("select[name='custId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+                    }
+                }
+                custJOSN = result;//预存 选择后填写地址
+
+            }
+        });
 
 		//部门
 		$.ajax({
@@ -366,10 +387,10 @@
 				}
 			});
 		}
-		if(sourcetype == "销售出库"){
+		if(sourcetype == "采购入库"){
 			//请求并插入
 			$.ajax({
-				url:"/erp/SaleOut_dz_sour?id="+new Date(),
+				url:"/erp/PurIn_dz_sour?id="+new Date(),
 				data: data,
 				type:"post",
 				dataType:"json",
@@ -465,7 +486,7 @@
 				"<th>默认仓库</th>"+
 				"<th>负责人</th>"+
 				"</tr>";
-		//销售出库
+		//采购入库
 		var cgdd = "<tr>"+
 				"<th style='width:60px'>选中</th>"+
 				"<th>单号</th>"+
@@ -481,8 +502,8 @@
 				"<th>单位</th>"+
 				"<th>订单单号</th>"+
 				"<th>订单数量</th>"+
-				"<th>送货数量</th>"+
-				"<th>出货仓库</th>"+
+				"<th>入库数量</th>"+
+				"<th>入库仓库</th>"+
 				"<th>未对账数量</th>"+
 				"<th>客户订单号</th>"+
 				"<th>批号</th>"+
@@ -493,7 +514,7 @@
 		if(sourcetype == "库存产品"){
 			$("table[id='items']").append(kccp);
 		}
-		if(sourcetype == "销售出库"){
+		if(sourcetype == "采购入库"){
 			$("table[id='items']").append(cgdd);
 		}
 
@@ -540,7 +561,7 @@
 	//判断是否显示范围 未入库 已入库
 	function showtext(){
 		var sourcetype = $("#sourcetype").val();
-		if(sourcetype == "销售出库"){
+		if(sourcetype == "采购入库"){
 			$("#range").show();
 		}else{
 			$("#range").hide();
@@ -981,14 +1002,14 @@ tr td:hover .num{
 
 </style>
 
-<title>销售出库对账</title>
+<title>采购入库对账</title>
 </head>
 <body>
 
 
 <div class="panel panel-info">
 	<div class="panel-heading">
-		<b>销售出库对账-编辑</b>
+		<b>采购对账-编辑</b>
 		<b style="margin-left:30px;" th:text="${data.billNo}">SO-201025001</b>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;margin-top: -7px;">
 			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
@@ -1013,14 +1034,14 @@ tr td:hover .num{
 	</div>
 
 	<form method="post" action="#" id="f1">
-		<input type="hidden" name="billType" value="销售出库对账">
+		<input type="hidden" name="billType" value="采购入库对账">
 		<input type="hidden" name="stockType" value="-1">
 		<input type="hidden" name="billNo" th:value="${data.billNo}">
 		<div class="panel-body" id="panel-body-header">
 
 			<div class="input-group input-group-sm">
 				<span class="input-group-btn">
-					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:#ff0000;"></span>客户</button>
+					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:#ff0000;"></span>供应商</button>
 				 </span>
 				<select name="custId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
 				　　<option value="-1">-- --</option>
@@ -1126,9 +1147,9 @@ tr td:hover .num{
 								<th>客户产品型号</th>
 								<th>单位</th>
 								<th>客户订单号</th>
-								<th>销售订单单号</th>
-								<th>销售订单数量</th>
-								<th>实发数量</th>
+								<th>采购订单单号</th>
+								<th>采购订单数量</th>
+								<th>入库数量</th>
 								<th>仓库<!--  <a onclick="getstocks()">批</a>  --></th>
 								<th>批号</th>
 								<th>单价(含税)</th>
@@ -1255,7 +1276,7 @@ tr td:hover .num{
 					<button class="close" data-dismiss="modal"><span>&times;</span></button>
 					<h6 class="modal-title">
 						<select id="sourcetype" onchange="getitem('切换')" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
-							<option value="销售出库">销售出库</option>
+							<option value="采购入库">采购入库</option>
 							<!--<option value="库存产品">库存产品</option>-->
 						</select>
 					</h6>

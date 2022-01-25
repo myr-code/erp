@@ -1,6 +1,7 @@
 package com.myr.Controller.wlManagement;
 
-import com.myr.Bean.*;
+import com.myr.Bean.Dz;
+import com.myr.Service.wlManagement.PurInDZService;
 import com.myr.Service.wlManagement.SaleOutDZService;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
@@ -15,18 +16,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @Scope("prototype")
-public class SaleOutDZController {
+public class PurInDZController {
     @Resource
-    SaleOutDZService saleOutDZService;
+    PurInDZService purInDZService;
 
     //01-添加
-    @RequestMapping("/SaleOurtDZ_add")
+    @RequestMapping("/PurInDZ_add")
     @ResponseBody
-    public MessageRequest MrpProductplan_add(Dz dz, HttpServletRequest request) {
+    public MessageRequest PurInDZ_add(Dz dz, HttpServletRequest request) {
         MessageRequest msg = null;
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "saleOutQty");//获取item后面的num
@@ -41,8 +45,8 @@ public class SaleOutDZController {
                 dz.setBillYear(Integer.parseInt(billPeriod.substring(0,4)));
                 dz.setBillPeriod(Integer.parseInt(billPeriod.substring(5,7)));
             }
-            String billNo_saleOutDZ = saleOutDZService.getBillNo_SaleOutDZ(dz.getBillDate());
-            dz.setBillNo(saleOutDZService.getBillNo_SaleOutDZ(dz.getBillDate()));
+            String billNo_saleOutDZ = purInDZService.getBillNo_PurInDZ(dz.getBillDate());
+            dz.setBillNo(purInDZService.getBillNo_PurInDZ(dz.getBillDate()));
 
             //整理item集合
             int entry = 1;
@@ -101,7 +105,7 @@ public class SaleOutDZController {
                 entry++;//分录号自增
             }
 
-            Integer count = saleOutDZService.addSaleOutDZ(dzList);
+            Integer count = purInDZService.addPurInDZ(dzList);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -149,8 +153,8 @@ public class SaleOutDZController {
 
 */
     //序时簿
-    @RequestMapping("/SaleOutDZIndex")
-    public String SaleOutDZIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+    @RequestMapping("/PurInDZIndex")
+    public String PurInDZIndex(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
                                    @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "AllQuery",defaultValue = "")String AllQuery,Model model){
         Map<String,Object> map = new HashMap<>();
         map.put("startpage", (startpage - 1) * pagesize);
@@ -159,35 +163,35 @@ public class SaleOutDZController {
 
 
         //获取总条数
-        int countTatol = saleOutDZService.getCounts_index(map);
+        int countTatol = purInDZService.getCounts_index(map);
         //主数据
-        List<Dz> dzList = saleOutDZService.SaleOutDZ_index(map);
+        List<Dz> dzList = purInDZService.PurInDZ_index(map);
 
         //封装数据
         PageUtils<Dz> pageUtils = new PageUtils<Dz>(startpage, pagesize, countTatol, dzList);
         model.addAttribute("datas",pageUtils);
         model.addAttribute("AllQuery",AllQuery);
 
-        return "TransactionManagement/SaleOutDZIndex";
+        return "TransactionManagement/PurInDZIndex";
     }
 
     //去到编辑页面
-    @RequestMapping("/TO_SaleOutDZ_Edit/{fid}")
-    public String TO_SaleOutDZ_Edit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
-        List<Dz> saleOutDZById = saleOutDZService.getSaleOutDZById(fid);
+    @RequestMapping("/TO_PurInDZ_Edit/{fid}")
+    public String TO_PurInDZ_Edit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
+        List<Dz> saleOutDZById = purInDZService.getPurInDZById(fid);
         Dz dz =null;
         if(saleOutDZById.size()>0&&saleOutDZById!=null){
             dz = saleOutDZById.get(0);
         }
         model.addAttribute("data",dz);
         model.addAttribute("datas",saleOutDZById);
-        return "/TransactionManagement/edit/SaleOutDZEdit";
+        return "/TransactionManagement/edit/PurInDZEdit";
     }
 
     //更新
-    @RequestMapping("/SaleOutDZ_update")
+    @RequestMapping("/PurInDZ_update")
     @ResponseBody
-    public MessageRequest ProductPlan_update(Dz dz, HttpServletRequest request) {
+    public MessageRequest PurInDZ_update(Dz dz, HttpServletRequest request) {
         System.out.println(dz);
         MessageRequest msg = null;
         try {
@@ -261,7 +265,7 @@ public class SaleOutDZController {
                 entry++;//分录号自增
             }
 
-            Integer count = saleOutDZService.SaleOutDZ_update(dzList);
+            Integer count = purInDZService.PurInDZ_update(dzList);
 
             msg = null;
             if(count > 0){
@@ -279,17 +283,17 @@ public class SaleOutDZController {
     }
 
     //删除
-    @RequestMapping("/SaleOutDZ_del")
+    @RequestMapping("/PurInDZ_del")
     @ResponseBody
-    public MessageRequest ProductPlan_del(HttpServletRequest request) {
+    public MessageRequest PurInDZ_del(HttpServletRequest request) {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
 
         MessageRequest msg = null;
         try {
             for (String data : datas) {
-                List<Dz> saleOutDZById = saleOutDZService.getSaleOutDZById(Integer.parseInt(data));
+                List<Dz> saleOutDZById = purInDZService.getPurInDZById(Integer.parseInt(data));
                 if(saleOutDZById.size()>0&&saleOutDZById!=null){
-                    saleOutDZService.SaleOutDZ_del(saleOutDZById.get(0).getBillNo());
+                    purInDZService.PurInDZ_del(saleOutDZById.get(0).getBillNo());
                 }
             }
 
