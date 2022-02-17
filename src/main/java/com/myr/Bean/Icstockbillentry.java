@@ -37,5 +37,5 @@ public class Icstockbillentry {
   private int sourEntryId;
   private String sourType;
 
-
+  private double hxAmt;
 }

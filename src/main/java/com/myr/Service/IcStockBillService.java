@@ -38,4 +38,10 @@ public interface IcStockBillService {
     int getCounts_PurIn_dz_sour(Map<String,Object> map);
 
     List<Icstockbill> PurIn_dz_sour(Map<String,Object> map);
+
+    //收款单选择来源 条数合计 销售出库
+    int getCounts_SK_sour(Map<String,Object> map);
+
+    //收款单选择来源 来源选择 销售出库
+    List<Icstockbill> SK_sour(Map<String,Object> map);
 }

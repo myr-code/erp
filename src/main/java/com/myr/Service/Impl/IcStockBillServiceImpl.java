@@ -102,4 +102,14 @@ public class IcStockBillServiceImpl implements IcStockBillService {
     public List<Icstockbill> PurIn_dz_sour(Map<String, Object> map) {
         return icstockbillMapper.PurIn_dz_sour(map);
     }
+
+    @Override
+    public int getCounts_SK_sour(Map<String, Object> map) {
+        return icstockbillMapper.getCounts_SK_sour(map);
+    }
+
+    @Override
+    public List<Icstockbill> SK_sour(Map<String, Object> map) {
+        return icstockbillMapper.SK_sour(map);
+    }
 }

@@ -1,7 +1,6 @@
 package com.myr.Mapper.wlManagement;
 
-import com.myr.Bean.Dz;
-import com.myr.Bean.Sk;
+import com.myr.Bean.SFK;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.Map;
 @Mapper
 public interface SFKMapper {
     //01-添加
-    Integer addSFK(Sk sf);
+    Integer addSFK(SFK sf);
 
     //获取系统单号  收款单
     String getBillNo_SK(String dates);
@@ -25,13 +24,13 @@ public interface SFKMapper {
     int getCounts_index_FK(Map<String,Object> map);
 
     //序时簿 收款单
-    List<Sk> SK_index(Map<String,Object> map);
+    List<SFK> SK_index(Map<String,Object> map);
 
     //序时簿 收款单
-    List<Sk> FK_index(Map<String,Object> map);
+    List<SFK> FK_index(Map<String,Object> map);
 
     //get一个对象
-    List<Sk> getSFKById(int fid);
+    List<SFK> getSFKById(int fid);
 
     //删除
     Integer SFK_del(String billNo);

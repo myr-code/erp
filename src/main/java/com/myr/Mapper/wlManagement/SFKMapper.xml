@@ -5,16 +5,16 @@
 
     <!--1.添加-->
     <insert id="addSFK" useGeneratedKeys="true" keyProperty="fid">
-        INSERT INTO `t_sk`(`fid`, `billNo`, `billType`, `billDate`, `custId`, `currencyName`,
-         `exchangeRate`, `sk_account`, `sk_amt`, `zk_account`, `zk_amt`, `fy_account`, `fy_amt`,
+        INSERT INTO `t_sfk`(`fid`, `billNo`, `billType`, `billDate`, `custId`, `settleName`, `currencyName`, `rate`,
+         `exchangeRate`, `sk_account`, `sk_amt`, `zk_account`, `zk_amt`, `fy_account`, `fy_amt`, `hxAmtTotal`,
           `remark`, `sourFid`, `sourType`, `sourBillNo`, `sourEntryId`, `sourBillDate`, `EntryId`,
            `itemId`, `custOrderNum`, `qty`, `taxPrice`, `taxAmt`, `hxAmt`, `rowRemark`, `billStaffId`,
              `createDate`)
             VALUES
-            (NULL, #{billNo}, #{billType}, #{billDate}, #{custId}, #{currencyName},
-             #{exchangeRate}, #{skAccount}, #{skAmt}, #{zkAccount}, #{zkAmt}, #{fyAccount}, #{fyAmt},
+            (NULL, #{billNo}, #{billType}, #{billDate}, #{custId}, #{settleName}, #{currencyName}, #{rate},
+             #{exchangeRate}, #{skAccount}, #{skAmt}, #{zkAccount}, #{zkAmt}, #{fyAccount}, #{fyAmt}, #{hxAmtTotal},
               #{remark}, #{sourFid}, #{sourType}, #{sourBillNo}, #{sourEntryId}, #{sourBillDate}, #{entryId},
-               #{billNo}, #{custOrderNum}, #{qty}, #{taxPrice}, #{taxAmt}, #{hxAmt}, #{rowRemark}, #{billStaffId},
+               #{itemId}, #{custOrderNum}, #{qty}, #{taxPrice}, #{taxAmt}, #{hxAmt}, #{rowRemark}, #{billStaffId},
                  NOW());
     </insert>
 
@@ -31,40 +31,37 @@
     <!--获取总条数 收款单-->
     <select id="getCounts_index_SK" resultType="int">
         select count(*)
-        from t_dz a left join t_customer b on a.custId = b.fid
-        left join t_store c on a.stockId = c.fid
-        left join t_item d on a.itemId = d.fid
-        left join t_unit e on d.saleUnitId = e.fid
-        where billType = '销售出库对账'
+        from t_sfk a left join t_customer b on a.custId = b.fid
+        left join t_item c on a.itemId = c.fid
+        left join t_unit d on c.saleUnitId = d.fid
+        where billType = '收款单'
         <if test="str != null or str != ''">
-            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or d.code like '%${str}%' or d.name like '%${str}%' or d.model like '%${str}%' or d.custItemCode like '%${str}%' or d.custItemName like '%${str}%' or d.custItemModel like '%${str}%')
+            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or c.code like '%${str}%' or c.name like '%${str}%' or c.model like '%${str}%' or c.custItemCode like '%${str}%' or c.custItemName like '%${str}%' or c.custItemModel like '%${str}%')
         </if>
 	</select>
 
     <!--获取总条数 付款单-->
     <select id="getCounts_index_FK" resultType="int">
         select count(*)
-        from t_dz a left join t_customer b on a.custId = b.fid
-        left join t_store c on a.stockId = c.fid
-        left join t_item d on a.itemId = d.fid
-        left join t_unit e on d.saleUnitId = e.fid
-        where billType = '销售出库对账'
+        from t_sfk a left join t_customer b on a.custId = b.fid
+        left join t_item c on a.itemId = c.fid
+        left join t_unit d on c.saleUnitId = d.fid
+        where billType = '收款单'
         <if test="str != null or str != ''">
-            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or d.code like '%${str}%' or d.name like '%${str}%' or d.model like '%${str}%' or d.custItemCode like '%${str}%' or d.custItemName like '%${str}%' or d.custItemModel like '%${str}%')
+            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or c.code like '%${str}%' or c.name like '%${str}%' or c.model like '%${str}%' or c.custItemCode like '%${str}%' or c.custItemName like '%${str}%' or c.custItemModel like '%${str}%')
         </if>
     </select>
 
     <!--序时簿 收款单-->
     <select id="SK_index" resultMap="SFK_index_map">
-        select a.*,b.`name` as 'custName',c.`name` as 'stockIdName',d.`code` as 'itemCode',d.`name` as 'itemName',
-        d.model as 'itemModel',d.custItemCode,d.custItemName,d.custItemModel,e.name as 'saleUnitName'
-        from t_dz a left join t_customer b on a.custId = b.fid
-        left join t_store c on a.stockId = c.fid
-        left join t_item d on a.itemId = d.fid
-        left join t_unit e on d.saleUnitId = e.fid
-        where billType = '销售出库对账'
+        select a.*,b.`name` as 'custName',c.`code` as 'itemCode',c.`name` as 'itemName',
+        c.model as 'itemModel',c.custItemCode,c.custItemName,c.custItemModel,d.name as 'unitName'
+        from t_sfk a left join t_customer b on a.custId = b.fid
+        left join t_item c on a.itemId = c.fid
+        left join t_unit d on c.saleUnitId = d.fid
+        where billType = '收款单'
         <if test="str != null or str != ''">
-            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or d.code like '%${str}%' or d.name like '%${str}%' or d.model like '%${str}%' or d.custItemCode like '%${str}%' or d.custItemName like '%${str}%' or d.custItemModel like '%${str}%')
+            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or c.code like '%${str}%' or c.name like '%${str}%' or c.model like '%${str}%' or c.custItemCode like '%${str}%' or c.custItemName like '%${str}%' or c.custItemModel like '%${str}%')
         </if>
         order by a.billDate desc,a.billNo desc,a.entryId
         limit #{startpage},#{pagesize}
@@ -72,62 +69,51 @@
 
     <!--序时簿 收款单-->
     <select id="FK_index" resultMap="SFK_index_map">
-        select a.*,b.`name` as 'custName',c.`name` as 'stockIdName',d.`code` as 'itemCode',d.`name` as 'itemName',
-        d.model as 'itemModel',d.custItemCode,d.custItemName,d.custItemModel,e.name as 'saleUnitName'
-        from t_dz a left join t_customer b on a.custId = b.fid
-        left join t_store c on a.stockId = c.fid
-        left join t_item d on a.itemId = d.fid
-        left join t_unit e on d.saleUnitId = e.fid
-        where billType = '销售出库对账'
+        select a.*,b.`name` as 'custName',c.`code` as 'itemCode',c.`name` as 'itemName',
+        c.model as 'itemModel',c.custItemCode,c.custItemName,c.custItemModel,d.name as 'unitName'
+        from t_sfk a left join t_customer b on a.custId = b.fid
+        left join t_item c on a.itemId = c.fid
+        left join t_unit d on c.saleUnitId = d.fid
+        where billType = '付款单'
         <if test="str != null or str != ''">
-            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or d.code like '%${str}%' or d.name like '%${str}%' or d.model like '%${str}%' or d.custItemCode like '%${str}%' or d.custItemName like '%${str}%' or d.custItemModel like '%${str}%')
+            and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or c.code like '%${str}%' or c.name like '%${str}%' or c.model like '%${str}%' or c.custItemCode like '%${str}%' or c.custItemName like '%${str}%' or c.custItemModel like '%${str}%')
         </if>
         order by a.billDate desc,a.billNo desc,a.entryId
         limit #{startpage},#{pagesize}
     </select>
 
     <!--map-->
-    <resultMap id="SFK_index_map" type="com.myr.Bean.Dz">
+    <resultMap id="SFK_index_map" type="com.myr.Bean.SFK">
         <id column="fid" property="fid"/>
         <result column="billNo" property="billNo"/>
         <result column="billType" property="billType"/>
         <result column="billDate" property="billDate"/>
-        <result column="mrpNo" property="mrpNo"/>
         <result column="custId" property="custId"/>
-        <result column="currencyName" property="currencyName"/>
-        <result column="address" property="address"/>
-        <result column="contact" property="contact"/>
-        <result column="phone" property="phone"/>
         <result column="settleName" property="settleName"/>
+        <result column="currencyName" property="currencyName"/>
         <result column="rate" property="rate"/>
+        <result column="exchangeRate" property="exchangeRate"/>
+        <result column="sk_account" property="skAccount"/>
+        <result column="sk_amt" property="skAmt"/>
+        <result column="zk_account" property="zkAccount"/>
+        <result column="zk_amt" property="zkAmt"/>
+        <result column="fy_account" property="fyAccount"/>
+        <result column="fy_amt" property="fyAmt"/>
+        <result column="hxAmtTotal" property="hxAmtTotal"/>
         <result column="remark" property="remark"/>
-        <result column="bill_year" property="billYear"/>
-        <result column="bill_period" property="billPeriod"/>
-        <result column="EntryId" property="EntryId"/>
-        <result column="itemId" property="itemId"/>
-        <result column="stockId" property="stockId"/>
-        <result column="unitName" property="unitName"/>
-        <result column="custOrderNum" property="custOrderNum"/>
-        <result column="batchNumber" property="batchNumber"/>
-        <result column="saleOrderBillNo" property="saleOrderBillNo"/>
-        <result column="saleOrderQty" property="saleOrderQty"/>
-        <result column="saleOutQty" property="saleOutQty"/>
-        <result column="taxPrice" property="taxPrice"/>
-        <result column="taxPriceNo" property="taxPriceNo"/>
-        <result column="taxAmt" property="taxAmt"/>
-        <result column="taxAmtNo" property="taxAmtNo"/>
-        <result column="skph" property="skph"/>
-        <result column="voucheNumber" property="voucheNumber"/>
-        <result column="ykpAmt" property="ykpAmt"/>
-        <result column="wkpAmt" property="wkpAmt"/>
-        <result column="yjsAmt" property="yjsAmt"/>
-        <result column="wjsAmt" property="wjsAmt"/>
-        <result column="isDZ" property="isDZ"/>
-        <result column="rowRemark" property="rowRemark"/>
         <result column="sourFid" property="sourFid"/>
         <result column="sourBillNo" property="sourBillNo"/>
         <result column="sourEntryId" property="sourEntryId"/>
         <result column="sourType" property="sourType"/>
+        <result column="sourBillDate" property="sourBillDate"/>
+        <result column="entryId" property="entryId"/>
+        <result column="itemId" property="itemId"/>
+        <result column="custOrderNum" property="custOrderNum"/>
+        <result column="qty" property="qty"/>
+        <result column="taxPrice" property="taxPrice"/>
+        <result column="taxAmt" property="taxAmt"/>
+        <result column="hxAmt" property="hxAmt"/>
+        <result column="rowRemark" property="rowRemark"/>
 
         <!--客户-->
         <collection property="custIds" javaType="com.myr.Bean.Customer">
@@ -144,30 +130,25 @@
             <result column="custItemCode" property="custItemCode"/>
             <result column="custItemName" property="custItemName"/>
             <result column="custItemModel" property="custItemModel"/>
-            <result column="saleUnitName" property="saleUnitIdName"/>
+            <result column="unitName" property="saleUnitIdName"/>
         </collection>
 
-        <!--仓库-->
-        <collection property="stockIds" javaType="com.myr.Bean.Store">
-            <id column="stockId" property="fid"/>
-            <result column="stockIdName" property="name"/>
-        </collection>
+
     </resultMap>
 
     <!--获取一个销售对账单-->
     <select id="getSFKById" resultMap="SFK_index_map">
-        select a.*,b.`name` as 'custName',c.`name` as 'stockIdName',d.`code` as 'itemCode',d.`name` as 'itemName',
-               d.model as 'itemModel',d.custItemCode,d.custItemName,d.custItemModel,e.name as 'saleUnitName'
-        from t_dz a left join t_customer b on a.custId = b.fid
-                    left join t_store c on a.stockId = c.fid
-                    left join t_item d on a.itemId = d.fid
-                    left join t_unit e on d.saleUnitId = e.fid
-        where a.billNo = (select billNo from t_dz where fid = #{fid})
+        select a.*,b.`name` as 'custName',c.`code` as 'itemCode',c.`name` as 'itemName',
+        c.model as 'itemModel',c.custItemCode,c.custItemName,c.custItemModel,d.name as 'unitName'
+        from t_sfk a left join t_customer b on a.custId = b.fid
+        left join t_item c on a.itemId = c.fid
+        left join t_unit d on c.saleUnitId = d.fid
+        where billType = '收款单' and a.billNo = (select billNo from t_sfk where fid = #{fid})
         order by a.entryid
     </select>
 
     <delete id="SFK_del">
-        delete from t_dz where billNo = #{billNo}
+        delete from t_sfk where billNo = #{billNo}
     </delete>
 
     <!--&lt;!&ndash;合计总数&ndash;&gt;
