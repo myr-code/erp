@@ -71,7 +71,7 @@ public class SFKServiceImpl implements SFKService {
 
     @Override
     @Transactional
-    public Integer SK_update(List<SFK> sfks) {
+    public Integer SFK_update(List<SFK> sfks) {
         int rs = 0;
         SFK sfk = new SFK();
         if(sfks.size()>0&&sfks!=null){

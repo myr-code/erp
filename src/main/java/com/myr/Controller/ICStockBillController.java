@@ -414,4 +414,29 @@ public class ICStockBillController {
         PageUtils<Icstockbill> pageUtils = new PageUtils<Icstockbill>(startpage, pagesize, countTatol, icstockbills);
         return pageUtils;
     }
+
+    //采购入库  付款单选择来源
+    @RequestMapping("/FK_sour")
+    @ResponseBody
+    public PageUtils FK_sour(@RequestParam(value = "startpage",defaultValue = "1") Integer startpage,
+                             @RequestParam(value = "pagesize",defaultValue = "10") Integer pagesize, @RequestParam(value = "cnm",defaultValue = "")String cnm,
+                             HttpServletRequest request){
+        int range = Integer.parseInt(request.getParameter("range")==null?"0":request.getParameter("range"));//是否选中已入库的数据
+        int suppId = Integer.parseInt(request.getParameter("suppId")==null?"0":request.getParameter("suppId"));//主体组织
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("startpage", (startpage - 1) * pagesize);
+        map.put("pagesize", pagesize);
+        map.put("suppId",suppId);
+        map.put("range",range);
+        map.put("cnm",cnm);
+
+        //获取总条数
+        int countTatol = icStockBillService.getCounts_FK_sour(map);
+        //主数据
+        List<Icstockbill> icstockbills = icStockBillService.FK_sour(map);
+        //封装数据
+        PageUtils<Icstockbill> pageUtils = new PageUtils<Icstockbill>(startpage, pagesize, countTatol, icstockbills);
+        return pageUtils;
+    }
 }

@@ -35,5 +35,5 @@ public interface SFKService {
     Integer SFK_del(String billNo);
 
     //更新
-    Integer SK_update(List<SFK> sfks);
+    Integer SFK_update(List<SFK> sfks);
 }

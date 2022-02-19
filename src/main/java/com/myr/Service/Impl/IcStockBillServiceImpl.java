@@ -112,4 +112,14 @@ public class IcStockBillServiceImpl implements IcStockBillService {
     public List<Icstockbill> SK_sour(Map<String, Object> map) {
         return icstockbillMapper.SK_sour(map);
     }
+
+    @Override
+    public int getCounts_FK_sour(Map<String, Object> map) {
+        return icstockbillMapper.getCounts_FK_sour(map);
+    }
+
+    @Override
+    public List<Icstockbill> FK_sour(Map<String, Object> map) {
+        return icstockbillMapper.FK_sour(map);
+    }
 }

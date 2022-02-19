@@ -28,7 +28,7 @@ public class SFKController {
     @Resource
     SFKService sfkService;
 
-    //01-添加
+    //01-添加 收款单
     @RequestMapping("/SK_add")
     @ResponseBody
     public MessageRequest SK_add(SFK sfk, HttpServletRequest request) {
@@ -39,6 +39,88 @@ public class SFKController {
 
             //添加头
             sfk.setBillNo(sfkService.getBillNo_SK(sfk.getBillDate()));
+
+            //整理item集合
+            int entry = 1;
+            for (String num : nums) {//后面的序号  1 2 3
+                SFK sfk1 = new SFK();
+
+                int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
+                String sourBillNo = request.getParameter("sourBillNo" + num);//源单单号
+                int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
+                String sourType = request.getParameter("sourType" + num);//源单类型
+                String sourBillDate = request.getParameter("sourBillDate" + num);//源单日期
+                Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
+                String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//含税单价
+                double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
+                double hxAmt = Double.parseDouble(request.getParameter("hxAmt" + num));//核销金额
+                String rowRemark = request.getParameter("rowRemark" + num);//行备注
+
+                sfk1.setBillNo(sfk.getBillNo());
+                sfk1.setBillType(sfk.getBillType());
+                sfk1.setBillDate(sfk.getBillDate());
+                sfk1.setCustId(sfk.getCustId());
+                sfk1.setSettleName(sfk.getSettleName());
+                sfk1.setCurrencyName(sfk.getCurrencyName());
+                sfk1.setRate(sfk.getRate());
+                sfk1.setExchangeRate(sfk.getExchangeRate());
+                sfk1.setSkAccount(sfk.getSkAccount());
+                sfk1.setSkAmt(sfk.getSkAmt());
+                sfk1.setZkAccount(sfk.getZkAccount());
+                sfk1.setZkAmt(sfk.getZkAmt());
+                sfk1.setFyAccount(sfk.getFyAccount());
+                sfk1.setFyAmt(sfk.getFyAmt());
+                sfk1.setHxAmtTotal(sfk.getHxAmtTotal());
+                sfk1.setRemark(sfk.getRemark());
+
+                sfk1.setSourFid(sourFid);
+                sfk1.setSourType(sourType);
+                sfk1.setSourBillNo(sourBillNo);
+                sfk1.setSourEntryId(sourEntryId);
+                sfk1.setSourBillDate(sourBillDate);
+                sfk1.setEntryId(entry);
+                sfk1.setItemId(itemId);
+                sfk1.setCustOrderNum(custOrderNum);
+                sfk1.setQty(qty);
+                sfk1.setTaxPrice(taxPrice);
+                sfk1.setTaxAmt(qty*taxPrice);
+                sfk1.setHxAmt(hxAmt);
+                sfk1.setRowRemark(rowRemark);
+
+
+                sfks.add(sfk1);
+                entry++;//分录号自增
+            }
+            System.out.println(sfks);
+
+            Integer count = sfkService.addSFK(sfks);
+            msg = null;
+            if(count > 0){
+                //登录成功
+                msg = new MessageRequest(200,"添加成功",null);
+            }else {
+                //登录失败
+                msg = new MessageRequest(500,"添加失败",null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg = new MessageRequest(500,"添加失败",null);
+        }
+        return msg;
+    }
+
+    //01-添加 收款单
+    @RequestMapping("/FK_add")
+    @ResponseBody
+    public MessageRequest FK_add(SFK sfk, HttpServletRequest request) {
+        MessageRequest msg = null;
+        try {
+            List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
+            List<SFK> sfks = new ArrayList<>();//单据体集合
+
+            //添加头
+            sfk.setBillNo(sfkService.getBillNo_FK(sfk.getBillDate()));
 
             //整理item集合
             int entry = 1;
@@ -156,9 +238,9 @@ public class SFKController {
         return "TransactionManagement/FKIndex";
     }
 
-    //去到编辑页面
+    //去到编辑页面 收款单
     @RequestMapping("/TO_SK_Edit/{fid}")
-    public String TO_SaleOutDZ_Edit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
+    public String TO_SK_Edit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
         List<SFK> sfkById = sfkService.getSFKById(fid);
         SFK sfk =null;
         if(sfkById.size()>0&&sfkById!=null){
@@ -169,7 +251,20 @@ public class SFKController {
         return "/TransactionManagement/edit/SKEdit";
     }
 
-    //更新
+    //去到编辑页面 付款单
+    @RequestMapping("/TO_FK_Edit/{fid}")
+    public String TO_FK_Edit(@PathVariable("fid") int fid, Model model, HttpServletRequest request) {
+        List<SFK> sfkById = sfkService.getSFKById(fid);
+        SFK sfk =null;
+        if(sfkById.size()>0&&sfkById!=null){
+            sfk = sfkById.get(0);
+        }
+        model.addAttribute("data",sfk);
+        model.addAttribute("datas",sfkById);
+        return "/TransactionManagement/edit/FKEdit";
+    }
+
+    //更新 收款单
     @RequestMapping("/SK_update")
     @ResponseBody
     public MessageRequest SK_update(SFK sfk, HttpServletRequest request) {
@@ -232,7 +327,86 @@ public class SFKController {
             }
             System.out.println(sfks);
 
-            Integer count = sfkService.SK_update(sfks);
+            Integer count = sfkService.SFK_update(sfks);
+            msg = null;
+            if(count > 0){
+                //登录成功
+                msg = new MessageRequest(200,"添加成功",null);
+            }else {
+                //登录失败
+                msg = new MessageRequest(500,"添加失败",null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg = new MessageRequest(500,"添加失败",null);
+        }
+        return msg;
+    }
+
+    //更新 付款单
+    @RequestMapping("/FK_update")
+    @ResponseBody
+    public MessageRequest FK_update(SFK sfk, HttpServletRequest request) {
+        MessageRequest msg = null;
+        try {
+            List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
+            List<SFK> sfks = new ArrayList<>();//单据体集合
+
+            //整理item集合
+            int entry = 1;
+            for (String num : nums) {//后面的序号  1 2 3
+                SFK sfk1 = new SFK();
+
+                int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
+                String sourBillNo = request.getParameter("sourBillNo" + num);//源单单号
+                int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
+                String sourType = request.getParameter("sourType" + num);//源单类型
+                String sourBillDate = request.getParameter("sourBillDate" + num);//源单日期
+                Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
+                String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
+                double qty = Double.parseDouble(request.getParameter("qty" + num));//含税单价
+                double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
+                double hxAmt = Double.parseDouble(request.getParameter("hxAmt" + num));//核销金额
+                String rowRemark = request.getParameter("rowRemark" + num);//行备注
+
+                sfk1.setBillNo(sfk.getBillNo());
+                sfk1.setBillType(sfk.getBillType());
+                sfk1.setBillDate(sfk.getBillDate());
+                sfk1.setCustId(sfk.getCustId());
+                sfk1.setSettleName(sfk.getSettleName());
+                sfk1.setCurrencyName(sfk.getCurrencyName());
+                sfk1.setRate(sfk.getRate());
+                sfk1.setExchangeRate(sfk.getExchangeRate());
+                sfk1.setSkAccount(sfk.getSkAccount());
+                sfk1.setSkAmt(sfk.getSkAmt());
+                sfk1.setZkAccount(sfk.getZkAccount());
+                sfk1.setZkAmt(sfk.getZkAmt());
+                sfk1.setFyAccount(sfk.getFyAccount());
+                sfk1.setFyAmt(sfk.getFyAmt());
+                sfk1.setHxAmtTotal(sfk.getHxAmtTotal());
+                sfk1.setRemark(sfk.getRemark());
+
+                sfk1.setSourFid(sourFid);
+                sfk1.setSourType(sourType);
+                sfk1.setSourBillNo(sourBillNo);
+                sfk1.setSourEntryId(sourEntryId);
+                sfk1.setSourBillDate(sourBillDate);
+                sfk1.setEntryId(entry);
+                sfk1.setItemId(itemId);
+                sfk1.setCustOrderNum(custOrderNum);
+                sfk1.setQty(qty);
+                sfk1.setTaxPrice(taxPrice);
+                sfk1.setTaxAmt(qty*taxPrice);
+                sfk1.setHxAmt(hxAmt);
+                sfk1.setRowRemark(rowRemark);
+
+
+                sfks.add(sfk1);
+                entry++;//分录号自增
+            }
+            System.out.println(sfks);
+
+            Integer count = sfkService.SFK_update(sfks);
             msg = null;
             if(count > 0){
                 //登录成功
@@ -249,9 +423,9 @@ public class SFKController {
     }
 
     //删除
-    @RequestMapping("/fk_del")
+    @RequestMapping("/sfk_del")
     @ResponseBody
-    public MessageRequest fk_del(HttpServletRequest request) {
+    public MessageRequest sfk_del(HttpServletRequest request) {
         String[] datas = request.getParameterValues("datas[]");//前端数组获取
 
         MessageRequest msg = null;

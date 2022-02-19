@@ -58,4 +58,10 @@ public interface IcstockbillMapper {
 
     //收款单选择来源 来源选择 销售出库
     List<Icstockbill> SK_sour(Map<String,Object> map);
+
+    //付款单选择来源 条数合计 采购入库
+    int getCounts_FK_sour(Map<String,Object> map);
+
+    //付款单选择来源 来源选择 采购入库
+    List<Icstockbill> FK_sour(Map<String,Object> map);
 }

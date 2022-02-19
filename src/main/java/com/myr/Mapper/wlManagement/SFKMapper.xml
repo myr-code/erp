@@ -43,10 +43,10 @@
     <!--获取总条数 付款单-->
     <select id="getCounts_index_FK" resultType="int">
         select count(*)
-        from t_sfk a left join t_customer b on a.custId = b.fid
+        from t_sfk a left join t_supplier b on a.custId = b.fid
         left join t_item c on a.itemId = c.fid
         left join t_unit d on c.saleUnitId = d.fid
-        where billType = '收款单'
+        where billType = '付款单'
         <if test="str != null or str != ''">
             and (a.billNo like '%${str}%' or b.`name` like '%${str}%' or c.code like '%${str}%' or c.name like '%${str}%' or c.model like '%${str}%' or c.custItemCode like '%${str}%' or c.custItemName like '%${str}%' or c.custItemModel like '%${str}%')
         </if>
@@ -67,11 +67,11 @@
         limit #{startpage},#{pagesize}
     </select>
 
-    <!--序时簿 收款单-->
+    <!--序时簿 付款单-->
     <select id="FK_index" resultMap="SFK_index_map">
         select a.*,b.`name` as 'custName',c.`code` as 'itemCode',c.`name` as 'itemName',
         c.model as 'itemModel',c.custItemCode,c.custItemName,c.custItemModel,d.name as 'unitName'
-        from t_sfk a left join t_customer b on a.custId = b.fid
+        from t_sfk a left join t_supplier b on a.custId = b.fid
         left join t_item c on a.itemId = c.fid
         left join t_unit d on c.saleUnitId = d.fid
         where billType = '付款单'
@@ -143,7 +143,7 @@
         from t_sfk a left join t_customer b on a.custId = b.fid
         left join t_item c on a.itemId = c.fid
         left join t_unit d on c.saleUnitId = d.fid
-        where billType = '收款单' and a.billNo = (select billNo from t_sfk where fid = #{fid})
+        where a.billNo = (select billNo from t_sfk where fid = #{fid})
         order by a.entryid
     </select>
 

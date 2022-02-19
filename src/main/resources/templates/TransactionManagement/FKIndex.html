@@ -85,7 +85,7 @@
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
 			var fid = chks.val();
-			window.parent.topage('left60303','收款-编辑','TO_SK_Edit/'+fid,0);
+			window.parent.topage('left60403','付款-编辑','TO_FK_Edit/'+fid,0);
 		});
 
 		//除了表头（第一行）以外所有的行添加click事件.
@@ -177,10 +177,10 @@
 				success:function(result){
 					if(result.code==200){
 						alert("删除成功！");
-						location.href="SKIndex";
+						location.href="FKIndex";
 					}else if(result.code==500){
 						alert("删除失败!");
-						location.href="SKIndex";
+						location.href="FKIndex";
 					}
 					//alert(JSON.stringify(result));
 				}
@@ -280,7 +280,7 @@
 		}else{
 			var fid = $("input[type='checkbox']:checked").val();
 			/*location.href="CustomerEdit/"+fid;*/
-			window.parent.topage('left60303','收款-编辑','TO_SK_Edit/'+fid,0);
+			window.parent.topage('left60403','付款-编辑','TO_FK_Edit/'+fid,0);
 		}
 	}
 
@@ -447,9 +447,9 @@
 	</div>
 	
 	<center>
-		<h4 style="float:left;color: #5bc0de;"><b>收款单</b></h4>
+		<h4 style="float:left;color: #5bc0de;"><b>付款单</b></h4>
 		<div class="btn-group btn-group-sm p" role="group" aria-label="...">
-			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left60301','收款-new','TransactionManagement/page_SKAdd',0);">新增</button>
+			<button type="button" class="btn btn-default" onclick="javascript: window.parent.topage('left60401','付款-new','TransactionManagement/page_FKAdd',0);">新增</button>
 
 			<div class="btn-group btn-group-sm" role="group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -537,7 +537,7 @@
 		<th>序号</th>
 		<th>单号</th>
 		<th>单据日期</th>
-		<th>客户名称</th>
+		<th>供应商名称</th>
 		<th>结算方式</th>
 		<th>币别</th>
 		<th>汇率</th>
