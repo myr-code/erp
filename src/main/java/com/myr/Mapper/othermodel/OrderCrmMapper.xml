@@ -1,0 +1,110 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myr.Mapper.othermodel.OrderCrmMapper">
+
+	<!--添加-->
+	<insert id="add_OrderCrm">
+	   INSERT INTO t_order_crm`
+	   (`fid`, `billNo`, `billDate`, `CustName`, `entryId`, `sendAddress`, `collAddress`,
+	   `item`, `itemImg`, `oneWeight`, `oneSize`, `oneVolume`, `qty`, `weightSum`, `volumeSum`, `purpose`,
+	   `bjhd`, `remark`, `rowRemark`, `billStaf`, `createDate`)
+	   VALUES
+	   (null, #{billNo}, #{billDate}, #{CustName}, #{entryId}, #{sendAddress}, #{collAddress},
+	   #{item}, #{itemImg}, #{oneWeight}, #{oneSize}, #{oneVolume}, #{qty}, #{weightSum}, #{volumeSum}, #{purpose},
+	   #{bjhd}, #{remark}, #{rowRemark}, #{billStaf}, now());
+	</insert>
+
+	<!--获取单号-->
+	<select id="getBillNo" resultType="String">
+        SELECT GetBillNo(14,#{date});
+    </select>
+
+	<!--合计总数-->
+	<select id="getCounts" resultType="int">
+		select count(*) from t_order_crm
+		where billNo like '%${cnm}%' or custName like '%${cnm}%' or item like '%${cnm}%' or sendAddress like '%${cnm}%' or collAddress like '%${cnm}%'
+	</select>
+
+	<!--合计总数-->
+	<!--<select id="getCounts_sour" resultType="int">
+		select count(*)
+		from mrp_pur_req a left join t_item b on a.itemId = b.fid
+		LEFT JOIN t_unit c on b.purUnitId = c.fid
+		where 1=1
+		<if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+			and a.billDate between #{date_start} and #{date_end}
+		</if>
+		<if test="cnm != null or cnm != ''">
+			and (a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%')
+		</if>
+		<if test="range != null and range == 1">
+			and a.qty-IfNULL(a.finish_qty,0) > 0
+		</if>
+		<if test="range != null and range == 2">
+			and a.qty-a.finish_qty&lt;=0
+		</if>
+	</select>-->
+
+	<!--序时簿-->
+	<select id="OrderCrm_page" resultType="com.myr.Bean.othermodel.OrderCrm">
+		select * from t_order_crm
+		where billNo like '%${cnm}%' or custName like '%${cnm}%' or item like '%${cnm}%' or sendAddress like '%${cnm}%' or collAddress like '%${cnm}%'
+		order by billDate desc,billNo desc,entryId
+		limit #{startpage},#{pagesize}
+	</select>
+
+	<!--2021-09-28 mrp_pur_req触发  t_poorderentry的合计-->
+	<!--<select id="MrpPurReq_sour" resultMap="PurReqMap">
+		select a.*,b.code 'itemIdCode',b.name 'itemIdName',b.model 'itemIdModel',b.custItemCode,b.custItemName,b.custItemModel, c.`name` 'unitName'
+		from mrp_pur_req a left join t_item b on a.itemId = b.fid
+		LEFT JOIN t_unit c on b.purUnitId = c.fid
+		where 1=1
+		<if test="(date_start != null and date_start !='') or (date_end != null and date_end !='')">
+			and a.billDate between #{date_start} and #{date_end}
+		</if>
+		<if test="cnm != null or cnm != ''">
+			and (a.billNo like '%${cnm}%' or b.code like '%${cnm}%' or b.name like '%${cnm}%' or b.model like '%${cnm}%')
+		</if>
+		<if test="range != null and range == 1">
+			and a.qty-IfNULL(a.finish_qty,0) > 0
+		</if>
+		<if test="range != null and range == 2">
+			and a.qty-a.finish_qty&lt;=0
+		</if>
+		order by a.billNo desc,a.entryId
+		limit #{startpage},#{pagesize}
+	</select>-->
+
+	<select id="getOrderCrmById" resultType="com.myr.Bean.othermodel.OrderCrm">
+		select * from t_order_crm
+		where billNo = #{billNo}
+		order by a.billno,entryId
+	</select>
+
+	<!--<select id="OrderCrm_isQuoted" resultType="String">
+        /*采购订单*/
+        select distinct a.billNo from t_poorder a inner join t_poorderentry b on a.fid = b.mid
+		where sourType = '采购申请单' and sourBillNo = #{billNo}
+
+    </select>-->
+
+	<delete id="delOrderCrm">
+		DELETE from t_order_crm
+		where billNo = #{billNo}
+	</delete>
+
+	<select id="CustCrm_All" resultType="com.myr.Bean.othermodel.CustomerCrm">
+		select * from t_customer_crm
+	</select>
+
+
+	<insert id="add_UrlContent">
+		INSERT INTO urlcontent(`url`, `rows`, `rowContent`)
+		VALUES
+		(#{url}, #{rows}, #{rowContent});
+	</insert>
+
+
+
+</mapper>

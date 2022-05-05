@@ -16,6 +16,7 @@
 	
 	#Head_1 {
 		background-color: #5bc0de;
+		/*background-color: #1890FF;*/
 		height: 84px;
 		margin: 0 auto;
 		width: 100%;
@@ -93,6 +94,10 @@
 	.menuchild .btn-info{
 		float:left;
 	}
+
+	.list-group-item .list-group-item-warning .list2{
+		background-color:#FFFFFF;
+	}
     </style>
 <script type="text/javascript">
 	var path = "";
@@ -117,12 +122,19 @@
 
 		//隐藏所有二级菜单
 		$("#leftmain"+" .list2").hide();
+		//隐藏所有 v 图标  显示^
+		$(".glyphicon-menu-down").show();
+		$(".glyphicon-menu-up").hide();
 
 		if(num>1){
 			//隐藏点击的一级菜单下单所有二级菜单
 			$("#s"+menuDiv+" .list2").hide();
+			$("#s"+menuDiv+" .glyphicon-menu-down").show();
+			$("#s"+menuDiv+" .glyphicon-menu-up").hide();
 		}else{
 			$("#s"+menuDiv+" .list2").show();
+			$("#s"+menuDiv+" .glyphicon-menu-up").show();
+			$("#s"+menuDiv+" .glyphicon-menu-down").hide();
 		}
 	}
 
@@ -130,6 +142,7 @@
 		// 默认只显示第1个二级菜单
 		$(".list2").hide();
 		$(".list1").show();
+		$(".glyphicon-menu-up").hide();
 
 		//点击选中菜单
 		$(".list2").click(function(){
@@ -367,7 +380,13 @@
 <div id="leftmain">
 	<div id="leftmainbody" style="float:left;width:150px;">
 		<ul class="list-group" id="s1">
-		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(1);">基础设置</li>
+		<li class="list-group-item list-group-item-warning list1" onClick="menuClick(1);">
+			<div>
+				<b>基础设置</b>
+				<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+				<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+			</div>
+			</li>
 		<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left101','参数设置','other/page_NullHtml',0);">
 			&nbsp;&nbsp;&nbsp; 参数设置
 		</li>
@@ -385,7 +404,13 @@
 		</li>
 	</ul>
 		<ul class="list-group" id="s2">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(2);">用户管理</li>
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(2);">
+				<div>
+					<b>用户管理</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
 			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left201','用户','other/page_NullHtml',0);">
 				&nbsp;&nbsp;&nbsp; 用户
 			</li>
@@ -397,7 +422,13 @@
 			</li>
 		</ul>
 		<ul class="list-group" id="s3">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(3);">销售与出库</li>
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(3);">
+				<div>
+					<b>销售与出库</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
 			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left302','销售订单','SaleOrderIndex',0);">
 				&nbsp;&nbsp;&nbsp; 销售订单
 			</li>
@@ -409,7 +440,13 @@
 			</li>
 		</ul>
 		<ul class="list-group" id="s4">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(4);">MRP统筹</li>
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(4);">
+				<div>
+					<b>MRP统筹</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
 			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left401','计划统筹','desktop/page_MRPIndex',500);">
 				&nbsp;&nbsp;&nbsp; 计划统筹
 			</li>
@@ -427,7 +464,13 @@
 			</li>
 		</ul>
 		<ul class="list-group" id="s5">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(5);">采购与入库</li>
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(5);">
+				<div>
+					<b>采购与入库</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
 			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left501','采购申请单','PurReqIndex',0);">
 				&nbsp;&nbsp;&nbsp; 采购申请单
 			</li>
@@ -439,7 +482,13 @@
 			</li>
 		</ul>
 		<ul class="list-group" id="s6">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(6);">往来管理</li>
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(6);">
+				<div>
+					<b>往来管理</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
 			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left601','销售出库对账','SaleOutDZIndex',0);">
 				&nbsp;&nbsp;&nbsp; 销售出库对账
 			</li>
@@ -454,15 +503,36 @@
 			</li>
 		</ul>
 		<ul class="list-group" id="s7">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(7);">库存管理</li>
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(7);">
+				<div>
+					<b>库存管理</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
 			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left701','产品库存','ItemStockIndex',0);">
 				&nbsp;&nbsp;&nbsp; 产品库存
 			</li>
 		</ul>
 		<ul class="list-group" id="s12">
-			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(12);">特殊模块</li>
-			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1201','响应地址','OtherModelIndex',0);">
+			<li class="list-group-item list-group-item-warning list1" onClick="menuClick(12);">
+				<div>
+					<b>特殊模块</b>
+					<span class="glyphicon glyphicon-menu-down" style="float: right;"></span>
+					<span class="glyphicon glyphicon-menu-up" style="float: right;"></span>
+				</div>
+			</li>
+			<!--<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1201','响应地址','OtherModelIndex',0);">
 				&nbsp;&nbsp;&nbsp; 响应地址
+			</li>-->
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1202','客户管理','CustomerCrmIndex',0);">
+				&nbsp;&nbsp;&nbsp; 客户管理
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1203','客户订单','OrderCrmIndex',0);">
+				&nbsp;&nbsp;&nbsp; 客户订单
+			</li>
+			<li class="list-group-item list-group-item-warning list2" onclick="javascript: topage('left1204','页面信息获取','page_urlContentAdd',0);">
+				&nbsp;&nbsp;&nbsp; 页面信息获取
 			</li>
 		</ul>
 	</div>
