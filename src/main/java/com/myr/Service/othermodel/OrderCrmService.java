@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface OrderCrmService {
     //01-添加
-    Integer add_OrderCrm(OrderCrm orderCrm);
+    Integer add_OrderCrm(List<OrderCrm> orderCrms);
 
     //获取系统单号  1销售订单
     String getBillNo(String dates);

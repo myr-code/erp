@@ -128,7 +128,7 @@
 		//数量检测
 		var trlens = gettrfid();
 		for (id in trlens){
-			if($("#qty_"+trlens[id]).val()<=0){
+			if($("#qty0"+trlens[id]).val()<=0){
 				alert("请输入数量！");
 				$("#qty_"+trlens[id]).focus();
 				return false;
@@ -140,14 +140,14 @@
 		//items.push(f);
 		//alert(f);
 		$.ajax({
-			url:"/erp/PurReq_add",
+			url:"/erp/OrderCrm_add",
 			data:f,
 			type:"post",
 			dataType:"json",
 			success:function(result){
 				if(result.code==200){
 					alert("添加成功！");
-					location.href="/erp/mrp/page_PurReqAdd";
+					location.href="/erp/mrp/page_OrderCrmAdd";
 				}else if(result.code==500){
 					alert("添加失败!");
 					/*location.href="/erp/mrp/page_PurReqAdd";*/
@@ -213,7 +213,7 @@
 			success:function (result) {
 				//alert(JSON.stringify(result));
 				for(var i=0;i<result.length;i++){
-					$("select[name='depStaffId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+					$("select[name='billStaf']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
 				}
 
 			}
@@ -606,7 +606,12 @@
 				"</td>"+
 
 				"<td><input type='text' name='item0"+trlen+"' style='width:50px;'></td>"+
-				"<td><input type='text' name='itemImg0"+trlen+"' style='width:50px;'></td>"+
+				/*"<td><input type='text' name='itemImg0"+trlen+"' style='width:50px;'></td>"+*/
+				"<td>" +
+					"<form class='am-form am-form-horizontal' id='img' method='post' enctype='multipart/form-data'>"+
+						"<input type='file' name='itemImg0"+trlen+"' id='name' required multiple>"+
+					"</form>" +
+				"</td>"+
 				"<td><input type='text' name='oneWeight0"+trlen+"' id='oneWeight0"+trlen+"' value='0' class='checkAndSum' onchange_diy='oneWeight0"+trlen+"_=_"+trlen+"_=_weightPageSum' style='width:50px;'></td>"+
 
 				"<td><input type='text' name='oneSize0"+trlen+"' id='oneSize0"+trlen+"' value='0*0*0' class='sizeCheck' onchange_diy='oneSize0"+trlen+"_=_"+trlen+"' style='width:50px;'></td>"+
@@ -936,7 +941,7 @@
 							<tr>
 								<th style="width:10px;">行号</th>
 								<th>产品</th>
-								<th>产品图片</th>
+								<th style="width: 100px">产品图片</th>
 								<th>单件实重</th>
 								<th>单件尺寸</th>
 								<th>单件体积</th>
@@ -991,7 +996,7 @@
 						<span class="input-group-btn">
 							<button class="btn btn-info" type="button">业务员</button>
 						 </span>
-							<select name="depStaffId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+							<select name="billStaf" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
 								<option value="-1">-- --</option>
 							</select>
 						</div>

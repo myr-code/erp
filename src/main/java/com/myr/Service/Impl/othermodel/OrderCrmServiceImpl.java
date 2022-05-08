@@ -22,8 +22,18 @@ public class OrderCrmServiceImpl implements OrderCrmService {
     OrderCrmMapper orderCrmMapper;
 
     @Override
-    public Integer add_OrderCrm(OrderCrm orderCrm) {
-        return orderCrmMapper.add_OrderCrm(orderCrm);
+    @Transactional
+    public Integer add_OrderCrm(List<OrderCrm> orderCrms) {
+        int count = 0;
+        for (OrderCrm orderCrm : orderCrms) {
+            count += orderCrmMapper.add_OrderCrm(orderCrm);
+        }
+        System.out.println(count);
+        if(count == orderCrms.size()){
+            return 1;//成功
+        }else{
+            return -1;
+        }
     }
 
     @Override

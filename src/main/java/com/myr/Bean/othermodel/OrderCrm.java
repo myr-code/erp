@@ -20,7 +20,7 @@ public class OrderCrm {
   private String itemImg;
   private double oneWeight;
   private String oneSize;
-  private double oneVolume0;
+  private double oneVolume;
   private double qty;
   private double weightSum;
   private double volumeSum;

@@ -5,12 +5,12 @@
 
 	<!--添加-->
 	<insert id="add_OrderCrm">
-	   INSERT INTO t_order_crm`
+	   INSERT INTO t_order_crm
 	   (`fid`, `billNo`, `billDate`, `CustName`, `entryId`, `sendAddress`, `collAddress`,
 	   `item`, `itemImg`, `oneWeight`, `oneSize`, `oneVolume`, `qty`, `weightSum`, `volumeSum`, `purpose`,
 	   `bjhd`, `remark`, `rowRemark`, `billStaf`, `createDate`)
 	   VALUES
-	   (null, #{billNo}, #{billDate}, #{CustName}, #{entryId}, #{sendAddress}, #{collAddress},
+	   (null, #{billNo}, #{billDate}, #{custName}, #{entryId}, #{sendAddress}, #{collAddress},
 	   #{item}, #{itemImg}, #{oneWeight}, #{oneSize}, #{oneVolume}, #{qty}, #{weightSum}, #{volumeSum}, #{purpose},
 	   #{bjhd}, #{remark}, #{rowRemark}, #{billStaf}, now());
 	</insert>

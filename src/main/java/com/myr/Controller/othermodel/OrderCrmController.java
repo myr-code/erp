@@ -39,85 +39,75 @@ public class OrderCrmController {
     //01-添加
     @RequestMapping("/OrderCrm_add")
     @ResponseBody
-    public MessageRequest OrderCrm_add(Icstockbill icstockbill, HttpServletRequest request) {
+    public MessageRequest OrderCrm_add(HttpServletRequest request) {
         MessageRequest msg = null;
         try {
-            List<String> nums = GetParValues.GetParValuesNum(request, "qty");//获取item后面的num
-            List<MrpPurReq> MrpPurReqs = new ArrayList<>();//item集合
+            List<String> nums = GetParValues.GetParValuesNum(request, "qty0");//获取item后面的num
+            List<OrderCrm> orderCrms = new ArrayList<>();//item集合
 
             //添加头 客户、日期、备注、业务员
-            /*Integer custId = Integer.parseInt(request.getParameter("custId"));
-            Customer customer = new Customer();
-            customer.setFid(custId);*/
-            Integer suppId = Integer.parseInt(request.getParameter("suppId"));
-            Supplier supplier = new Supplier();
-            supplier.setFid(suppId);
+            String custName = request.getParameter("custName");//客户名称
             String billDate = request.getParameter("billDate");
+            String sendAddress = request.getParameter("sendAddress");
+            String collAddress = request.getParameter("collAddress");
             String remark = request.getParameter("remark");
-            String billNo = purReqService.getBillNo(billDate);
-            Integer depStaffId = Integer.parseInt(request.getParameter("depStaffId"));
+            String billNo = orderCrmService.getBillNo(billDate);
+            Integer billStaf = Integer.parseInt(request.getParameter("billStaf"));
 
             //整理item集合
             int entry = 1;
             for (String num : nums) {//后面的序号  1 2 3
-                MrpPurReq MrpPurReq = new MrpPurReq();
+                OrderCrm orderCrm = new OrderCrm();
 
-                Integer itemId = Integer.parseInt(request.getParameter("itemId" + num));//item ID
-                //*String itemName = request.getParameter("itemName" + num);//item name
-                String itemCode = request.getParameter("itemCode" + num);//item name
-                String itemModel = request.getParameter("itemModel" + num);//item model
-                String custItemCode = request.getParameter("custItemCode" + num);//custitem code
-                String custItemModel = request.getParameter("custItemModel" + num);//custitem model
-                String unitName = request.getParameter("unitName" + num);//单位*//*
-                String custOrderNum = request.getParameter("custOrderNum" + num);//客户订单号
-                Integer qty = Integer.parseInt(request.getParameter("qty" + num));//数量
-                //*Integer stockId = Integer.parseInt(request.getParameter("stockId" + num));//默认仓库*//*
-                String batchNumber = request.getParameter("batchNumber" + num);//批号
-                double taxPrice = Double.parseDouble(request.getParameter("taxPrice" + num));//含税单价
-                //*double taxPriceNo = Double.parseDouble(request.getParameter("taxPriceNo" + num));//不含税单价*//*
+                String item = request.getParameter("item0" + num);//item
+                //*String itemName = request.getParameter("itemImg0" + num);//产品图片
+                double oneWeight = Double.parseDouble(request.getParameter("oneWeight0" + num));
+                String oneSize = request.getParameter("oneSize0" + num);//item model
+                double oneVolume = Double.parseDouble(request.getParameter("oneVolume0" + num));
+                double qty = Double.parseDouble(request.getParameter("qty0" + num));
+                double weightSum = Double.parseDouble(request.getParameter("weightSum0" + num));
+                double volumeSum = Double.parseDouble(request.getParameter("volumeSum0" + num));
+                String purpose = request.getParameter("purpose0" + num);//完成日期
+                String bjhd = request.getParameter("bjhd0" + num);//完成日期
                 String rowRemark = request.getParameter("rowRemark" + num);//行备注
-                String finishDate = request.getParameter("finishDate" + num);//完成日期
-                int sourFid = Integer.parseInt(request.getParameter("sourFid" + num));//源单内码
-                String sourBillNo = request.getParameter("sourBillNo" + num);//源单单号
-                int sourEntryId = Integer.parseInt(request.getParameter("sourEntryId" + num));//源单分录号
-                String sourType = request.getParameter("sourType" + num);//源单类型
 
-                MrpPurReq.setBillNo(billNo);
-                MrpPurReq.setBillDate(billDate);
-                MrpPurReq.setSuppId(supplier);
-                MrpPurReq.setEntryId(entry);
-                Item item = new Item();
-                item.setFid(itemId);
-                MrpPurReq.setItemId(item);
-                MrpPurReq.setCustOrderNum(custOrderNum);
-                MrpPurReq.setFinishDate(("").equals(finishDate)||finishDate == null ? null:finishDate);
-                MrpPurReq.setQty(qty);
-                MrpPurReq.setBatchNumber(batchNumber);
-                MrpPurReq.setTaxPrice(taxPrice);
-                MrpPurReq.setTaxPriceNo(taxPrice);
-                MrpPurReq.setFcess(0);
-                MrpPurReq.setRemark(remark);
-                MrpPurReq.setRowRemark(rowRemark);
-                MrpPurReq.setSourEntryId(sourEntryId);
-                MrpPurReq.setSourType(sourType);
-                MrpPurReq.setBillStaf(depStaffId);
+                orderCrm.setBillNo(billNo);
+                orderCrm.setBillDate(billDate);
+                orderCrm.setCustName(custName);
+                orderCrm.setEntryId(entry);
+                orderCrm.setSendAddress(sendAddress);
+                orderCrm.setCollAddress(collAddress);
+                orderCrm.setItem(item);
+                orderCrm.setOneWeight(oneWeight);
+                orderCrm.setOneSize(oneSize);
+                orderCrm.setOneVolume(oneVolume);
+                orderCrm.setQty(qty);
+                orderCrm.setWeightSum(weightSum);
+                orderCrm.setVolumeSum(volumeSum);
+                orderCrm.setPurpose(purpose);
+                orderCrm.setBjhd(bjhd);
+                orderCrm.setRemark(remark);
+                orderCrm.setRowRemark(rowRemark);
+                orderCrm.setBillStaf(billStaf);
 
-                MrpPurReqs.add(MrpPurReq);
-                System.out.println("item="+MrpPurReq);
+
+                orderCrms.add(orderCrm);
+                System.out.println("item="+orderCrm);
                 entry++;//分录号自增
             }
 
 
-            Integer count = purReqService.add_PurReq(MrpPurReqs);
+            Integer count = orderCrmService.add_OrderCrm(orderCrms);
             msg = null;
             if(count > 0){
-                //登录成功
+                //成功
                 msg = new MessageRequest(200,"添加成功",null);
             }else {
-                //登录失败
+                //失败
                 msg = new MessageRequest(500,"添加失败",null);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             msg = new MessageRequest(500,"添加失败",null);
         }
         return msg;
