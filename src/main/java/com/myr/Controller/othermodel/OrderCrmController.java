@@ -9,6 +9,7 @@ import com.myr.Bean.othermodel.OrderCrm;
 import com.myr.Bean.othermodel.Urlcontent;
 import com.myr.Service.PurReqService;
 import com.myr.Service.othermodel.OrderCrmService;
+import com.myr.utils.FileUploadUtils;
 import com.myr.utils.GetParValues;
 import com.myr.utils.MessageRequest;
 import com.myr.utils.PageUtils;
@@ -16,9 +17,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +42,8 @@ public class OrderCrmController {
     //01-添加
     @RequestMapping("/OrderCrm_add")
     @ResponseBody
-    public MessageRequest OrderCrm_add(HttpServletRequest request) {
-        MessageRequest msg = null;
+    public void OrderCrm_add(@RequestParam("itemImg") MultipartFile[] itemImg, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty0");//获取item后面的num
             List<OrderCrm> orderCrms = new ArrayList<>();//item集合
@@ -53,6 +56,11 @@ public class OrderCrmController {
             String remark = request.getParameter("remark");
             String billNo = orderCrmService.getBillNo(billDate);
             Integer billStaf = Integer.parseInt(request.getParameter("billStaf"));
+
+            //产品图片
+            List<String> imgNames = FileUploadUtils.FilesUpload(itemImg);
+            String imgs = imgNames.toString().replace(" ", "").replace("[", "").replace("]", "");
+
 
             //整理item集合
             int entry = 1;
@@ -78,6 +86,7 @@ public class OrderCrmController {
                 orderCrm.setSendAddress(sendAddress);
                 orderCrm.setCollAddress(collAddress);
                 orderCrm.setItem(item);
+                orderCrm.setItemImg(imgs);
                 orderCrm.setOneWeight(oneWeight);
                 orderCrm.setOneSize(oneSize);
                 orderCrm.setOneVolume(oneVolume);
@@ -98,19 +107,18 @@ public class OrderCrmController {
 
 
             Integer count = orderCrmService.add_OrderCrm(orderCrms);
-            msg = null;
+
             if(count > 0){
                 //成功
-                msg = new MessageRequest(200,"添加成功",null);
+                response.getWriter().write("<script>alert('新增成功!');location.href='/erp/crm/page_OrderCrmAdd';</script>");
             }else {
                 //失败
-                msg = new MessageRequest(500,"添加失败",null);
+                response.getWriter().write("<script>alert('新增失败!');location.href='/erp/crm/page_OrderCrmAdd';</script>");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            msg = new MessageRequest(500,"添加失败",null);
+            response.getWriter().write("<script>alert('新增失败!');location.href='/erp/crm/page_OrderCrmAdd';</script>");
         }
-        return msg;
     }
 
     //序时簿

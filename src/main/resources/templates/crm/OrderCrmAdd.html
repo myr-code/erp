@@ -96,9 +96,9 @@
 		$("#"+infoid).show();
 		
 		if(infoid=="contact"){
-			$("#btn-row").show();
+			$(".btn-row").show();
 		}else{
-			$("#btn-row").hide();
+			$(".btn-row").hide();
 		}
 	}
 
@@ -116,30 +116,42 @@
 	//表单效验
 	function fromcheck(){
 		//检测名称
-		/*if($("select[name='custId']").val() == -1){
+		if($("select[name='custName']").val() == -1){
 			alert("请选择客户！");
 			return false;
-		}*/
+		}
 		//是否有选择行检测
 		if($(".num").size() == 0){
 			alert("请选择产品！");
 			return false;
 		}
-		//数量检测
+		//产品名称、数量检测
 		var trlens = gettrfid();
 		for (id in trlens){
 			if($("#qty0"+trlens[id]).val()<=0){
 				alert("请输入数量！");
-				$("#qty_"+trlens[id]).focus();
+				$("#qty0"+trlens[id]).focus();
+				return false;
+			}
+			if($("#item0"+trlens[id]).val()<=0){
+				alert("请输入产品名称！");
+				$("#item0"+trlens[id]).focus();
 				return false;
 			}
 		}
 
+		$("#f1").submit();
 		//提交表单
-		var f = $("#f1").serialize();
-		//items.push(f);
-		//alert(f);
-		$.ajax({
+		/*var f = $("#f1").serialize();*/
+
+		/*for (id in trlens){
+			var itemImg = $("#itemImg0"+trlens[id]).serialize();
+			f = Object.assign(f,itemImg);
+		}
+
+		alert(JSON.stringify(itemImg));
+		return false;*/
+		/*$.ajax({
 			url:"/erp/OrderCrm_add",
 			data:f,
 			type:"post",
@@ -147,14 +159,14 @@
 			success:function(result){
 				if(result.code==200){
 					alert("添加成功！");
-					location.href="/erp/mrp/page_OrderCrmAdd";
+					/!*location.href="/erp/crm/page_OrderCrmAdd";*!/
 				}else if(result.code==500){
 					alert("添加失败!");
-					/*location.href="/erp/mrp/page_PurReqAdd";*/
+					/!*location.href="/erp/mrp/page_PurReqAdd";*!/
 				}
 				//alert(JSON.stringify(result));
 			}
-		});
+		});*/
 
 	}
 
@@ -596,7 +608,7 @@
 		upd_clientheight('show');
 	}
 
-	function testinsert(){
+	function insertrow(){
 		//行号
 		trlen = trlen+1;
 		var insertrow = "<tr>"+
@@ -605,13 +617,13 @@
 				"<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>"+
 				"</td>"+
 
-				"<td><input type='text' name='item0"+trlen+"' style='width:50px;'></td>"+
+				"<td><input type='text' name='item0"+trlen+"' id='item0"+trlen+"' style='width:50px;'></td>"+
 				/*"<td><input type='text' name='itemImg0"+trlen+"' style='width:50px;'></td>"+*/
-				"<td>" +
-					"<form class='am-form am-form-horizontal' id='img' method='post' enctype='multipart/form-data'>"+
-						"<input type='file' name='itemImg0"+trlen+"' id='name' required multiple>"+
+				/*"<td>" +
+					"<form class='am-form am-form-horizontal' class='itemImg' method='post' enctype='multipart/form-data'>"+
+						"<input type='file' name='itemImg0"+trlen+"' id='itemImg0"+trlen+"' required multiple>"+
 					"</form>" +
-				"</td>"+
+				"</td>"+*/
 				"<td><input type='text' name='oneWeight0"+trlen+"' id='oneWeight0"+trlen+"' value='0' class='checkAndSum' onchange_diy='oneWeight0"+trlen+"_=_"+trlen+"_=_weightPageSum' style='width:50px;'></td>"+
 
 				"<td><input type='text' name='oneSize0"+trlen+"' id='oneSize0"+trlen+"' value='0*0*0' class='sizeCheck' onchange_diy='oneSize0"+trlen+"_=_"+trlen+"' style='width:50px;'></td>"+
@@ -870,7 +882,7 @@
 		
 	</div>
 
-	<form method="post" action="CustType_add" id="f1">
+	<form method="post" action="/erp/OrderCrm_add" id="f1" enctype="multipart/form-data">
 		<div class="panel-body" id="panel-body-header">
 
 			<!--<div class="input-group input-group-sm">
@@ -925,11 +937,18 @@
 					<li role="presentation" onclick="navcut(this,'contact')" class="active"><a href="#">产品</a></li>
 					<!-- <li role="presentation" onclick="navcut(this,'currency')"><a href="#">货币信息</a></li> -->
 					<li role="presentation" onclick="navcut(this,'otherinfo')"><a href="#">其他</a></li>
-					
-					<li style="float:right;" id="btn-row">
+
+					<li style="float:right;" class="btn-row">
+						<a href="#">
+							<!--<form class='am-form am-form-horizontal' method='post' enctype='multipart/form-data'>-->
+								<input type='file' name='itemImg' id='itemImg' required multiple>
+							<!--</form>-->
+						</a>
+					</li>
+					<li style="float:right;" class="btn-row">
 						<a href="#">
 							<!--<button class="btn btn-info btn-xs" onclick="getitem()" type="button" data-toggle="modal" data-target="#myModal">来源</button>-->
-							<button class="btn btn-info btn-xs" onclick="testinsert()" type="button">test插入</button>
+							<button class="btn btn-info btn-xs" onclick="insertrow()" type="button">新增行</button>
 							<!--<button class="btn btn-info btn-xs" type="button" onclick="del_row()">删行</button>-->
 						</a>
 					</li>
@@ -941,7 +960,7 @@
 							<tr>
 								<th style="width:10px;">行号</th>
 								<th>产品</th>
-								<th style="width: 100px">产品图片</th>
+								<!--<th style="width: 100px">产品图片</th>-->
 								<th>单件实重</th>
 								<th>单件尺寸</th>
 								<th>单件体积</th>
@@ -1012,6 +1031,7 @@
 						 </span>
 							<input type="text" class="form-control" value="" disabled aria-describedby="basic-addon1">
 						</div>
+
 					</div>
 				</div>
 				

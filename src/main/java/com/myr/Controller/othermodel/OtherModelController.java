@@ -14,16 +14,21 @@ import com.myr.utils.PageUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @Scope("prototype")
@@ -145,6 +150,59 @@ public class OtherModelController {
         List<OtherModelEntry> otherModelEntries = otherModelService.GetDataByid(muid);
 
         MessageRequest msg = new MessageRequest(500,"正常",otherModelEntries);
+
+        return msg;
+    }
+
+
+    /*
+    1、前端页面
+    2、后端处理请求
+    3、target/classes目录下建public/upload
+    <form class="am-form am-form-horizontal" id="img"
+    action="/erp/img_add" method="post" enctype="multipart/form-data">
+		<input type="file" id="name" required placeholder="商品图片" name="file" multiple>
+		<!--<input type="button" onclick="imgsubmit()" class="am-btn am-btn-success" value="提交" />-->
+		<input type="submit"  class="am-btn am-btn-success" value="提交" />
+	</form>*/
+
+    @RequestMapping("/img_add")
+    @ResponseBody
+    public MessageRequest addProduct(@RequestParam("file") MultipartFile[] files, HttpServletResponse response, HttpServletRequest request) throws Exception {
+        //response.setContentType("text/html;charset=utf-8");
+        System.out.println("一共上传图片="+files.length);
+
+        /*if (file.isEmpty()) {
+            response.getWriter().write("<script>alert('上传的图片不能为空!');location.href='page_product';</script>");
+            return null;
+        }*/
+
+        if (files == null || (files.length == 1 && files[0].getSize() == 0)){
+            return new MessageRequest(250,"上传的图片不能为空",null);
+        }
+
+        for (int i = 0; i < files.length; i++) {
+            MultipartFile file = files[i];
+
+            //上传的文件不为空
+            String filename = file.getOriginalFilename();
+            //获取文件的后缀
+            String suffixName = filename.substring(filename.lastIndexOf("."));
+            //获取文件的名称 前缀名称
+            String qz_nam = filename.substring(0,filename.lastIndexOf("."));
+            //生成一个新的文件名
+            filename = qz_nam+"_"+UUID.randomUUID() + suffixName;
+            System.out.println("要上传服务器的文件名是:" + filename);
+            //获取文件上传的路径
+            File path = new File(ResourceUtils.getURL("classpath:").getPath());
+            File upload = new File(path.getAbsolutePath(), "/public/upload/" + filename);
+            file.transferTo(upload);
+            System.out.println("文件上传成功:" + upload.getAbsolutePath());
+        }
+
+
+
+        MessageRequest msg = new MessageRequest(500,"正常",null);
 
         return msg;
     }
