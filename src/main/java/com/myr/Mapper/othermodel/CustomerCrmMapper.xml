@@ -150,6 +150,4 @@
     <delete id="delCustCrm">
         delete from t_customer_crm where fid = #{fid}
     </delete>
-
-
 </mapper>

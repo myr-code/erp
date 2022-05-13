@@ -1,6 +1,7 @@
 package com.myr.Mapper;
 
 import com.myr.Bean.ItemType;
+import com.myr.Bean.LogUser;
 import com.myr.Bean.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,5 +12,10 @@ public interface UserMapper {
     User getUserByName(User user);
 
     //是否存在
-    Integer isexits(User user);
+    /*Integer isexits(User user);*/
+
+    /**
+     * 用户操作日志记录
+     */
+    Integer log_user_add(LogUser logUser);
 }

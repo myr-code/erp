@@ -341,6 +341,87 @@
 		}
 
 	}
+
+	//1、拟态框全选  全局试用
+	$(document).on("change","#filelist",function (e){
+		var target=e.target||e.srcElement;
+		var onchange_diy = target.getAttribute("onchange_diy");
+		var pars = onchange_diy.split('_=_');
+
+		if ($("#filelist").prop("checked") == true) {
+			// 上面的复选框已被选中
+			$("input[name='"+pars[1]+"']").prop("checked", true);
+		} else {
+			// 上面的复选框没被选中
+			$("input[name='"+pars[1]+"']").prop("checked", false);
+		}
+
+	});
+
+	var lens = 20;//单格占的长度
+	//显示文件
+	function ShowfileList(muid){
+		//清空原来所有
+		$("#bom_list").empty();
+
+		//文件列表
+		$.ajax({
+			url:"/erp/ShowFileList_CRM/"+muid,
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				var s = JSON.stringify(result);
+				s = s.replace('["','').replace('"]','');
+				var filenames = s.split(',');//拆分成单个文件
+
+				var heads = "<input type='checkbox' id='filelist' onchange_diy='this_=_filename'>全选/全不选<p></p>";
+				$("#bom_list").append(heads);
+				for (id in filenames){
+					var filename = filenames[id];
+
+					var list = "<tr>" +
+							"<td><input type='checkbox' name='filename' value='"+filename+"'></td>" +
+							"<td><a href='/erp/fileOnline/"+filename+"' target='_blank'>"+filename+"</a></td>" +
+							"<td><a href='/erp/fileDownLoadByOne/"+filename+"' download='xz'>下载</a></td>" +
+							"</tr>";
+
+					$("#bom_list").append(list);
+				}
+
+				var foods = "<p></p><p></p><p></p><button type='button' class='btn btn-default btn-sm query' onclick='fileDownLoad()'>下载</button>";
+				$("#bom_list").append(foods);
+
+			}
+		});
+	}
+
+	function fileDownLoad(){
+
+		var trs  = new Array();
+		var i = 0;
+		$.each($('#bom_list input:checkbox:checked'), function() {
+
+			if(trs.indexOf($(this).val()) == -1){//不重复
+				trs[i] = $(this).val();
+				i++;
+			}
+
+		});
+
+		for(id in trs){
+			if(trs[id] != "on"){
+				const a = document.createElement('a');
+				a.setAttribute('href', "/erp/fileDownLoadByOne/"+trs[id]+"");
+				a.setAttribute('download', "title");
+				a.click();
+			}
+		}
+
+	}
+
+	function xztest(filename){
+		window.location.href="/erp/fileDownLoad/"+filename;
+	}
 	</script>
 
 </head>
@@ -462,7 +543,7 @@
 				<ul class="dropdown-menu">
 					<li><a href="#" onclick="edittr()">修改</a></li>
 					<li><a href="#" onclick="deltr()">删除</a></li>
-					<li><a href="#">导入</a></li>
+					<li><a href="#" onclick="xztest()">导入</a></li>
 					<li><a href="#">批删除</a></li>
 				</ul>
 			</div>
@@ -548,6 +629,7 @@
 		<th>产品图片</th>
 		<th>单件实重</th>
 		<th>单件尺寸</th>
+		<th>单件体积</th>
 		<th>件数</th>
 		<th>货物总重</th>
 		<th>货物总体积</th>
@@ -563,11 +645,16 @@
 		<td th:text="${data.billDate}">女</td>
 		<td th:text="${data.custName}">女</td>
 		<td th:text="${data.sendAddress}">女</td>
+		<td th:text="${data.collAddress}">女</td>
 		<td th:text="${data.remark}">18</td>
 		<td th:text="${data.item}">18</td>
-		<td th:text="${data.itemImg}">18</td>
+		<td>
+			<a th:onclick="|ShowfileList(${data.fid})|" data-toggle="modal" data-target="#Showfile" th:if="${data.entryId == 1}" th:text="${data.itemImg}"></a>
+		</td>
+		<!--<td th:text="${data.itemImg}" style="color: #2e6da4">18</td>-->
 		<td th:text="${data.oneWeight}">18</td>
 		<td th:text="${data.oneSize}">18</td>
+		<td th:text="${data.oneVolume}">18</td>
 		<td th:text="${data.qty}">18</td>
 		<td th:text="${data.weightSum}">18</td>
 		<td th:text="${data.volumeSum}">18</td>
@@ -576,6 +663,43 @@
 		<td th:text="${data.rowRemark}">18</td>
 	</tr>
 </table>
+</div>
+
+<!-- 模态框声明  组件选择-->
+<div class="modal fade" id="Showfile" style="height:600px;">
+	<!-- 窗口声明 -->
+	<div class="modal-dialog" style="width:100%;">
+		<!-- 内容声明 -->
+		<div class="modal-content">
+
+			<div class="modal-header" style="height:50px;">
+				<button class="close" data-dismiss="modal"><span>&times;</span></button>
+				<h6 class="modal-title">
+					文件清单
+				</h6>
+			</div>
+			<div class="modal-body">
+				<div class="container-fluid">
+					<form class="form-inline" id="bom_list">
+
+						<div>
+							<tr>
+								<td>name</td>
+							</tr>
+							<tr>
+								<td>name</td>
+							</tr>
+							<tr>
+								<td>name</td>
+							</tr>
+						</div>
+
+					</form>
+				</div>
+			</div>
+
+		</div>
+	</div>
 </div>
 
 <link href="/erp/style/DatePicker2/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />

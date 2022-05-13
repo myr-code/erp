@@ -35,6 +35,4 @@ public interface CustomerCrmMapper {
 
     //删除
     Integer delCustCrm(Integer fid);
-
-
 }

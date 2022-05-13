@@ -32,4 +32,17 @@ public class OrderCrm {
   private String createDate;
   private String editDate;
 
+  public void setItemImg(String itemImg) {
+    if(itemImg.length() > 0){
+      if(itemImg.length() - itemImg.replace(",", "").length() == 0){
+        this.itemImg = "共1个文件";
+      }else {
+        int count  = (itemImg.length() - itemImg.replace(",", "").length())+1;
+        this.itemImg = "共"+count+"个文件";
+      }
+    }else {
+      this.itemImg = "共0个文件";
+    }
+
+  }
 }

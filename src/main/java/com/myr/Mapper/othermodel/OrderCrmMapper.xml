@@ -106,5 +106,9 @@
 	</insert>
 
 
+	<select id="getfileNameById" resultType="string">
+		select itemImg from t_order_crm where fid = #{fid} limit 1
+	</select>
+
 
 </mapper>

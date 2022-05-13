@@ -1,7 +1,9 @@
 package com.myr.Controller;
 
+import com.myr.Bean.LogUser;
 import com.myr.Bean.User;
 import com.myr.Service.UserService;
+import com.myr.utils.IPUtils;
 import com.myr.utils.MessageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -25,12 +27,19 @@ public class UserController {
     //01-登录 user_login
     @RequestMapping("/user_login")
     @ResponseBody
-    public MessageRequest login(User user, HttpSession session, Model model,HttpServletRequest request) {
+    public MessageRequest login(User user, HttpSession session, Model model,HttpServletRequest request) throws Exception {
         String contextPath = request.getServletContext().getContextPath();
 
-        System.out.println(contextPath);
+        //存储IP
+        String userip = IPUtils.getOutIPV4();//用户IP
+        LogUser logUser = new LogUser();
+        logUser.setType("登录");
+        logUser.setUser(user.getEmail());
+        logUser.setUserIp(userip);
+        userService.log_user_add(logUser);
 
-        System.out.println("要登录的用户=" + user);
+        /*System.out.println(contextPath);
+        System.out.println("要登录的用户=" + user);*/
         User dbuser = userService.getUserByName(user);
         MessageRequest msg = null;
         if(dbuser != null){
@@ -44,6 +53,7 @@ public class UserController {
         }
         return msg;
     }
+
 
     //02-退出登录 user_logout
     @RequestMapping("/logout")

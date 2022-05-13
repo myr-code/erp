@@ -8,5 +8,12 @@
         select * from t_user where email=#{email} and password = #{password} and fdisable = 0
     </select>
 
+    <insert id="log_user_add">
+        INSERT INTO t_log_user
+            (`fid`, `type`, `user`, `object`, `userIp`, `createtime`)
+            VALUES
+            (NULL, #{type}, #{user}, #{object}, #{userIp}, now());
+    </insert>
+
 
 </mapper>

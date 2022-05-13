@@ -73,4 +73,9 @@ public class OrderCrmServiceImpl implements OrderCrmService {
         }
         return 1;
     }
+
+    @Override
+    public String getfileNameById(Integer fid) {
+        return orderCrmMapper.getfileNameById(fid);
+    }
 }

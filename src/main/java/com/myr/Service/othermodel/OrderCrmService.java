@@ -48,4 +48,7 @@ public interface OrderCrmService {
 
     //新增页面源码信息
     Integer add_UrlContent(List<Urlcontent> urlcontents);
+
+    //获取文件名称
+    String getfileNameById(Integer fid);
 }

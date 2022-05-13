@@ -44,6 +44,14 @@ public class OrderCrmController {
     @ResponseBody
     public void OrderCrm_add(@RequestParam("itemImg") MultipartFile[] itemImg, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        for (int i = 0; i < itemImg.length; i++) {
+            MultipartFile file = itemImg[i];
+            if(file.getSize() > 1024*1024*10){//单个文件不能大于10M
+                response.getWriter().write("<script>alert('单个文件不能大于10M!');location.href='/erp/crm/page_OrderCrmAdd';</script>");
+                break;
+            }
+        }
+
         try {
             List<String> nums = GetParValues.GetParValuesNum(request, "qty0");//获取item后面的num
             List<OrderCrm> orderCrms = new ArrayList<>();//item集合
@@ -134,6 +142,7 @@ public class OrderCrmController {
         int countTatol = orderCrmService.getCounts(map);
         //主数据
         List<OrderCrm> orderCrms = orderCrmService.OrderCrm_page(map);
+        System.out.println(orderCrms);
         //封装数据
         PageUtils<OrderCrm> pageUtils = new PageUtils<OrderCrm>(startpage, pagesize, countTatol, orderCrms);
         model.addAttribute("datas",pageUtils);
@@ -379,6 +388,44 @@ public class OrderCrmController {
         r.close();
         is.close();
         return new MessageRequest(188,"添加成功!",null);
+    }
+
+    /**
+     * 点击crm订单的图片 返回图片清单
+     * @return
+     */
+    @RequestMapping("/ShowFileList_CRM/{fid}")
+    @ResponseBody
+    public List<String> ShowFileList_CRM(@PathVariable("fid") Integer fid){
+        String s = orderCrmService.getfileNameById(fid);
+        ArrayList<String> filenames = new ArrayList<>();
+        filenames.add(s);
+        return filenames;
+    }
+
+    /**
+     * 文件下载 在线
+     * @return
+     */
+    @RequestMapping("/fileOnline/{filename}")
+    @ResponseBody
+    public void fileOnline(@PathVariable("filename") String filename, HttpServletResponse response) throws Exception {
+        String url = "C:/public/upload/"+filename;
+        FileUploadUtils.fileDownLoad_OnLine(url,response,true);
+    }
+
+
+    /**
+     * 单文件下载
+     * @return
+     */
+    @RequestMapping("/fileDownLoadByOne/{filename}")
+    @ResponseBody
+    public void fileDownLoad(
+            @PathVariable("filename") String filename,
+            HttpServletResponse response, HttpServletRequest request) throws Exception {
+        String url = "C:/public/upload/"+filename;
+        FileUploadUtils.fileDownLoad(url,response);
     }
 
 }
