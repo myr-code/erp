@@ -46,8 +46,8 @@ public class OrderCrmController {
 
         for (int i = 0; i < itemImg.length; i++) {
             MultipartFile file = itemImg[i];
-            if(file.getSize() > 1024*1024*10){//单个文件不能大于10M
-                response.getWriter().write("<script>alert('单个文件不能大于10M!');location.href='/erp/crm/page_OrderCrmAdd';</script>");
+            if(file.getSize() > 1024*1024*10 || itemImg.length >10){//单个文件不能大于10M 全部文件不能大于10个
+                response.getWriter().write("<script>alert('单个文件不能大于10M或全部文件不能多于10个!');location.href='/erp/crm/page_OrderCrmAdd';</script>");
                 break;
             }
         }
@@ -162,7 +162,7 @@ public class OrderCrmController {
         System.out.println(mrpPurReq);
         model.addAttribute("data",mrpPurReq);
         model.addAttribute("datas",purReqById);
-        return "/mrp/edit/PurReqEdit";
+        return "/crm/edit/OrderCrmEdit";
     }
 
     //更新

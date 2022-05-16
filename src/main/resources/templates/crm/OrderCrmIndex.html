@@ -85,7 +85,7 @@
 		$("tr").slice(1).dblclick(function () {
 			var chks = $("input[type='checkbox']",this);
 			var fid = chks.val();
-			window.parent.topage('left50103','采购申请-编辑','PurReqEdit/'+fid,0);
+			window.parent.topage('left120303','货代CRM-编辑','OrderCrmEdit/'+fid,0);
 		});
 
 		//除了表头（第一行）以外所有的行添加click事件.
@@ -205,7 +205,7 @@
 		}else{
 			var fid = $("input[type='checkbox']:checked").val();
 			/*location.href="CustomerEdit/"+fid;*/
-			window.parent.topage('left50103','采购申请-编辑','PurReqEdit/'+fid,0);
+			window.parent.topage('left120303','货代CRM-编辑','OrderCrmEdit/'+fid,0);
 		}
 	}
 
@@ -543,7 +543,7 @@
 				<ul class="dropdown-menu">
 					<li><a href="#" onclick="edittr()">修改</a></li>
 					<li><a href="#" onclick="deltr()">删除</a></li>
-					<li><a href="#" onclick="xztest()">导入</a></li>
+					<li><a href="#">导入</a></li>
 					<li><a href="#">批删除</a></li>
 				</ul>
 			</div>

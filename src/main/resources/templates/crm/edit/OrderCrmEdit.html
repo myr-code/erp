@@ -1,0 +1,1208 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="/erp/style/js/jquery.min.js"></script>
+<script src="/erp/style/js/bootstrap.min.js"></script>
+<link href="/erp/style/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+	//主页的项目名
+	var path = $(window.parent.document.body).find("#path").val();
+
+	//查询表格选择复选框监听
+	$(function () {
+		//已选择item页面  除了表头（第一行）以外所有的行添加click事件.
+		$(document).on("click",".panel-infos tr",function(){
+			var chks = $("input[type='checkbox']",this);
+			var tag = $(this).attr("tag");
+			if(tag=="selected"){
+				// 之前已选中，设置为未选中
+				$(this).attr("tag","");
+				chks.prop("checked",false);
+				$(this).css("backgroundColor", "#fff");
+			}else{
+				// 之前未选中，设置为选中
+				$(this).attr("tag","selected");
+				chks.prop("checked",true);
+				$(this).css("backgroundColor", "#d0e9c6");
+			}
+		});
+
+		//选择item页面 行绑定复选框
+		$(document).on("click",".modal-body tr",function(){
+			var chks = $("input[type='checkbox']",this);
+			var tag = $(this).attr("tag");
+			if(tag=="selected"){
+				// 之前已选中，设置为未选中
+				$(this).attr("tag","");
+				chks.prop("checked",false);
+				$(this).css("backgroundColor", "#fff");
+			}else{
+				// 之前未选中，设置为选中
+				$(this).attr("tag","selected");
+				chks.prop("checked",true);
+				$(this).css("backgroundColor", "#d0e9c6");
+			}
+		});
+
+	});
+
+	//日期获取
+	var end = "";
+	var start = "";
+	window.onload = function(){
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth()+1;
+		var day = date.getDate();
+		if(month<10){
+			month = "0"+month+""
+		}
+		if(day<10){
+			day = "0"+day
+		}
+		end = year+"-"+month+"-"+day;
+		start = year+"-"+month+"-01";
+		//$(".form_date").val(start);
+		$("input[name='billDate']").val(end);
+		//document.getElementById('date_end').value = end;
+		//document.getElementById('date_start').value = start;
+	}
+
+	$(function () {
+		var date = new Date();
+		var year = date.getFullYear();
+		var month = date.getMonth() + 1;
+		var day = date.getDate();
+		if (month < 10) {
+			month = "0" + month + ""
+		}
+		if (day < 10) {
+			day = "0" + day
+		}
+		end = year + "-" + month + "-" + day;
+		start = year + "-" + month + "-01";
+		//$(".form_date").val(start);
+		$("input[name='billDate']").val(end);
+	});
+
+	//页签切换
+	function navcut(obj,infoid){
+		//1.移除活动 隐藏模块
+		$(".nav-tabs li").removeClass('active');
+		$(".panel-infos").hide();
+		//2.显示对象 显示模块
+		$(obj).addClass('active');
+		$("#"+infoid).show();
+		
+		if(infoid=="contact"){
+			$(".btn-row").show();
+		}else{
+			$(".btn-row").hide();
+		}
+	}
+
+	//删除行
+	function del_row(obj){
+		$(obj).parent().parent().remove();
+		total();
+	}
+	
+	//关闭拟态框
+	function closemodal(){
+		$("#myModal").modal('hide');
+	}
+
+	//表单效验
+	function fromcheck(){
+		//检测名称
+		if($("select[name='custName']").val() == -1){
+			alert("请选择客户！");
+			return false;
+		}
+		//是否有选择行检测
+		if($(".num").size() == 0){
+			alert("请选择产品！");
+			return false;
+		}
+		//产品名称、数量检测
+		var trlens = gettrfid();
+		for (id in trlens){
+			if($("#qty0"+trlens[id]).val()<=0){
+				alert("请输入数量！");
+				$("#qty0"+trlens[id]).focus();
+				return false;
+			}
+			if($("#item0"+trlens[id]).val()<=0){
+				alert("请输入产品名称！");
+				$("#item0"+trlens[id]).focus();
+				return false;
+			}
+		}
+
+		$("#f1").submit();
+		//提交表单
+		/*var f = $("#f1").serialize();*/
+
+		/*for (id in trlens){
+			var itemImg = $("#itemImg0"+trlens[id]).serialize();
+			f = Object.assign(f,itemImg);
+		}
+
+		alert(JSON.stringify(itemImg));
+		return false;*/
+		/*$.ajax({
+			url:"/erp/OrderCrm_add",
+			data:f,
+			type:"post",
+			dataType:"json",
+			success:function(result){
+				if(result.code==200){
+					alert("添加成功！");
+					/!*location.href="/erp/crm/page_OrderCrmAdd";*!/
+				}else if(result.code==500){
+					alert("添加失败!");
+					/!*location.href="/erp/mrp/page_PurReqAdd";*!/
+				}
+				//alert(JSON.stringify(result));
+			}
+		});*/
+
+	}
+
+	//启动加载
+	var custJOSN = null;
+	$(function (){
+		//select name="" custId settleId depId depStaffId
+		//客户
+		$.ajax({
+			url:"/erp/custCrm_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='custName']").append("<option value='"+result[i].name+"'>"+result[i].name+"</option>");
+				}
+				//custJOSN = result;//预存 选择后填写地址
+
+			}
+		});
+
+		/*//供应商
+		$.ajax({
+			url:"/erp/Supplier_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='suppId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});*/
+
+		//部门
+		$.ajax({
+			url:"/erp/Depart_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='depId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
+
+		//职员
+		$.ajax({
+			url:"/erp/Staff_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='billStaf']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});
+
+		/*//结算方式
+		$.ajax({
+			url:"/erp/SettMethod_all",
+			type:"post",
+			dataType:"json",
+			success:function (result) {
+				//alert(JSON.stringify(result));
+				for(var i=0;i<result.length;i++){
+					$("select[name='settleId']").append("<option value='"+result[i].fid+"'>"+result[i].name+"</option>");
+				}
+
+			}
+		});*/
+	});
+
+	//点击来源 获取item信息
+	function getitem(){
+		var sourcetype = $("#sourcetype").val();
+		var cnm = $("input[name='cnm']").val();
+		var pagesize = $("#pagesize").val();//每页条数
+
+		var f = {cnm:cnm,pagesize:pagesize};
+		if(sourcetype == "库存产品"){
+			reqappend(f);
+		}
+		if(sourcetype == "BOM主件"){
+			f.bom = "only";
+			reqappend(f);
+		}
+	}
+
+	//请求并插入items
+	function reqappend(data){
+		//清空所有table tr 除了第一行
+		//$("table[id='items']").empty();
+		$("#items tr:not(:first)").empty("");
+
+		//请求并插入
+		$.ajax({
+			url:"/erp/Item_queryByCNM?id="+new Date(),
+			data: data,
+			type:"post",
+			dataType:"json",
+			success:function(result){
+				for(var i=0;i<result.data.length;i++){
+					var fid = result.data[i].fid;
+					var code = result.data[i].code;
+					var name = result.data[i].name;
+					var model = result.data[i].model;
+					var custItemCode = result.data[i].custItemCode;
+					var custItemModel = result.data[i].custItemModel;
+					var saleUnitIdName = result.data[i].saleUnitIdName;
+					var salePrice = result.data[i].salePrice;
+					var purPrice = result.data[i].purPrice;
+					var defaultCustomerIdName = result.data[i].defaultCustomerIdName;
+					var defaultStorehouseIdName = result.data[i].defaultStorehouseIdName;
+					var staffIdName = result.data[i].staffIdName;
+					var sourFid = 0;
+					var sourBillNo = '';
+					var sourEntryId = 0;
+					var apphtml = "<tr>" +
+							"<td id='fid"+fid+"'><input type='checkbox' value='"+fid+"' ></td>" +
+							"\t\t\t\t\t\t\t\t<td id='code"+fid+"'>"+code+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='name"+fid+"'>"+name+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='model"+fid+"'>"+model+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='custItemCode"+fid+"'>"+custItemCode+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='custItemModel"+fid+"'>"+custItemModel+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='saleUnitIdName"+fid+"'>"+saleUnitIdName+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='qty"+fid+"'><input type='text' onchange='checkNum(this)' style='width:60px;'></td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='salePrice"+fid+"'>"+salePrice+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='purPrice"+fid+"'>"+purPrice+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='defaultCustomerIdName"+fid+"'>"+defaultCustomerIdName+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='defaultStorehouseIdName"+fid+"'>"+defaultStorehouseIdName+"</td>\n" +
+							"\t\t\t\t\t\t\t\t<td id='staffIdName"+fid+"'>"+staffIdName+"</td>\n" +
+							"<input type='hidden' id='sourFid"+fid+"' name='sourFid"+fid+"' value='"+sourFid+"' >"+
+							"<input type='hidden' id='sourBillNo"+fid+"' name='sourBillNo"+fid+"' value='"+sourBillNo+"' >"+
+							"<input type='hidden' id='sourEntryId"+fid+"' name='sourEntryId"+fid+"' value='"+sourEntryId+"' >"+
+							"\t\t\t\t\t\t\t</tr>";
+					$("table[id='items']").append(apphtml);
+					var startpage = result.startpage;
+					var pagecount = result.pagecount;
+					var countTatol = result.countTatol;
+					$("#startpage").text(startpage);
+					$("#pagecount").text(pagecount);
+					$("#countTatol").text(countTatol);
+					$("#nowpage").text(startpage);
+
+				}
+
+				//alert(JSON.stringify(result));
+			}
+		});
+	}
+
+	//获取已存在行的fid
+	function gettrfid(){
+		var arr = new Array();
+		var i = 0;
+		$.each($(".num"), function() {
+			arr[i] = $(this).text();
+			i++;
+		});
+		return arr;
+	}
+
+	//获取checkbox选中的value数据
+	var trlen = 0;//行号累计
+	var arr = new Array();
+	function getHabit() {
+		//$('input:checkbox:checked') 等同于 $('input[type=checkbox]:checked')
+		var ids  = new Array();
+		var i = 0;
+		//获取选中的id
+		$.each($('input:checkbox:checked'), function() {
+			ids[i] = $(this).val();
+			i++;
+		});
+
+		//添加到行
+		for(j = 0,len=ids.length; j < len; j++) {
+
+			//行号
+			trlen = trlen+1;
+			var fid = $("#fid"+ids[j]+" input").val();
+			var code = $("#code"+ids[j]).text();
+			var name = $("#name"+ids[j]).text();
+			var model = $("#model"+ids[j]).text();
+			var custItemCode = $("#custItemCode"+ids[j]).text();
+			var custItemModel = $("#custItemModel"+ids[j]).text();
+			var saleUnitIdName = $("#saleUnitIdName"+ids[j]).text();
+			var qty = $("#qty"+ids[j]).text();
+			if(qty <= 0){
+				qty = 1;
+			}
+			var salePrice = $("#salePrice"+ids[j]).text();
+			var amt = qty*salePrice;
+			var sourFid = $("#sourFid"+ids[j]).val();
+			var sourBillNo = $("#sourBillNo"+ids[j]).val();
+			var sourEntryId = $("#sourEntryId"+ids[j]).val();
+			var sourcetype = $("#sourcetype").val();
+			//alert(qty);
+
+			var insertrow = "<tr>"+
+					"<input type='hidden' name='itemId0"+fid+trlen+"' value='"+fid+"' style='width:20px;'>"+
+					"<td>"+
+					"<span class='num'>"+trlen+"</span>"+
+					"<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>"+
+					"</td>"+
+					"<td>"+code+"<input type='hidden' name='itemCode0"+fid+trlen+"' value='"+code+"' style='width:20px;'></td>"+
+					"<td>"+name+"<input type='hidden' name='itemName0"+fid+trlen+"' value='"+name+"' style='width:20px;'></td>"+
+					"<td>"+model+"<input type='hidden' name='itemModel0"+fid+trlen+"' value='"+model+"' style='width:20px;'></td>"+
+					"<td>"+custItemCode+"<input type='hidden' name='custItemCode0"+fid+trlen+"' value='"+custItemCode+"' style='width:20px;'></td>"+
+					"<td>"+custItemModel+"<input type='hidden' name='custItemModel0"+fid+trlen+"' value='"+custItemModel+"' style='width:20px;'></td>"+
+					"<td>"+saleUnitIdName+"<input type='hidden' name='unitName0"+fid+trlen+"' value='"+saleUnitIdName+"' style='width:20px;'></td>"+
+					"<td><input type='text' name='custOrderNum0"+fid+trlen+"' style='width:100px;'></td>"+
+					"<td><input type='text' id='qty_"+trlen+"' name='qty0"+fid+trlen+"' value='"+qty+"' class='checkNum4' onchange='checkNum(this,'qty',"+trlen+")' style='width:60px;'></td>"+
+					"<td><input type='text' name='batchNumber0"+fid+trlen+"' style='width:60px;'></td>"+
+					"<td><input type='text' id='taxPrice_"+trlen+"' name='taxPrice0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'tax',"+trlen+")' style='width:80px;'></td>"+
+					/*"<td><input type='text' id='taxPriceNo_"+trlen+"' name='taxPriceNo0"+fid+trlen+"' value='"+salePrice+"' class='checkNum4' onchange='checkNum4(this,'taxno',"+trlen+")' style='width:80px;'></td>"+
+					*/"<td id='taxamt"+trlen+"'>"+amt+"</td>"+
+					"<td>"+
+					"<input style='width:90px;' name='finishDate0"+fid+trlen+"' class='form_date' readonly/>"+
+					"</td>"+
+					"<td><input type='text' name='rowRemark0"+fid+trlen+"' style='width:40px;'></td>"+
+					"<td>"+sourcetype+"<input type='hidden' name='sourType0"+fid+trlen+"' value='"+sourcetype+"'></td>"+
+					"<input type='hidden' name='sourFid0"+fid+trlen+"' value='"+sourFid+"' >"+
+					"<input type='hidden' name='sourBillNo0"+fid+trlen+"' value='"+sourBillNo+"' >"+
+					"<input type='hidden' name='sourEntryId0"+fid+trlen+"' value='"+sourEntryId+"' >"+
+					"</tr>";
+			$(".panel-infos table").append(insertrow);
+			arr.push(trlen);
+
+			//重新加载时间控件
+			$('.form_date').datetimepicker({
+				language : 'zh-CN',
+				format : 'yyyy-mm-dd',//日期格式
+				weekStart: 1,
+				todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				minView: 2,
+				forceParse: 0
+			});
+			$("input[name='finishDate0"+fid+trlen+"']").val(end);//时间赋予
+
+		}
+		//window.alert("你选了" + $('input[type=checkbox]:checked').length + "个,其中有" + ids);
+		closemodal();//关闭拟态框
+		ratejs('rate',-1);//重新根据汇率计算不含税价
+
+	}
+
+	//正整数判断 var regex = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;
+	function checkNum(obj,type,fid){
+		var value = obj.value;
+		var re = /^[1-9]{1}[0-9]*$/;//正整数
+		if(!re.test(value)){
+			obj.value=0;
+			alert("请输入正整数！");
+		}
+
+		//2、计算
+		ratejs(type,fid);
+	}
+
+	//正数小数点4位判断 var regex = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;
+	function checkNum4(obj,type,fid){
+		var value = obj.value;
+		var re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+		if(!re.test(value)){
+			obj.value=0;
+			alert("请输入正确数值！(4位小数点)");
+		}
+
+		//2、计算
+		ratejs(type,fid);
+	}
+
+	//正数小数点4位判断 全局试用
+	$(document).on("change",".checkNum4",function (e){
+		var target=e.target||e.srcElement;//获取当前点击的对象
+		var e_id = target.id;
+		var str = e_id.split('_');//id+序号
+		var type = str[0];
+		var fid = str[1];
+
+		var value = $("#"+e_id+"").val();
+		var re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+		if(!re.test(value)){
+			$("#"+e_id+"").val(0);
+			alert("请输入正确数值！(4位小数点)");
+		}
+
+
+		//2、计算
+		ratejs(type,fid);
+
+	});
+
+	//小数点四舍五入 数值 位数
+	function decimal(num,v){
+		var vv = Math.pow(10,v);
+		return Math.round(num*vv)/vv;
+	}
+
+	//合计
+	function total(){
+		var rate = $("input[name='rate']").val();
+		rate = rate == null || rate == ''?0:rate;
+		var taxAmtTotal = 0;
+		var taxAmtnoTotal = 0;
+
+		var trlens = gettrfid();
+		for (id in trlens){
+			taxAmtTotal += parseFloat($("#taxamt"+trlens[id]).text());
+		}
+		taxAmtnoTotal = taxAmtTotal/(1+(rate/100));
+
+		/*$('.panel-infos tr').each(function() {
+			$(this).find('td:eq(11)').each(function(){
+				taxAmtTotal += parseFloat($(this).text());
+			});
+		});*/
+		$("#taxAmtTotal").text(decimal(taxAmtTotal,4));//含税金额合计
+		$("#taxAmtnoTotal").text(decimal(taxAmtnoTotal,4));//b不含税金额合计
+	}
+
+	//计算
+	function ratejs(type,fid){
+		var taxPrice=$("#taxPrice_"+fid+"").val();//当前含税单价
+		var taxPriceNo = $("#taxPriceNo_"+fid+"").val();//当前不含税单价
+		var qty = $("#qty_"+fid+"").val();//当前数量
+		var rate = $("input[name='rate']").val();//当前税率
+		rate = rate == null || rate == ''?0:rate;
+		var amt = $("#taxamt"+fid+"").text();//当前含税金额
+		//alert(taxPrice+"=="+qty);
+
+		var taxPriceNoup = taxPrice/(1+(rate/100));
+		var taxPriceup = taxPriceNo*(1+(rate/100));
+
+		if(type=="qty"){//数量改变
+			$("#taxamt"+fid+"").text( decimal(qty*taxPrice,4) );//1、含税金额更新
+		}else if(type=="taxPrice"){//含税单价改变
+			$("#taxPriceNo_"+fid+"").val( decimal(taxPriceNoup,4) );//1、不含税单价更新
+			$("#taxamt"+fid+"").text( decimal(qty*taxPrice,4) );//2、含税金额更新
+		}else if(type=="taxPriceNo"){//不含税单价改变
+			$("#taxPrice_"+fid+"").val( decimal(taxPriceup,4) );//1、含税单价跟新
+			$("#taxamt"+fid+"").text( decimal(qty*taxPriceup,4) );//2、含税金额更新
+		}else if(type=="rate"){//税率改变
+			for (id in arr){
+				ratejs('taxPrice',arr[id]);
+			}
+		}
+		total();//合计
+	}
+
+	//获取联系方式 根据客户id
+	function getcontact(){
+		var custId = $("select[name='custId']").val();
+		/*alert(custId);
+		alert(custJOSN.length);*/
+		for(var i=0;i<custJOSN.length;i++){
+			if(custJOSN[i].fid == custId){
+				var rate = custJOSN[i].vat_rate;
+				if(rate!=null){
+					$("#rate").val(rate);
+				}else{
+					$("#rate").val(0);
+				}
+				$("#contact_bill").val(custJOSN[i].contact);
+				$("#phone_bill").val(custJOSN[i].phone);
+				$("#address_bill").val(custJOSN[i].address);
+			}
+		}
+	}
+
+	//翻页获取items
+	function getItemByPage(page){
+		var startpage = parseFloat($("#nowpage").text());//当前页数
+		var pagesize = parseFloat($("#pagesize").val());//每页条数
+		var pagecount = parseFloat($("#pagecount").text());//总页数
+		var cnm = $("input [name='cnm']").val();
+		cnm = cnm == null || cnm == ""?"":cnm;
+		var data = {};
+		//alert(startpage+"-"+pagesize+"-"+cnm);
+		if(page == 'first'){
+			data.startpage = 1;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		if(page == 'previous'){
+			data.startpage = (startpage-1)>0?(startpage-1):1;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		if(page == 'next'){
+			data.startpage = (startpage+1)>pagecount?pagecount:(startpage+1);
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		if(page == 'last'){
+			data.startpage = pagecount;
+			data.pagesize = pagesize;
+			data.cnm = cnm;
+		}
+		//alert(data);
+		reqappend(data);
+	}
+
+	//更新table高度
+	function upd_clientheight(type){
+		if(type == 'show'){
+			var clientHeight = document.body.clientHeight-220;//可用页面高度-90(top84-底部预留6)
+		}else if(type == 'close'){
+			var clientHeight = document.body.clientHeight-180;//可用页面高度-90(top84-底部预留6)
+		}
+
+		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
+	}
+
+	//页面头缩小
+	function page_close(){
+		$("#open").show();
+		$("#close").hide();
+		$("#panel-body-header").hide();
+		upd_clientheight('close');
+	}
+
+	//页面头扩大
+	function page_show(){
+		$("#close").show();
+		$("#open").hide();
+		$("#panel-body-header").show();
+		upd_clientheight('show');
+	}
+
+	function insertrow(){
+		//行号
+		trlen = trlen+1;
+		var insertrow = "<tr>"+
+				"<td>"+
+				"<span class='num'>"+trlen+"</span>"+
+				"<span class='glyphicon glyphicon-minus' onclick='del_row(this)'></span>"+
+				"</td>"+
+
+				"<td><input type='text' name='item0"+trlen+"' id='item0"+trlen+"' style='width:50px;'></td>"+
+				/*"<td><input type='text' name='itemImg0"+trlen+"' style='width:50px;'></td>"+*/
+				/*"<td>" +
+					"<form class='am-form am-form-horizontal' class='itemImg' method='post' enctype='multipart/form-data'>"+
+						"<input type='file' name='itemImg0"+trlen+"' id='itemImg0"+trlen+"' required multiple>"+
+					"</form>" +
+				"</td>"+*/
+				"<td><input type='text' name='oneWeight0"+trlen+"' id='oneWeight0"+trlen+"' value='0' class='checkAndSum' onchange_diy='oneWeight0"+trlen+"_=_"+trlen+"_=_weightPageSum' style='width:50px;'></td>"+
+
+				"<td><input type='text' name='oneSize0"+trlen+"' id='oneSize0"+trlen+"' value='0*0*0' class='sizeCheck' onchange_diy='oneSize0"+trlen+"_=_"+trlen+"' style='width:50px;'></td>"+
+				"<td><input type='text' name='oneVolume0"+trlen+"' id='oneVolume0"+trlen+"' value='0' style='width:50px;'></td>"+
+				"<td><input type='text' name='qty0"+trlen+"' id='qty0"+trlen+"' value='0' class='checkNum4' onchange='checkAndSum(this,'oneWeight0"+trlen+"','qty0"+trlen+"','weightSum0"+trlen+"','weightPageSum')' style='width:50px;'></td>"+
+				"<td><input type='text' name='weightSum0"+trlen+"' id='weightSum0"+trlen+"' value='0' style='width:50px;'></td>"+
+				"<td><input type='text' name='volumeSum0"+trlen+"' id='volumeSum0"+trlen+"' value='0' style='width:50px;'></td>"+
+				"<td><input type='text' name='purpose0"+trlen+"' style='width:50px;'></td>"+
+				"<td><input type='text' name='bjhd0"+trlen+"' style='width:50px;'></td>"+
+				"<td><input type='text' name='rowRemark0"+trlen+"' style='width:50px;'></td>"+
+
+				"</tr>";
+		$(".panel-infos table").append(insertrow);
+		arr.push(trlen);
+	}
+
+	//单件重量监听  1、检查数值 2、单行合计 3、单页小计  全局试用
+	$(document).on("change",".checkAndSum",function (e){
+		var target=e.target||e.srcElement;
+		var onchange_diy = target.getAttribute("onchange_diy");
+		var pars = onchange_diy.split('_=_');
+
+		//1、数值验证
+		var re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+		if(!re.test(target.value)){
+			target.value=0;
+			alert("请输入正确数值！(4位小数点)");
+			return false;
+		}
+
+		/*alert(pars.toString());*/
+		//参1：this, 参2:后缀数值, 参3：页面合计字段id
+		checkAndSum(pars[0],pars[1],pars[2]);
+
+	});
+
+	//1、检查数值 2、单行合计 3、单页小计 参1：当前对象 参2：合计对象 参3：小计对象
+	function checkAndSum(thisObj1,rownum,pageSumObj){
+		//1、当前数值验证 4位小数
+		//doubleCheck($("#"+thisObj1+"").val(),4);
+
+		//2、当行合计
+		var sj1 = $("#oneWeight0"+rownum+"").val();//单件重量  行内第一个计算值
+		var sj2 = $("#qty0"+rownum+"").val();//件数 行内第二个计算值
+		$("#weightSum0"+rownum+"").val( decimal(sj1*sj2,4) );//1、行内合计
+
+		//3、页面合计
+		PageSum("weightSum0",pageSumObj);
+	}
+
+	//小数验证  obj:判断的值 size:判断的位数
+	function doubleCheck(obj,size){
+		/*var value = obj.value;*/
+		var value = obj;
+		var re;
+		if(size == 0){
+			re = /^[1-9]{1}[0-9]*$/;//正整数
+		}else if(size == 1){
+			re = /^([1-9]\d{0,15}|0)(\.\d{1,1})?$/;//正数1位小数点
+		}else if(size == 2){
+			re = /^([1-9]\d{0,15}|0)(\.\d{1,2})?$/;//正数2位小数点
+		}else if(size == 3){
+			re = /^([1-9]\d{0,15}|0)(\.\d{1,3})?$/;//正数3位小数点
+		}else if(size == 4){
+			re = /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/;//正数4位小数点
+		}else if(size == 5){
+			re = /^([1-9]\d{0,15}|0)(\.\d{1,5})?$/;//正数5位小数点
+		}else if(size == 6){
+			re = /^([1-9]\d{0,15}|0)(\.\d{1,6})?$/;//正数6位小数点
+		}
+
+		if(!re.test(value)){
+			obj.value=0;
+			alert("请输入正确数值！(4位小数点)");
+			return false;
+		}
+	}
+
+	//页面合计 参数1：合计列的id 参数2：合计目标的id
+	function PageSum(sumObj,tarObj){
+		var trlens = gettrfid();
+		var taxAmtTotal = 0;
+		for (id in trlens){
+			taxAmtTotal += parseFloat($("#"+sumObj+trlens[id]).val());
+		}
+
+		$("#"+tarObj).text(taxAmtTotal);//更新页面合计
+	}
+
+
+	/**
+	 * 1、尺寸验证
+	 * ①去空后只允许*、-、/的分隔符  replaceAll
+	 * ②3个数值的验证
+	 * ③单个体积字段、单行总体积字段、页面总体积字段合计
+	 */
+	//1、单件尺寸监听  全局试用
+	$(document).on("change",".sizeCheck",function (e){
+		var target=e.target||e.srcElement;
+		var onchange_diy = target.getAttribute("onchange_diy");
+		var pars = onchange_diy.split('_=_');
+
+		//参1：this, 参2：单件体积
+		sizeCheck(target.value,pars[1]);
+
+	});
+
+	//尺寸验证
+	function sizeCheck(obj,oneVolume){
+		//1。1、去空
+		var value = obj.replace(/\s*/g,"");
+
+		//1.2、只允许*、-、/的分隔符
+		var count = getCharCount("*",value) + getCharCount("-",value);
+		if(count != 2){
+			return false;
+		}
+
+		//2、验证3个数值是否正确  7*8*9
+		var firstindex = value.indexOf("*");
+		var firstNum = value.substring(0,firstindex);
+		//截取值  8*9
+		var jiequzhi = value.substring(firstindex+1,value.length);
+		var sendindex = jiequzhi.indexOf("*");
+		var sendtNum = jiequzhi.substring(0,sendindex);
+		//截取值
+		var threeNum = jiequzhi.substring(sendindex+1,value.length);
+		//验证数值
+		doubleCheck(firstNum,4);
+		doubleCheck(sendtNum,4);
+		doubleCheck(threeNum,4);
+
+		//3、单个体积字段、单行总体积字段、页面总体积字段合计计算
+		var oneVolumevalue = decimal(firstNum*sendtNum*threeNum,4);
+		var qtyvalue = $("#qty0"+oneVolume).val();//数量
+		$("#oneVolume0"+oneVolume).val( oneVolumevalue );//单个体积字段
+		$("#volumeSum0"+oneVolume).val( decimal( oneVolumevalue * qtyvalue,4) );//单行总体积字段
+		PageSum("volumeSum0","volumePageSum");
+
+	}
+
+	//得到字符串含有某个字符的个数   str为某字符串  char为某字符
+	function getCharCount(str,char){
+		var initStr = str;//初始值
+		var initLen = str.length;//初始长度
+		var updStr = initStr.replace(/\*/g, "");
+		updStr = updStr.replace(/\-/g, "");
+
+		/*var regex = new RegExp(char, 'g'); // 使用g表示整个字符串都要匹配
+		var result = str.match(regex);          //match方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。
+		var count=!result ? 0 : result.length;*/
+		return initLen-updStr.length;
+	}
+
+	//1、件数监听  全局试用 参1：this 参2：后缀数值
+	$(document).on("change",".qtyCheck",function (e){
+		var target=e.target||e.srcElement;
+		var onchange_diy = target.getAttribute("onchange_diy");
+		var pars = onchange_diy.split('_=_');
+
+		//参1：this, 参2：单件体积
+		sizeCheck(target.value,pars[1]);
+
+	});
+
+</script>
+
+<style type="text/css">
+
+	body{
+		background-color:#FCFCFC;
+	}
+	
+	.panel-body{
+		padding-top:0px;
+	}
+	
+	.panel-body .input-group{
+		margin-right:20px;
+		margin-top:5px;
+		width:200px;
+		float:left;
+	}
+	
+	.list-group-item{
+		padding:5px 10px;
+	}
+	
+	.list-group{
+		float:left;
+		margin-right:100px;
+	}
+	
+	.table{
+		float:left;
+		margin-top:1px;
+	}
+	
+	tr td,th{
+		text-align:center;
+		font-size:12px;
+		overflow: hidden; /*超过区域就隐藏*/
+		white-space: nowrap; /*规定段落中的文本不进行换行*/
+		text-overflow: ellipsis; /*显示省略符号来代表被修剪的文本。*/
+	}
+	
+	.glyphicon-minus{
+		display:none;
+	}
+	
+	tr td:hover .glyphicon-minus{
+		display:block;
+	}
+	
+	tr td:hover .num{
+		display:none;
+	}
+
+	.diylabel{
+		margin-top:10px;
+		margin-left:20px;
+		float:left;
+	}
+
+
+</style>
+
+<title>客户订单CRM-新增</title>
+</head>
+<body>
+
+
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<b>客户订单CRM-新增</b>
+		<!--<b style="margin-left:30px;">SO-201025001</b>-->
+		<div class="btn-group btn-group-sm p" role="group" aria-label="..." style="float:right;margin-top: -7px;">
+			<button type="button" onclick="fromcheck()" class="btn btn-default">提交</button>
+			<div class="btn-group btn-group-sm" role="group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Other
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#">提交并审核</a></li>
+					<li><a href="#">提交并新建</a></li>
+				</ul>
+			</div>
+			<div style="float:right;margin-top: 7px;margin-left: 15px;">
+				<button class="btn btn-info btn-xs">
+					<span class="glyphicon glyphicon-resize-small" id="close" onclick="page_close()"></span>
+					<span class="glyphicon glyphicon-resize-full" id="open" onclick="page_show()"></span>
+				</button>
+			</div>
+		</div>
+		
+	</div>
+
+	<form method="post" action="/erp/OrderCrm_add" id="f1" enctype="multipart/form-data">
+		<div class="panel-body" id="panel-body-header">
+
+			<!--<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button"><span class="glyphicon glyphicon-star" style="color:red;"></span>客户</button>
+				 </span>
+				<select name="custId" onchange="getcontact()" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+				　　<option value="-1">&#45;&#45; &#45;&#45;</option>
+				</select>
+			</div>-->
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">客户名称</button>
+				 </span>
+				<select name="custName" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+					　　<option value="-1">-- --</option>
+				</select>
+			</div>
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">单据日期</button>
+				 </span>
+				 <input name="billDate" class="form-control form_date" readonly style="background-color: #FFFFFF;"/><!--form-control  onFocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />-->
+			</div>
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">发货地址</button>
+				 </span>
+				<input type="text" name="sendAddress" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">收货地址</button>
+				 </span>
+				<input type="text" name="collAddress" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
+			</div>
+
+			<div class="input-group input-group-sm">
+				<span class="input-group-btn">
+					<button class="btn btn-info" type="button">备注</button>
+				 </span>
+				 <input type="text" name="remark" class="form-control" placeholder="PHONE" aria-describedby="basic-addon1">
+			</div>
+
+		</div>
+		
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">单据信息</div>
+			<div class="panel-body" style="padding-left: 0;">
+				<ul class="nav nav-tabs">
+					<li role="presentation" onclick="navcut(this,'contact')" class="active"><a href="#">产品</a></li>
+					<!-- <li role="presentation" onclick="navcut(this,'currency')"><a href="#">货币信息</a></li> -->
+					<li role="presentation" onclick="navcut(this,'otherinfo')"><a href="#">其他</a></li>
+
+					<li style="float:right;" class="btn-row">
+						<a href="#">
+							<!--<form class='am-form am-form-horizontal' method='post' enctype='multipart/form-data'>-->
+								<input type='file' name='itemImg' id='itemImg' required multiple>
+							<!--</form>-->
+						</a>
+					</li>
+					<li style="float:right;" class="btn-row">
+						<a href="#">
+							<!--<button class="btn btn-info btn-xs" onclick="getitem()" type="button" data-toggle="modal" data-target="#myModal">来源</button>-->
+							<button class="btn btn-info btn-xs" onclick="insertrow()" type="button">新增行</button>
+							<!--<button class="btn btn-info btn-xs" type="button" onclick="del_row()">删行</button>-->
+						</a>
+					</li>
+				</ul>
+				
+				<div class="panel-infos" id="contact">
+					<div id="table_main" style="overflow-x:auto;overflow-y:auto;">
+						<table id="mainTable" class="table table-striped table-bordered table-condensed table-hover" style="max-width:2000px;min-width: 1200px;">
+							<tr>
+								<th style="width:10px;">行号</th>
+								<th>产品</th>
+								<!--<th style="width: 100px">产品图片</th>-->
+								<th>单件实重</th>
+								<th>单件尺寸</th>
+								<th>单件体积</th>
+								<th>件数</th>
+								<th>货物总重</th>
+								<th>货物总体积</th>
+								<th>用途</th>
+								<th>报价货代</th>
+								<th>行备注</th>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body" style="padding:0;height:40px;">
+						<div class="diylabel">
+							<label>总重量:</label>
+							<label id="weightPageSum">0.00</label>
+						</div>
+						<div class="diylabel">
+							<label>总体积:</label>
+							<label id="volumePageSum">0.00</label>
+						</div>
+					</div>
+				</div>
+				
+				<!-- <div class="panel-infos" id="currency" hidden>
+					
+					<div class="input-group">
+					  <span class="input-group-btn">
+							<button class="btn btn-default" type="button">结算方式</button>
+					  </span>
+					  <select name="select" class="selectpicker show-tick form-control form-control-lg" data-live-search="true" data-actions-box="true">
+							<option value="">-- --</option>　　
+							<option value="等于">管理员</option>
+						　　<option value="大于">张三</option>
+						　　<option value="小于">李四</option>
+						</select>
+					</div>
+					
+				</div> -->
+				
+				<div class="panel-infos" id="otherinfo" hidden>
+					<div class="panel-body"><!--style="padding:0;margin-top:-20px;"-->
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">部门</button>
+						 </span>
+							<select name="depId" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+								<option value="-1">-- --</option>
+							</select>
+						</div>
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">业务员</button>
+						 </span>
+							<select name="billStaf" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+								<option value="-1">-- --</option>
+							</select>
+						</div>
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">制单</button>
+						 </span>
+							<input type="text" class="form-control" value="admin" disabled aria-describedby="basic-addon1">
+						</div>
+						<div class="input-group input-group-sm">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="button">审核</button>
+						 </span>
+							<input type="text" class="form-control" value="" disabled aria-describedby="basic-addon1">
+						</div>
+
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+	</form>
+</div>
+
+
+<!-- 模态框声明 -->
+	<div class="modal fade" id="myModal" style="height:600px;">
+		<!-- 窗口声明 -->
+		<div class="modal-dialog" style="width:100%;">
+			<!-- 内容声明 -->
+			<div class="modal-content">
+			
+				<div class="modal-header" style="height:50px;">
+					<button class="close" data-dismiss="modal"><span>&times;</span></button>
+					<h6 class="modal-title">
+						<select id="sourcetype" onchange="getitem()" style="height:30px;width:200px;float:left;" class="selectpicker show-tick form-control" data-live-search="true" data-actions-box="true">
+							<option value="库存产品">库存产品</option>
+							<option value="BOM主件">库存产品(BOM主件)</option>
+						</select>
+					</h6>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid">
+						<form class="form-inline">
+							<div class="form-group">
+								<input type="text" value="" NAME="cnm" class="form-control" placeholder="请输入物料编码、名称或型号" style="width:300px;">
+							</div>
+							<button type="button" onclick="getitem()" class="btn btn-info">查询</button>
+							<!--<button type="button" class="btn btn-info" style="margin-left:50%;">确定</button>-->
+							<button type="button" class="btn btn-info" style="margin-left:10px;" onclick="getHabit()">新增</button>
+						</form>
+
+						<div style="height:300px;overflow-x:auto;overflow-y:auto;">
+							<table id="items" class="table table-striped table-bordered table-condensed table-hover" >
+								<tr>
+									<th style="width:60px">选中</th>
+									<th>编码</th>
+									<th>名称</th>
+									<th>型号</th>
+									<th>客户编码</th>
+									<th>客户型号</th>
+									<th>销售单位</th>
+									<th>数量</th>
+									<th>销售价格</th>
+									<th>采购价格</th>
+									<th>默认客户</th>
+									<th>默认仓库</th>
+									<th>负责人</th>
+								</tr>
+							</table>
+						</div>
+						<center>
+							<a href="#" onclick="getItemByPage('first')">首页</a>
+							<a href="#" onclick="getItemByPage('previous')">上一页</a>
+							<span id="nowpage">1</span>
+							<a href="#" onclick="getItemByPage('next')">下一页</a>
+							<a href="#" onclick="getItemByPage('last')">尾页</a>
+							[<span id="startpage"></span>/<span id="pagecount"></span>]
+							共<span id="countTatol"></span>条
+							<select id="pagesize" onchange="getItemByPage('first')" class="selectpicker" data-live-search="true" data-actions-box="true">
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="50">50</option>
+								<option value="80">80</option>
+							</select>
+						</center>
+						
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+
+<link href="/erp/style/DatePicker2/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+<script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.min.js"></script>
+<script src="/erp/style/DatePicker2/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+	//选择后端item table
+	window.onload = function(){
+		var clientHeight = document.body.clientHeight-220;//可用页面高度-90(top84-底部预留6)
+		document.getElementById("table_main").style.maxHeight = clientHeight+"px";
+	}
+
+	//table 列框拉动改变列宽
+	var tTD;
+	var table = document.getElementById("mainTable");
+	console.log(table.rows[0].cells)
+	for (i = 0; i < table.rows[0].cells.length; i++) {
+		table.rows[0].cells[i].onmousedown = function() {
+			tTD = this;
+			if (event.offsetX > tTD.offsetWidth - 10) {
+				tTD.mouseDown = true;
+				tTD.oldX = event.x;
+				tTD.oldWidth = tTD.offsetWidth;
+			}
+		};
+		table.rows[0].cells[i].onmouseup = function() {
+			if (tTD == undefined) tTD = this;
+			tTD.mouseDown = false;
+			tTD.style.cursor = 'default';
+		};
+		table.rows[0].cells[i].onmousemove = function() {
+			if (event.offsetX > this.offsetWidth - 10)
+				this.style.cursor = 'col-resize';
+			else
+				this.style.cursor = 'default';
+			if (tTD == undefined) tTD = this;
+			if (tTD.mouseDown != null && tTD.mouseDown == true) {
+				tTD.style.cursor = 'default';
+				if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+					tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+				tTD.style.width = tTD.width;
+				tTD.style.cursor = 'col-resize';
+				table = tTD;
+				while (table.tagName != 'TABLE') table = table.parentElement;
+				for (j = 0; j < table.rows.length; j++) {
+					table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+				}
+			}
+		};
+	}
+
+	//加载默认隐藏扩展
+	$("#open").hide();
+
+	$('.form_datetime').datetimepicker({
+		language : 'zh-CN',
+		format : 'yyyy-mm-dd hh:ii:ss',//日期格式
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+		showMeridian: 1
+	});
+	$('.form_date').datetimepicker({
+		language : 'zh-CN',
+		format : 'yyyy-mm-dd',//日期格式
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+	});
+	$('.form_time').datetimepicker({
+		language : 'zh-CN',
+		format : 'hh:ii',//日期格式
+		weekStart: 1,//一周的开始 1 星期一 0星期天
+		todayBtn:  1,//是否显示'today'按钮
+		autoclose: 1,//是否自动关闭日期选择器
+		todayHighlight: 1,//当天日期高亮
+		//选择 年月日时分 43210
+		startView: 1,//首先显示的视图
+		minView: 0,//最精确的时间选择视图
+		maxView: 1,
+
+		forceParse: 0//强制解析
+	});
+	</script>
+
+
+
+</body>
+</html>
